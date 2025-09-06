@@ -1,0 +1,367 @@
+---
+// src/components/sections/ProjectGallery.astro
+/**
+ * Project gallery section showcasing portfolio projects
+ * Features live projects with links and CV projects for consultation
+ */
+
+import { FEATURED_PROJECTS, PROJECT_CATEGORIES } from '../../utils/projects'
+import TechIcon from '../decor/TechIcon.astro'
+---
+
+<section id="portfolio" class="py-20 bg-gradient-to-br from-slate-900 via-gray-900 to-indigo-900 text-white relative overflow-hidden">
+  <!-- Background Tech Icons -->
+  <div aria-hidden="true" class="absolute inset-0 overflow-hidden opacity-20">
+    <TechIcon 
+      tech="python" 
+      size="large"
+      position={{ top: "8%", left: "5%" }} 
+      animation="float"
+      delay={0.5}
+      opacity={0.1}
+      blur={true}
+    />
+    <TechIcon 
+      tech="vue" 
+      size="medium"
+      position={{ top: "20%", right: "8%" }} 
+      animation="pulse"
+      delay={1.2}
+      opacity={0.08}
+      blur={true}
+    />
+    <TechIcon 
+      tech="django" 
+      size="large"
+      position={{ bottom: "15%", left: "12%" }} 
+      animation="rotate"
+      delay={2.0}
+      opacity={0.1}
+      blur={true}
+    />
+    <TechIcon 
+      tech="docker" 
+      size="medium"
+      position={{ bottom: "25%", right: "10%" }} 
+      animation="float"
+      delay={1.8}
+      opacity={0.08}
+      blur={true}
+    />
+  </div>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <!-- Section Header -->
+    <div class="text-center mb-16 animate-on-scroll">
+      <h2 class="text-4xl lg:text-5xl font-bold mb-6">
+        Featured
+        <span class="bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
+          Projects
+        </span>
+      </h2>
+      <p class="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
+        A showcase of recent development work, from live applications you can explore 
+        to enterprise projects available for consultation discussions.
+      </p>
+    </div>
+
+    <!-- Filter Tabs -->
+    <div class="flex flex-wrap justify-center gap-2 mb-12 animate-on-scroll">
+      {PROJECT_CATEGORIES.map((category, index) => (
+        <button
+          type="button"
+          class={`filter-btn px-6 py-3 rounded-full font-medium transition-all duration-300 ${
+            index === 0 
+              ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white' 
+              : 'bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white'
+          }`}
+          data-filter={category}
+          aria-pressed={index === 0 ? 'true' : 'false'}
+        >
+          {category}
+        </button>
+      ))}
+    </div>
+
+    <!-- Projects Grid -->
+    <div id="projects-grid" class="grid md:grid-cols-2 lg:grid-cols-2 gap-8 mb-16">
+      {FEATURED_PROJECTS.map((project, index) => (
+        <article 
+          class="project-card group relative bg-gray-800/50 backdrop-blur-sm rounded-2xl overflow-hidden border border-gray-700/50 hover:border-cyan-500/50 transition-all duration-500 animate-on-scroll stagger-animation"
+          style={`animation-delay: ${index * 150}ms`}
+          data-category={project.category}
+          data-status={project.status}
+        >
+          <!-- Project Image -->
+          <div class="relative aspect-[16/10] overflow-hidden">
+            <img
+              src={project.image}
+              alt={project.title}
+              loading="lazy"
+              decoding="async"
+              class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+            />
+            
+            <!-- Status Badge -->
+            <div class="absolute top-4 left-4">
+              {project.status === 'live' ? (
+                <div class="flex items-center px-3 py-1 bg-green-600/90 backdrop-blur-sm rounded-full text-sm font-medium">
+                  <div class="w-2 h-2 bg-green-300 rounded-full mr-2 animate-pulse"></div>
+                  Live Project
+                </div>
+              ) : (
+                <div class="flex items-center px-3 py-1 bg-blue-600/90 backdrop-blur-sm rounded-full text-sm font-medium">
+                  <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-3.582 8-8 8a8.959 8.959 0 01-2.4-.32l-3.6 1.2 1.2-3.6A8.959 8.959 0 013 12c0-4.418 3.582-8 8-8s8 3.582 8 8z"/>
+                  </svg>
+                  Consultation
+                </div>
+              )}
+            </div>
+
+            <!-- Year Badge -->
+            <div class="absolute top-4 right-4 px-2 py-1 bg-gray-900/80 backdrop-blur-sm rounded text-sm font-medium">
+              {project.year}
+            </div>
+
+            <!-- Overlay -->
+            <div class="absolute inset-0 bg-gradient-to-t from-gray-900/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          </div>
+
+          <!-- Project Content -->
+          <div class="p-6">
+            <!-- Project Title -->
+            <h3 class="text-2xl font-bold mb-3 group-hover:text-cyan-400 transition-colors">
+              {project.title}
+            </h3>
+
+            <!-- Description -->
+            <p class="text-gray-300 text-lg leading-relaxed mb-4">
+              {project.description}
+            </p>
+
+            <!-- Client Info (if available) -->
+            {project.client && (
+              <div class="flex items-center mb-4 text-sm text-gray-400">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-4m-5 0H3m2 0h4M9 7h6m-6 4h6m-6 4h6"/>
+                </svg>
+                <span>Client: {project.client}</span>
+              </div>
+            )}
+
+            <!-- Technology Stack -->
+            <div class="mb-6">
+              <h4 class="text-sm font-semibold text-gray-400 mb-2 uppercase tracking-wide">
+                Technologies Used
+              </h4>
+              <div class="flex flex-wrap gap-2">
+                {project.technologies.slice(0, 4).map((tech) => (
+                  <span class="px-3 py-1 bg-gray-700 text-gray-200 rounded-full text-sm hover:bg-cyan-600 hover:text-white transition-colors">
+                    {tech}
+                  </span>
+                ))}
+                {project.technologies.length > 4 && (
+                  <span class="px-3 py-1 bg-gray-600 text-gray-300 rounded-full text-sm">
+                    +{project.technologies.length - 4} more
+                  </span>
+                )}
+              </div>
+            </div>
+
+            <!-- Key Results -->
+            <div class="mb-6">
+              <h4 class="text-sm font-semibold text-gray-400 mb-2 uppercase tracking-wide">
+                Key Results
+              </h4>
+              <ul class="space-y-1">
+                {project.results.slice(0, 2).map((result) => (
+                  <li class="flex items-start text-sm text-gray-300">
+                    <svg class="w-4 h-4 text-green-400 mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                    </svg>
+                    <span>{result}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <!-- Project Actions -->
+            <div class="flex gap-3">
+              {project.status === 'live' ? (
+                <>
+                  {project.liveUrl && (
+                    <a
+                      href={project.liveUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="flex-1 inline-flex items-center justify-center px-4 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-xl font-semibold hover:from-cyan-600 hover:to-blue-600 transition-all duration-300 group/btn"
+                    >
+                      <svg class="w-5 h-5 mr-2 group-hover/btn:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                      </svg>
+                      View Live Site
+                    </a>
+                  )}
+                  {project.githubUrl && (
+                    <a
+                      href={project.githubUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="px-4 py-3 border border-gray-600 text-gray-300 rounded-xl font-semibold hover:border-gray-500 hover:text-white transition-all duration-300"
+                      aria-label="View source code on GitHub"
+                    >
+                      <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                      </svg>
+                    </a>
+                  )}
+                </>
+              ) : (
+                <a
+                  href="/contact"
+                  class="flex-1 inline-flex items-center justify-center px-4 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-300"
+                >
+                  <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-3.582 8-8 8a8.959 8.959 0 01-2.4-.32l-3.6 1.2 1.2-3.6A8.959 8.959 0 013 12c0-4.418 3.582-8 8-8s8 3.582 8 8z"/>
+                  </svg>
+                  Discuss Project
+                </a>
+              )}
+            </div>
+          </div>
+
+          <!-- Hover Effect -->
+          <div class="absolute inset-0 bg-gradient-to-br from-cyan-600/5 to-purple-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-2xl"></div>
+        </article>
+      ))}
+    </div>
+
+    <!-- View All Projects CTA -->
+    <div class="text-center animate-on-scroll">
+      <div class="bg-gray-800/50 backdrop-blur-sm rounded-2xl p-8 lg:p-12 border border-gray-700/50">
+        <h3 class="text-3xl font-bold mb-4">
+          Explore My Complete Portfolio
+        </h3>
+        <p class="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
+          See all projects including detailed case studies, technical challenges, 
+          and solutions implemented across various industries.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a
+            href="/portfolio"
+            class="inline-flex items-center px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-xl font-semibold hover:from-cyan-600 hover:to-blue-600 transition-all duration-300 transform hover:scale-105"
+          >
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+            </svg>
+            View All Projects
+          </a>
+          
+          <a
+            href="/contact"
+            class="inline-flex items-center px-8 py-4 border-2 border-cyan-500 text-cyan-400 rounded-xl font-semibold hover:bg-cyan-500 hover:text-white transition-all duration-300"
+          >
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+            </svg>
+            Start New Project
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .project-card {
+    transition: all 0.3s ease;
+  }
+  
+  .project-card:hover {
+    transform: translateY(-8px);
+  }
+  
+  .filter-btn.active {
+    background: linear-gradient(to right, #06b6d4, #3b82f6);
+    color: white;
+  }
+  
+  .filter-btn:not(.active):hover {
+    background: #374151;
+    color: white;
+  }
+  
+  /* Animation classes */
+  .animate-on-scroll {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s ease-out;
+  }
+  
+  .animate-on-scroll.animate-in {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  .stagger-animation {
+    transition-delay: var(--animation-delay, 0ms);
+  }
+  
+  /* Hide projects that don't match filter */
+  .project-card.hidden {
+    display: none;
+  }
+</style>
+
+<script>
+  // Project filtering functionality
+  document.addEventListener('DOMContentLoaded', () => {
+    const filterButtons = document.querySelectorAll('.filter-btn')
+    const projectCards = document.querySelectorAll('.project-card')
+    
+    const filterProjects = (category) => {
+      projectCards.forEach((card) => {
+        const cardCategory = card.getAttribute('data-category')
+        const shouldShow = category === 'All' || cardCategory === category
+        
+        if (shouldShow) {
+          card.classList.remove('hidden')
+          card.style.display = 'block'
+        } else {
+          card.classList.add('hidden')
+          card.style.display = 'none'
+        }
+      })
+    }
+    
+    filterButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const category = button.getAttribute('data-filter')
+        
+        // Update active button
+        filterButtons.forEach((btn) => {
+          btn.classList.remove('active')
+          btn.setAttribute('aria-pressed', 'false')
+          btn.className = btn.className.replace(
+            'bg-gradient-to-r from-cyan-500 to-blue-500 text-white',
+            'bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white'
+          )
+        })
+        
+        button.classList.add('active')
+        button.setAttribute('aria-pressed', 'true')
+        button.className = button.className.replace(
+          'bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white',
+          'bg-gradient-to-r from-cyan-500 to-blue-500 text-white'
+        )
+        
+        // Filter projects
+        filterProjects(category)
+      })
+    })
+    
+    // Initialize with 'All' filter
+    filterProjects('All')
+  })
+</script>

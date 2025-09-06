@@ -1,0 +1,323 @@
+---
+// src/components/decor/TechIcon.astro
+/**
+ * Technology icon component to replace balloons with programming language logos
+ * Supports various animations and positioning
+ */
+
+interface Props {
+  tech: 'python' | 'django' | 'vue' | 'javascript' | 'postgresql' | 'docker' | 'flask' | 'fastapi' | 'git' | 'aws' | 'react' | 'nodejs'
+  size?: 'small' | 'medium' | 'large' | 'xl'
+  position?: { top?: string; bottom?: string; left?: string; right?: string }
+  animation?: 'float' | 'pulse' | 'rotate' | 'bounce' | 'none'
+  delay?: number
+  opacity?: number
+  blur?: boolean
+  glowing?: boolean
+}
+
+const {
+  tech,
+  size = 'medium',
+  position = {},
+  animation = 'float',
+  delay = 0,
+  opacity = 1,
+  blur = false,
+  glowing = false
+} = Astro.props
+
+// Tech icon configurations
+const techConfig = {
+  python: {
+    icon: '🐍',
+    color: '#3776ab',
+    bgColor: '#306998',
+    name: 'Python',
+    logo: '/icons/python-logo.svg'
+  },
+  django: {
+    icon: '🎯',
+    color: '#092e20', 
+    bgColor: '#0c4b33',
+    name: 'Django',
+    logo: '/icons/django-logo.svg'
+  },
+  vue: {
+    icon: '💚',
+    color: '#4fc08d',
+    bgColor: '#41b883',
+    name: 'Vue.js',
+    logo: '/icons/vue-logo.svg'
+  },
+  javascript: {
+    icon: '📜',
+    color: '#f7df1e',
+    bgColor: '#f0db4f',
+    name: 'JavaScript',
+    logo: '/icons/javascript-logo.svg'
+  },
+  postgresql: {
+    icon: '🐘',
+    color: '#336791',
+    bgColor: '#336791',
+    name: 'PostgreSQL',
+    logo: '/icons/postgresql-logo.svg'
+  },
+  docker: {
+    icon: '🐳',
+    color: '#2496ed',
+    bgColor: '#0db7ed',
+    name: 'Docker',
+    logo: '/icons/docker-logo.svg'
+  },
+  flask: {
+    icon: '🌶️',
+    color: '#000000',
+    bgColor: '#000000',
+    name: 'Flask',
+    logo: '/icons/flask-logo.svg'
+  },
+  fastapi: {
+    icon: '⚡',
+    color: '#009688',
+    bgColor: '#009688',
+    name: 'FastAPI',
+    logo: '/icons/fastapi-logo.svg'
+  },
+  git: {
+    icon: '📚',
+    color: '#f05032',
+    bgColor: '#f05032',
+    name: 'Git',
+    logo: '/icons/git-logo.svg'
+  },
+  aws: {
+    icon: '☁️',
+    color: '#ff9900',
+    bgColor: '#ff9900',
+    name: 'AWS',
+    logo: '/icons/aws-logo.svg'
+  },
+  react: {
+    icon: '⚛️',
+    color: '#61dafb',
+    bgColor: '#61dafb', 
+    name: 'React',
+    logo: '/icons/react-logo.svg'
+  },
+  nodejs: {
+    icon: '💚',
+    color: '#339933',
+    bgColor: '#339933',
+    name: 'Node.js',
+    logo: '/icons/nodejs-logo.svg'
+  }
+}
+
+// Size configurations
+const sizeConfig = {
+  small: { width: '2rem', height: '2rem', fontSize: '1rem' },
+  medium: { width: '3rem', height: '3rem', fontSize: '1.5rem' },
+  large: { width: '4rem', height: '4rem', fontSize: '2rem' },
+  xl: { width: '6rem', height: '6rem', fontSize: '3rem' }
+}
+
+const config = techConfig[tech]
+const sizes = sizeConfig[size]
+
+// Build styles
+const positionStyles = Object.entries(position)
+  .map(([key, value]) => `${key}: ${value}`)
+  .join('; ')
+
+const animationClass = animation !== 'none' ? `animate-${animation}` : ''
+const blurClass = blur ? 'blur-sm' : ''
+const glowClass = glowing ? 'tech-glow' : ''
+---
+
+<div
+  class={`tech-icon absolute pointer-events-none select-none ${animationClass} ${blurClass} ${glowClass}`}
+  style={`
+    ${positionStyles};
+    opacity: ${opacity};
+    animation-delay: ${delay}s;
+    width: ${sizes.width};
+    height: ${sizes.height};
+  `}
+  aria-hidden="true"
+>
+  <!-- Icon Container -->
+  <div 
+    class="relative w-full h-full rounded-full flex items-center justify-center transition-all duration-300 tech-container"
+    style={`background: linear-gradient(135deg, ${config.color}20, ${config.bgColor}30)`}
+  >
+    <!-- Background Glow -->
+    <div 
+      class="absolute inset-0 rounded-full opacity-50"
+      style={`background: radial-gradient(circle, ${config.color}40 0%, transparent 70%)`}
+    ></div>
+    
+    <!-- Icon/Logo -->
+    <div class="relative z-10 flex items-center justify-center w-full h-full">
+      <!-- Fallback Emoji -->
+      <span 
+        class="tech-emoji"
+        style={`font-size: ${sizes.fontSize}`}
+      >
+        {config.icon}
+      </span>
+      
+      <!-- SVG Logo (if available) -->
+      <!-- Note: You would replace this with actual SVG logos -->
+      <div 
+        class="absolute inset-0 flex items-center justify-center tech-logo opacity-0 hover:opacity-100 transition-opacity"
+        style={`color: ${config.color}`}
+      >
+        <!-- Logo would go here -->
+      </div>
+    </div>
+    
+    <!-- Hover Effect -->
+    <div 
+      class="absolute inset-0 rounded-full opacity-0 hover:opacity-20 transition-opacity duration-300"
+      style={`background: ${config.color}`}
+    ></div>
+  </div>
+  
+  <!-- Tooltip -->
+  <div class="absolute -bottom-8 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+    <div 
+      class="px-2 py-1 bg-gray-900 text-white text-xs rounded whitespace-nowrap"
+      style={`border-top: 2px solid ${config.color}`}
+    >
+      {config.name}
+    </div>
+  </div>
+</div>
+
+<style define:vars={{ 
+  techColor: config.color,
+  techBgColor: config.bgColor 
+}}>
+  .tech-icon {
+    /* Base styles for tech icons */
+    transition: all 0.3s ease;
+  }
+  
+  .tech-container:hover {
+    transform: scale(1.1);
+  }
+  
+  .tech-glow {
+    filter: drop-shadow(0 0 10px var(--techColor));
+  }
+  
+  /* Animation definitions */
+  .animate-float {
+    animation: tech-float 4s ease-in-out infinite;
+  }
+  
+  .animate-pulse {
+    animation: tech-pulse 2s ease-in-out infinite;
+  }
+  
+  .animate-rotate {
+    animation: tech-rotate 8s linear infinite;
+  }
+  
+  .animate-bounce {
+    animation: tech-bounce 3s ease-in-out infinite;
+  }
+  
+  @keyframes tech-float {
+    0%, 100% { 
+      transform: translateY(0px) translateX(0px);
+    }
+    25% { 
+      transform: translateY(-8px) translateX(2px);
+    }
+    50% { 
+      transform: translateY(-4px) translateX(-2px);
+    }
+    75% { 
+      transform: translateY(-12px) translateX(1px);
+    }
+  }
+  
+  @keyframes tech-pulse {
+    0%, 100% { 
+      opacity: var(--opacity, 1);
+      transform: scale(1);
+    }
+    50% { 
+      opacity: calc(var(--opacity, 1) * 0.7);
+      transform: scale(1.05);
+    }
+  }
+  
+  @keyframes tech-rotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
+  @keyframes tech-bounce {
+    0%, 100% { 
+      transform: translateY(0px);
+    }
+    25% { 
+      transform: translateY(-10px);
+    }
+    50% { 
+      transform: translateY(-5px);
+    }
+    75% { 
+      transform: translateY(-15px);
+    }
+  }
+  
+  /* Responsive sizing */
+  @media (max-width: 768px) {
+    .tech-icon {
+      transform: scale(0.8);
+    }
+  }
+  
+  /* Dark mode support */
+  @media (prefers-color-scheme: dark) {
+    .tech-container {
+      background: linear-gradient(135deg, var(--techColor)30, var(--techBgColor)40);
+    }
+  }
+</style>
+
+<script>
+  // Add interactive behavior for tech icons
+  document.addEventListener('DOMContentLoaded', () => {
+    const techIcons = document.querySelectorAll('.tech-icon')
+    
+    techIcons.forEach((icon) => {
+      // Add hover effects
+      icon.addEventListener('mouseenter', () => {
+        icon.style.zIndex = '10'
+        icon.style.transform = 'scale(1.2)'
+      })
+      
+      icon.addEventListener('mouseleave', () => {
+        icon.style.zIndex = '1'
+        icon.style.transform = 'scale(1)'
+      })
+      
+      // Add click interaction for mobile
+      icon.addEventListener('click', () => {
+        const tooltip = icon.querySelector('.group-hover\\:opacity-100')
+        if (tooltip) {
+          tooltip.classList.toggle('opacity-100')
+          setTimeout(() => {
+            tooltip.classList.remove('opacity-100')
+          }, 2000)
+        }
+      })
+    })
+  })
+</script>

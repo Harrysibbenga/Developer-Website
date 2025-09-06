@@ -1,0 +1,425 @@
+---
+// src/pages/about.astro
+/**
+ * About page showcasing Harry Sibbenga's background, experience, and approach
+ */
+
+ import Layout from '../layouts/Layout.astro'
+import TechIcon from '../components/decor/TechIcon.astro'
+import { BUSINESS_INFO, TECHNOLOGIES, STATS } from '../utils/constants'
+
+const pageTitle = 'About Harry Sibbenga - Python Developer & Technical Consultant'
+const pageDescription = 'Learn about Harry Sibbenga\'s 5+ years of Python development experience, from humanitarian projects to enterprise solutions. Based in Milton Keynes, serving UK businesses.'
+---
+
+<Layout 
+  title={pageTitle}
+  description={pageDescription}
+  canonical="/about"
+>
+  <!-- Hero Section -->
+  <section class="py-20 bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 text-white relative overflow-hidden">
+    <!-- Background Tech Icons -->
+    <div aria-hidden="true" class="absolute inset-0 overflow-hidden opacity-10">
+      <TechIcon 
+        tech="python" 
+        size="xl"
+        position={{ top: "10%", left: "5%" }} 
+        animation="float"
+        delay={0.5}
+        opacity={0.15}
+        blur={true}
+      />
+      <TechIcon 
+        tech="django" 
+        size="large"
+        position={{ top: "20%", right: "8%" }} 
+        animation="pulse"
+        delay={1.2}
+        opacity={0.12}
+        blur={true}
+      />
+      <TechIcon 
+        tech="vue" 
+        size="xl"
+        position={{ bottom: "15%", left: "10%" }} 
+        animation="rotate"
+        delay={2.0}
+        opacity={0.15}
+        blur={true}
+      />
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div class="grid lg:grid-cols-2 gap-12 items-center">
+        <!-- Left Content -->
+        <div class="animate-on-scroll">
+          <h1 class="text-5xl lg:text-6xl font-black mb-6 leading-tight">
+            About
+            <span class="block bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
+              Harry Sibbenga
+            </span>
+          </h1>
+          
+          <p class="text-xl text-blue-100 mb-8 leading-relaxed">
+            Python Developer with {STATS.experience} years of experience building scalable solutions 
+            for humanitarian organizations, enterprise clients, and innovative startups.
+          </p>
+          
+          <div class="grid grid-cols-2 gap-6">
+            <div class="text-center">
+              <div class="text-3xl font-bold text-cyan-400 mb-2">{STATS.projects}</div>
+              <div class="text-blue-200 text-sm">{STATS.projectsLabel}</div>
+            </div>
+            <div class="text-center">
+              <div class="text-3xl font-bold text-purple-400 mb-2">{STATS.clients}</div>
+              <div class="text-blue-200 text-sm">{STATS.clientsLabel}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Content - Professional Photo Placeholder -->
+        <div class="animate-on-scroll" style="animation-delay: 300ms">
+          <div class="relative">
+            <div class="w-full max-w-md mx-auto">
+              <!-- Professional Photo Container -->
+              <div class="aspect-square bg-gradient-to-br from-blue-600/20 to-purple-600/20 rounded-2xl border border-blue-400/30 flex items-center justify-center backdrop-blur-sm">
+                <div class="text-center">
+                  <div class="w-32 h-32 bg-gradient-to-br from-blue-600 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span class="text-white font-bold text-4xl">HS</span>
+                  </div>
+                  <p class="text-blue-200 text-sm">Professional Photo</p>
+                  <p class="text-blue-300 text-xs mt-1">Milton Keynes, UK</p>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Floating Achievement Badges -->
+            <div class="absolute -top-4 -right-4 bg-green-600 rounded-lg p-3 shadow-lg animate-float">
+              <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+              </svg>
+            </div>
+            
+            <div class="absolute -bottom-4 -left-4 bg-blue-600 rounded-lg p-3 shadow-lg animate-float" style="animation-delay: 1s">
+              <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0L19.2 12l-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Professional Journey -->
+  <section class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16 animate-on-scroll">
+        <h2 class="text-4xl font-bold text-gray-900 mb-6">
+          Professional Journey
+        </h2>
+        <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+          From physics graduate to Python expert, my path has been driven by a passion 
+          for solving complex problems through elegant code.
+        </p>
+      </div>
+
+      <!-- Timeline -->
+      <div class="relative animate-on-scroll">
+        <!-- Timeline Line -->
+        <div class="absolute left-1/2 transform -translate-x-px h-full w-0.5 bg-gradient-to-b from-blue-600 to-purple-600"></div>
+        
+        <!-- Timeline Items -->
+        <div class="space-y-16">
+          <!-- Current Role -->
+          <div class="relative flex items-center">
+            <div class="flex-1 text-right pr-8">
+              <div class="bg-blue-50 rounded-lg p-6 border border-blue-200">
+                <h3 class="text-xl font-bold text-blue-900 mb-2">Python Developer</h3>
+                <p class="text-blue-700 font-semibold mb-2">MapAction • January 2024 - Present</p>
+                <p class="text-gray-600">
+                  Improving geospatial data pipelines for humanitarian crisis response. 
+                  Achieved 20% reduction in processing time, enabling faster disaster relief efforts.
+                </p>
+                <div class="mt-3 flex flex-wrap gap-2 justify-end">
+                  <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-sm">Python</span>
+                  <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-sm">Docker</span>
+                  <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-sm">CI/CD</span>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Timeline Dot -->
+            <div class="absolute left-1/2 transform -translate-x-1/2 w-8 h-8 bg-blue-600 rounded-full border-4 border-white shadow-lg flex items-center justify-center">
+              <div class="w-3 h-3 bg-white rounded-full"></div>
+            </div>
+            
+            <div class="flex-1 pl-8"></div>
+          </div>
+
+          <!-- Previous Role -->
+          <div class="relative flex items-center">
+            <div class="flex-1 pr-8"></div>
+            
+            <div class="absolute left-1/2 transform -translate-x-1/2 w-8 h-8 bg-purple-600 rounded-full border-4 border-white shadow-lg flex items-center justify-center">
+              <div class="w-3 h-3 bg-white rounded-full"></div>
+            </div>
+            
+            <div class="flex-1 pl-8">
+              <div class="bg-purple-50 rounded-lg p-6 border border-purple-200">
+                <h3 class="text-xl font-bold text-purple-900 mb-2">Python Developer</h3>
+                <p class="text-purple-700 font-semibold mb-2">Tensator Group • November 2021 - December 2023</p>
+                <p class="text-gray-600">
+                  Developed real-time queue management systems using Django Channels and WebSockets. 
+                  Improved customer wait time accuracy by 15% across multiple deployment locations.
+                </p>
+                <div class="mt-3 flex flex-wrap gap-2">
+                  <span class="px-2 py-1 bg-purple-100 text-purple-800 rounded text-sm">Django</span>
+                  <span class="px-2 py-1 bg-purple-100 text-purple-800 rounded text-sm">WebSockets</span>
+                  <span class="px-2 py-1 bg-purple-100 text-purple-800 rounded text-sm">Real-time</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Web Developer Role -->
+          <div class="relative flex items-center">
+            <div class="flex-1 text-right pr-8">
+              <div class="bg-green-50 rounded-lg p-6 border border-green-200">
+                <h3 class="text-xl font-bold text-green-900 mb-2">Web Developer Executive</h3>
+                <p class="text-green-700 font-semibold mb-2">Torque Motorsport • May 2019 - November 2021</p>
+                <p class="text-gray-600">
+                  Built custom web applications for motorsport industry using Flask, Django, and Vue.js. 
+                  Created professional websites for drivers to attract sponsors and engage fans.
+                </p>
+                <div class="mt-3 flex flex-wrap gap-2 justify-end">
+                  <span class="px-2 py-1 bg-green-100 text-green-800 rounded text-sm">Flask</span>
+                  <span class="px-2 py-1 bg-green-100 text-green-800 rounded text-sm">Vue.js</span>
+                  <span class="px-2 py-1 bg-green-100 text-green-800 rounded text-sm">APIs</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="absolute left-1/2 transform -translate-x-1/2 w-8 h-8 bg-green-600 rounded-full border-4 border-white shadow-lg flex items-center justify-center">
+              <div class="w-3 h-3 bg-white rounded-full"></div>
+            </div>
+            
+            <div class="flex-1 pl-8"></div>
+          </div>
+
+          <!-- Education -->
+          <div class="relative flex items-center">
+            <div class="flex-1 pr-8"></div>
+            
+            <div class="absolute left-1/2 transform -translate-x-1/2 w-8 h-8 bg-orange-600 rounded-full border-4 border-white shadow-lg flex items-center justify-center">
+              <div class="w-3 h-3 bg-white rounded-full"></div>
+            </div>
+            
+            <div class="flex-1 pl-8">
+              <div class="bg-orange-50 rounded-lg p-6 border border-orange-200">
+                <h3 class="text-xl font-bold text-orange-900 mb-2">Full Stack Web Developer</h3>
+                <p class="text-orange-700 font-semibold mb-2">Coding Institute • January 2018 - September 2019</p>
+                <p class="text-gray-600">
+                  Comprehensive training in modern web development technologies. 
+                  Built foundation in HTML, CSS, JavaScript, Python, and development best practices.
+                </p>
+                <div class="mt-3 flex flex-wrap gap-2">
+                  <span class="px-2 py-1 bg-orange-100 text-orange-800 rounded text-sm">Full-Stack</span>
+                  <span class="px-2 py-1 bg-orange-100 text-orange-800 rounded text-sm">JavaScript</span>
+                  <span class="px-2 py-1 bg-orange-100 text-orange-800 rounded text-sm">Best Practices</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Skills & Expertise -->
+  <section class="py-20 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16 animate-on-scroll">
+        <h2 class="text-4xl font-bold text-gray-900 mb-6">
+          Skills & Expertise
+        </h2>
+        <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+          A comprehensive toolkit built through years of hands-on development 
+          and continuous learning in the rapidly evolving tech landscape.
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Core Programming -->
+        <div class="bg-white rounded-2xl shadow-lg p-8 border border-gray-200 animate-on-scroll">
+          <div class="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mb-6">
+            <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-4">Core Programming</h3>
+          <div class="space-y-3">
+            {TECHNOLOGIES.backend.map((tech) => (
+              <div class="flex items-center justify-between">
+                <span class="text-gray-700">{tech.name}</span>
+                <span class="text-sm text-blue-600 font-semibold">{tech.years}y</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- Frontend Development -->
+        <div class="bg-white rounded-2xl shadow-lg p-8 border border-gray-200 animate-on-scroll">
+          <div class="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center mb-6">
+            <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-4">Frontend Development</h3>
+          <div class="space-y-3">
+            {TECHNOLOGIES.frontend.map((tech) => (
+              <div class="flex items-center justify-between">
+                <span class="text-gray-700">{tech.name}</span>
+                <span class="text-sm text-green-600 font-semibold">{tech.years}y</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- DevOps & Tools -->
+        <div class="bg-white rounded-2xl shadow-lg p-8 border border-gray-200 animate-on-scroll">
+          <div class="w-16 h-16 bg-purple-100 rounded-2xl flex items-center justify-center mb-6">
+            <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-4">DevOps & Tools</h3>
+          <div class="space-y-3">
+            {TECHNOLOGIES.tools.map((tech) => (
+              <div class="flex items-center justify-between">
+                <span class="text-gray-700">{tech.name}</span>
+                <span class="text-sm text-purple-600 font-semibold">{tech.years}y</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Personal Philosophy -->
+  <section class="py-20 bg-white">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center animate-on-scroll">
+      <h2 class="text-4xl font-bold text-gray-900 mb-8">
+        Development Philosophy
+      </h2>
+      
+      <div class="grid md:grid-cols-3 gap-8 mb-12">
+        <div class="p-6">
+          <div class="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <span class="text-2xl">🎯</span>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-3">Problem-Focused</h3>
+          <p class="text-gray-600">Every line of code should solve a real problem and add genuine value to users and businesses.</p>
+        </div>
+        
+        <div class="p-6">
+          <div class="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <span class="text-2xl">🔬</span>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-3">Test-Driven</h3>
+          <p class="text-gray-600">Robust testing ensures reliability, maintainability, and confidence in production deployments.</p>
+        </div>
+        
+        <div class="p-6">
+          <div class="w-16 h-16 bg-purple-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <span class="text-2xl">🚀</span>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-3">Performance-First</h3>
+          <p class="text-gray-600">Scalable architecture and optimized code that grows with your business needs and user base.</p>
+        </div>
+      </div>
+      
+      <blockquote class="text-2xl text-gray-600 italic leading-relaxed border-l-4 border-blue-600 pl-8 text-left">
+        "Great software isn't just about the technology—it's about understanding the problem deeply, 
+        designing elegant solutions, and delivering results that make a real difference."
+        <footer class="text-lg text-gray-500 mt-4 not-italic">— Harry Sibbenga</footer>
+      </blockquote>
+    </div>
+  </section>
+
+  <!-- Contact CTA -->
+  <section class="py-20 bg-gradient-to-br from-blue-600 to-purple-600 text-white">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center animate-on-scroll">
+      <h2 class="text-4xl font-bold mb-6">Ready to Work Together?</h2>
+      <p class="text-xl text-blue-100 mb-8 leading-relaxed">
+        Let's discuss how my experience and expertise can help bring your project to life.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a
+          href="/contact"
+          class="inline-flex items-center px-8 py-4 bg-white text-blue-600 rounded-xl font-semibold hover:bg-blue-50 transition-colors duration-300"
+        >
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-3.582 8-8 8a8.959 8.959 0 01-2.4-.32l-3.6 1.2 1.2-3.6A8.959 8.959 0 013 12c0-4.418 3.582-8 8-8s8 3.582 8 8z"/>
+          </svg>
+          Start a Conversation
+        </a>
+        
+        <a
+          href="/portfolio"
+          class="inline-flex items-center px-8 py-4 border-2 border-white text-white rounded-xl font-semibold hover:bg-white hover:text-blue-600 transition-all duration-300"
+        >
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+          </svg>
+          Explore My Work
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+  }
+  
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+  
+  .animate-on-scroll {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s ease-out;
+  }
+  
+  .animate-on-scroll.animate-in {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
+
+<script>
+  // Intersection Observer for animations
+  document.addEventListener('DOMContentLoaded', () => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate-in')
+        }
+      })
+    }, {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    })
+    
+    document.querySelectorAll('.animate-on-scroll').forEach((el) => {
+      observer.observe(el)
+    })
+  })
+</script>

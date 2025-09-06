@@ -1,0 +1,295 @@
+---
+// src/components/sections/Hero.astro
+/**
+ * Hero section with tech-focused design and programming language icons
+ * Replaces balloons with floating code elements and tech animations
+ */
+
+ import { BUSINESS_INFO, STATS } from '../../utils/constants'
+import TechIcon from '../decor/TechIcon.astro'
+import CodeAnimation from '../decor/CodeAnimation.vue'
+---
+
+<section id="home" class="hero-section relative min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 text-white overflow-hidden">
+  <!-- Animated Background Elements -->
+  <div aria-hidden="true" class="absolute inset-0 overflow-hidden">
+    <!-- Floating Tech Icons (replacing balloons) -->
+    <TechIcon 
+      tech="python" 
+      size="large"
+      position={{ top: "10%", left: "8%" }} 
+      animation="float"
+      delay={0.5}
+      opacity={0.15}
+    />
+    <TechIcon 
+      tech="django" 
+      size="medium"
+      position={{ top: "20%", right: "12%" }} 
+      animation="pulse"
+      delay={1.2}
+      opacity={0.12}
+    />
+    <TechIcon 
+      tech="vue" 
+      size="large"
+      position={{ top: "60%", left: "15%" }} 
+      animation="rotate"
+      delay={0.8}
+      opacity={0.18}
+    />
+    <TechIcon 
+      tech="javascript" 
+      size="medium"
+      position={{ bottom: "25%", right: "20%" }} 
+      animation="float"
+      delay={1.5}
+      opacity={0.14}
+    />
+    <TechIcon 
+      tech="postgresql" 
+      size="small"
+      position={{ bottom: "15%", left: "10%" }} 
+      animation="pulse"
+      delay={2.0}
+      opacity={0.16}
+    />
+    <TechIcon 
+      tech="docker" 
+      size="medium"
+      position={{ top: "40%", right: "8%" }} 
+      animation="float"
+      delay={0.3}
+      opacity={0.13}
+    />
+    
+    <!-- Code Grid Background -->
+    <div class="absolute inset-0 opacity-5">
+      <div class="grid grid-cols-12 gap-1 h-full">
+        {Array.from({ length: 144 }, (_, i) => (
+          <div 
+            class="bg-white/10 rounded-sm animate-pulse"
+            style={`animation-delay: ${(i * 50)}ms; animation-duration: ${2 + (i % 3)}s`}
+          />
+        ))}
+      </div>
+    </div>
+    
+    <!-- Gradient Overlays -->
+    <div class="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent"></div>
+    <div class="absolute inset-0 bg-gradient-to-r from-blue-900/20 via-transparent to-purple-900/20"></div>
+  </div>
+
+  <!-- Hero Content -->
+  <div class="relative z-10 flex items-center min-h-screen">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+      <div class="grid lg:grid-cols-2 gap-12 items-center">
+        <!-- Main Content -->
+        <div class="text-center lg:text-left animate-on-scroll">
+          <!-- Greeting -->
+          <div class="inline-flex items-center px-4 py-2 rounded-full bg-blue-600/20 border border-blue-400/30 mb-8">
+            <span class="w-2 h-2 bg-green-400 rounded-full mr-3 animate-pulse"></span>
+            <span class="text-blue-200 text-sm font-medium">Available for new projects</span>
+          </div>
+          
+          <!-- Main Heading -->
+          <h1 class="text-5xl lg:text-7xl font-black mb-6 leading-tight">
+            <span class="block text-white">Harry</span>
+            <span class="block bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
+              Sibbenga
+            </span>
+          </h1>
+          
+          <!-- Tagline with Typing Effect -->
+          <div class="text-2xl lg:text-3xl font-light mb-8 text-blue-100">
+            <span class="block mb-2">Python Developer</span>
+            <div class="flex items-center justify-center lg:justify-start">
+              <span class="mr-3">&</span>
+              <CodeAnimation client:load />
+            </div>
+          </div>
+          
+          <!-- Description -->
+          <p class="text-xl text-blue-200 mb-10 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+            {STATS.experience} years building scalable web applications, data processing systems, 
+            and real-time solutions. Transforming complex problems into elegant Python code.
+          </p>
+          
+          <!-- Action Buttons -->
+          <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-12">
+            <a
+              href="/portfolio"
+              class="group relative inline-flex items-center px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl font-semibold text-white shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
+            >
+              <span class="mr-2">View Portfolio</span>
+              <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+              </svg>
+              <div class="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-400 to-purple-400 opacity-0 group-hover:opacity-20 transition-opacity -z-10"></div>
+            </a>
+            
+            <a
+              href="/contact"
+              class="group inline-flex items-center px-8 py-4 border-2 border-blue-400 rounded-xl font-semibold text-blue-400 hover:bg-blue-400 hover:text-white transition-all duration-300"
+            >
+              <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-3.582 8-8 8a8.959 8.959 0 01-2.4-.32l-3.6 1.2 1.2-3.6A8.959 8.959 0 013 12c0-4.418 3.582-8 8-8s8 3.582 8 8z"/>
+              </svg>
+              <span>Get In Touch</span>
+            </a>
+          </div>
+          
+          <!-- Quick Stats -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-6 pt-8 border-t border-blue-800/50">
+            <div class="text-center stagger-animation">
+              <div class="text-3xl font-bold text-white mb-1">{STATS.experience}</div>
+              <div class="text-sm text-blue-300">{STATS.experienceLabel}</div>
+            </div>
+            <div class="text-center stagger-animation">
+              <div class="text-3xl font-bold text-white mb-1">{STATS.projects}</div>
+              <div class="text-sm text-blue-300">{STATS.projectsLabel}</div>
+            </div>
+            <div class="text-center stagger-animation">
+              <div class="text-3xl font-bold text-white mb-1">{STATS.clients}</div>
+              <div class="text-sm text-blue-300">{STATS.clientsLabel}</div>
+            </div>
+            <div class="text-center stagger-animation">
+              <div class="text-3xl font-bold text-white mb-1">{STATS.technologies}</div>
+              <div class="text-sm text-blue-300">{STATS.technologiesLabel}</div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Right Side: Interactive Code Preview -->
+        <div class="relative animate-on-scroll" style="animation-delay: 300ms">
+          <div class="relative">
+            <!-- Code Editor Mock-up -->
+            <div class="bg-gray-900/80 backdrop-blur-sm rounded-2xl shadow-2xl border border-gray-700/50 overflow-hidden">
+              <!-- Editor Header -->
+              <div class="flex items-center justify-between px-6 py-4 bg-gray-800/50 border-b border-gray-700/50">
+                <div class="flex items-center space-x-2">
+                  <div class="w-3 h-3 bg-red-400 rounded-full"></div>
+                  <div class="w-3 h-3 bg-yellow-400 rounded-full"></div>
+                  <div class="w-3 h-3 bg-green-400 rounded-full"></div>
+                </div>
+                <div class="text-gray-400 text-sm font-mono">harry_sibbenga.py</div>
+                <div class="w-6"></div>
+              </div>
+              
+              <!-- Code Content -->
+              <div class="p-6 font-mono text-sm leading-relaxed">
+                <div class="text-gray-500 mb-2"># Python Developer Profile</div>
+                <div class="mb-4">
+                  <span class="text-purple-400">class</span>
+                  <span class="text-blue-400 ml-2">HarryDevleoper</span><span class="text-white">:</span>
+                </div>
+                <div class="ml-4 space-y-2">
+                  <div>
+                    <span class="text-blue-400">def</span>
+                    <span class="text-yellow-400 ml-2">__init__</span><span class="text-white">(</span><span class="text-orange-400">self</span><span class="text-white">):</span>
+                  </div>
+                  <div class="ml-4 space-y-1 text-sm">
+                    <div><span class="text-orange-400">self</span><span class="text-white">.name = </span><span class="text-green-400">"Harry Sibbenga"</span></div>
+                    <div><span class="text-orange-400">self</span><span class="text-white">.role = </span><span class="text-green-400">"Python Developer"</span></div>
+                    <div><span class="text-orange-400">self</span><span class="text-white">.experience = </span><span class="text-cyan-400">5</span></div>
+                    <div><span class="text-orange-400">self</span><span class="text-white">.specialties = [</span></div>
+                    <div class="ml-4 space-y-1">
+                      <div><span class="text-green-400">"Web Development"</span><span class="text-white">,</span></div>
+                      <div><span class="text-green-400">"Data Processing"</span><span class="text-white">,</span></div>
+                      <div><span class="text-green-400">"Real-time Systems"</span></div>
+                    </div>
+                    <div><span class="text-white">]</span></div>
+                  </div>
+                  
+                  <div class="mt-4">
+                    <span class="text-blue-400">def</span>
+                    <span class="text-yellow-400 ml-2">build_solution</span><span class="text-white">(</span><span class="text-orange-400">self</span><span class="text-white">, </span><span class="text-orange-400">problem</span><span class="text-white">):</span>
+                  </div>
+                  <div class="ml-4 space-y-1 text-sm">
+                    <div><span class="text-orange-400">solution</span><span class="text-white"> = </span><span class="text-orange-400">self</span><span class="text-white">.analyze(</span><span class="text-orange-400">problem</span><span class="text-white">)</span></div>
+                    <div><span class="text-purple-400">return</span><span class="text-white"> solution.implement()</span></div>
+                  </div>
+                </div>
+                
+                <!-- Blinking Cursor -->
+                <div class="mt-2">
+                  <span class="inline-block w-2 h-5 bg-blue-400 animate-pulse"></span>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Floating Elements Around Code -->
+            <div class="absolute -top-4 -right-4 bg-blue-600 rounded-lg p-3 shadow-lg animate-float">
+              <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+              </svg>
+            </div>
+            
+            <div class="absolute -bottom-4 -left-4 bg-green-600 rounded-lg p-3 shadow-lg animate-float" style="animation-delay: 1s">
+              <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0L19.2 12l-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Scroll Indicator -->
+  <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+    <a href="#services" class="flex flex-col items-center text-blue-300 hover:text-white transition-colors group">
+      <span class="text-sm mb-2 opacity-80 group-hover:opacity-100">Scroll to explore</span>
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+      </svg>
+    </a>
+  </div>
+</section>
+
+<style>
+  /* Hero-specific animations */
+  @keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    33% { transform: translateY(-10px) rotate(2deg); }
+    66% { transform: translateY(-5px) rotate(-1deg); }
+  }
+  
+  @keyframes pulse-code {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+  }
+  
+  @keyframes gradient-shift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+  
+  .animate-float {
+    animation: float 4s ease-in-out infinite;
+  }
+  
+  /* Gradient text animation */
+  .bg-gradient-to-r {
+    background-size: 200% 200%;
+    animation: gradient-shift 3s ease infinite;
+  }
+  
+  /* Custom scrollbar for code editor */
+  .code-content::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  .code-content::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+  }
+  
+  .code-content::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+  }
+  
+  .code-content::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+  }
+</style>
