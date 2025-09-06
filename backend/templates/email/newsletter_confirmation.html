@@ -1,0 +1,124 @@
+<!-- backend/templates/email/newsletter_confirmation.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm Newsletter Subscription - {{ business_name }}</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8fafc;
+            color: #334155;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+            padding: 40px 30px;
+            text-align: center;
+            color: white;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        
+        .content {
+            padding: 40px 30px;
+        }
+        
+        .confirm-button {
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+        }
+        
+        .benefits {
+            background-color: #f0f9ff;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 25px 0;
+            border-left: 4px solid #0ea5e9;
+        }
+        
+        .benefits h3 {
+            margin: 0 0 15px 0;
+            color: #0c4a6e;
+        }
+        
+        .benefits ul {
+            margin: 0;
+            padding-left: 20px;
+            color: #0369a1;
+        }
+        
+        .footer {
+            background-color: #1e293b;
+            padding: 30px;
+            text-align: center;
+            color: #94a3b8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📧 Confirm Your Subscription</h1>
+        </div>
+        
+        <div class="content">
+            <p><strong>Hello,</strong></p>
+            
+            <p>Thank you for subscribing to {{ business_name }} newsletter! To complete your subscription and start receiving updates, please confirm your email address by clicking the button below.</p>
+            
+            <div class="confirm-button">
+                <a href="{{ confirmation_url }}" class="btn">Confirm Subscription</a>
+            </div>
+            
+            <div class="benefits">
+                <h3>📚 What You'll Receive:</h3>
+                <ul>
+                    <li><strong>Development Insights:</strong> Technical articles and coding tutorials</li>
+                    <li><strong>Project Updates:</strong> Behind-the-scenes looks at new projects</li>
+                    <li><strong>Industry News:</strong> Python and web development trends</li>
+                    <li><strong>Exclusive Content:</strong> Early access to new tools and resources</li>
+                </ul>
+            </div>
+            
+            <p>If you didn't subscribe to this newsletter, you can safely ignore this email.</p>
+            
+            <p>
+                <strong>Best regards,</strong><br>
+                Harry Sibbenga
+            </p>
+        </div>
+        
+        <div class="footer">
+            <h3>{{ business_name }}</h3>
+            <p>Professional Python Development Services</p>
+        </div>
+    </div>
+</body>
+</html>

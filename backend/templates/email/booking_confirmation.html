@@ -1,0 +1,1215 @@
+<!-- backend/templates/email/booking_confirmation.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Inquiry Confirmation - {{ business_name }}</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8fafc;
+            color: #334155;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2563eb 0%, #8b5cf6 100%);
+            padding: 40px 30px;
+            text-align: center;
+            color: white;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        
+        .header p {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+            font-size: 16px;
+        }
+        
+        .content {
+            padding: 40px 30px;
+        }
+        
+        .greeting {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #1e293b;
+        }
+        
+        .project-summary {
+            background-color: #f1f5f9;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 25px 0;
+            border-left: 4px solid #3b82f6;
+        }
+        
+        .project-summary h3 {
+            margin: 0 0 15px 0;
+            color: #1e293b;
+            font-size: 20px;
+        }
+        
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .detail-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            color: #475569;
+        }
+        
+        .detail-value {
+            color: #1e293b;
+            text-align: right;
+            max-width: 60%;
+        }
+        
+        .tech-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 8px;
+        }
+        
+        .tech-tag {
+            background-color: #dbeafe;
+            color: #1e40af;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .next-steps {
+            background-color: #ecfdf5;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 25px 0;
+            border-left: 4px solid #10b981;
+        }
+        
+        .next-steps h3 {
+            margin: 0 0 15px 0;
+            color: #065f46;
+            font-size: 18px;
+        }
+        
+        .next-steps ul {
+            margin: 0;
+            padding-left: 20px;
+            color: #047857;
+        }
+        
+        .next-steps li {
+            margin-bottom: 8px;
+        }
+        
+        .contact-info {
+            background-color: #fef3c7;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 25px 0;
+            text-align: center;
+        }
+        
+        .contact-info h4 {
+            margin: 0 0 10px 0;
+            color: #92400e;
+        }
+        
+        .contact-link {
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .footer {
+            background-color: #1e293b;
+            padding: 30px;
+            text-align: center;
+            color: #94a3b8;
+        }
+        
+        .footer h3 {
+            margin: 0 0 15px 0;
+            color: #ffffff;
+            font-size: 20px;
+        }
+        
+        .footer-links {
+            margin: 20px 0;
+        }
+        
+        .footer-links a {
+            color: #60a5fa;
+            text-decoration: none;
+            margin: 0 15px;
+        }
+        
+        .footer p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+        
+        @media only screen and (max-width: 600px) {
+            .container {
+                width: 100% !important;
+            }
+            
+            .header, .content, .footer {
+                padding: 20px !important;
+            }
+            
+            .detail-row {
+                flex-direction: column;
+            }
+            
+            .detail-value {
+                text-align: left;
+                max-width: 100%;
+                margin-top: 5px;
+            }
+            
+            .tech-tags {
+                justify-content: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>Project Inquiry Received</h1>
+            <p>We'll be in touch within 24 hours</p>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="content">
+            <div class="greeting">
+                <strong>Hello {{ booking.first_name }},</strong>
+            </div>
+            
+            <p>Thank you for your interest in working with {{ business_name }}! I've received your project inquiry and I'm excited to learn more about your requirements.</p>
+            
+            <!-- Project Summary -->
+            <div class="project-summary">
+                <h3>📋 Project Summary</h3>
+                
+                <div class="detail-row">
+                    <span class="detail-label">Project Name:</span>
+                    <span class="detail-value">{{ booking.project_name }}</span>
+                </div>
+                
+                <div class="detail-row">
+                    <span class="detail-label">Service Type:</span>
+                    <span class="detail-value">
+                        {% if booking.service_type == 'webDevelopment' %}Web Development
+                        {% elif booking.service_type == 'dataProcessing' %}Data Processing
+                        {% elif booking.service_type == 'realtimeSystems' %}Real-time Systems
+                        {% elif booking.service_type == 'consultation' %}Technical Consultation
+                        {% endif %}
+                    </span>
+                </div>
+                
+                <div class="detail-row">
+                    <span class="detail-label">Timeline:</span>
+                    <span class="detail-value">{{ booking.timeline }}</span>
+                </div>
+                
+                <div class="detail-row">
+                    <span class="detail-label">Budget Range:</span>
+                    <span class="detail-value">{{ booking.budget_range }}</span>
+                </div>
+                
+                {% if booking.technologies %}
+                <div class="detail-row">
+                    <span class="detail-label">Technologies:</span>
+                    <div class="detail-value">
+                        <div class="tech-tags">
+                            {% for tech in booking.technologies %}
+                            <span class="tech-tag">{{ tech }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                
+                <div class="detail-row">
+                    <span class="detail-label">Booking ID:</span>
+                    <span class="detail-value"><code>{{ booking.booking_id }}</code></span>
+                </div>
+            </div>
+            
+            <!-- Next Steps -->
+            <div class="next-steps">
+                <h3>🚀 What Happens Next?</h3>
+                <ul>
+                    <li><strong>Review (24 hours):</strong> I'll carefully analyze your requirements and project scope</li>
+                    <li><strong>Initial Consultation:</strong> We'll schedule a free 30-minute call to discuss your vision</li>
+                    <li><strong>Detailed Proposal:</strong> You'll receive a comprehensive project proposal with timeline and pricing</li>
+                    <li><strong>Project Kickoff:</strong> Once approved, we'll begin development with regular updates</li>
+                </ul>
+            </div>
+            
+            <p>I pride myself on delivering high-quality Python solutions that exceed expectations. With 5+ years of experience in web development, data processing, and real-time systems, I'm confident we can bring your project to life.</p>
+            
+            <!-- Contact Information -->
+            <div class="contact-info">
+                <h4>📞 Need to reach me urgently?</h4>
+                <p>
+                    <strong>Email:</strong> <a href="mailto:{{ business_email }}" class="contact-link">{{ business_email }}</a><br>
+                    <strong>Phone:</strong> <a href="tel:{{ business_phone }}" class="contact-link">{{ business_phone }}</a>
+                </p>
+            </div>
+            
+            <p>Looking forward to working together!</p>
+            <p>
+                <strong>Best regards,</strong><br>
+                Harry Sibbenga<br>
+                <em>Python Developer & Technical Consultant</em>
+            </p>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <h3>{{ business_name }}</h3>
+            <p>Professional Python Development Services</p>
+            <p>📍 Milton Keynes, UK | 📧 {{ business_email }} | 📱 {{ business_phone }}</p>
+            
+            <div class="footer-links">
+                <a href="https://github.com/Harrysibbenga">GitHub</a>
+                <a href="https://www.linkedin.com/in/harry-m-sibbenga-9b8584119/">LinkedIn</a>
+                <a href="https://harrysibbenga-dev.vercel.app">Portfolio</a>
+            </div>
+            
+            <p style="font-size: 12px; margin-top: 20px;">
+                This email was sent regarding your project inquiry. If you did not submit this request, please contact us immediately.
+            </p>
+        </div>
+    </div>
+</body>
+</html>
+
+<!-- backend/templates/email/booking_notification.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Project Booking - {{ booking.project_name }}</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8fafc;
+            color: #334155;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 700px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #dc2626 0%, #ea580c 100%);
+            padding: 30px;
+            text-align: center;
+            color: white;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .urgent-badge {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-top: 10px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .client-info {
+            background-color: #f8fafc;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 4px solid #3b82f6;
+        }
+        
+        .client-info h3 {
+            margin: 0 0 15px 0;
+            color: #1e293b;
+            font-size: 18px;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .info-item {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .info-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            font-weight: 600;
+            color: #64748b;
+            margin-bottom: 4px;
+        }
+        
+        .info-value {
+            font-size: 16px;
+            color: #1e293b;
+            font-weight: 500;
+        }
+        
+        .project-details {
+            background-color: #fefce8;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 4px solid #eab308;
+        }
+        
+        .project-details h3 {
+            margin: 0 0 15px 0;
+            color: #a16207;
+            font-size: 18px;
+        }
+        
+        .description-box {
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .tech-section {
+            margin: 20px 0;
+        }
+        
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 8px;
+            margin-top: 10px;
+        }
+        
+        .tech-chip {
+            background-color: #dbeafe;
+            color: #1e40af;
+            padding: 6px 12px;
+            border-radius: 20px;
+            text-align: center;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .feature-list {
+            columns: 2;
+            column-gap: 20px;
+            margin: 10px 0;
+        }
+        
+        .feature-item {
+            break-inside: avoid;
+            padding: 4px 0;
+            font-size: 14px;
+        }
+        
+        .priority-high {
+            background-color: #fef2f2;
+            border-left: 4px solid #dc2626;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .priority-high .priority-label {
+            color: #dc2626;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .action-buttons {
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            margin: 5px 10px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background-color: #2563eb;
+            color: white;
+        }
+        
+        .btn-secondary {
+            background-color: #6b7280;
+            color: white;
+        }
+        
+        .estimates {
+            background-color: #f0fdf4;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid #16a34a;
+        }
+        
+        .estimates h4 {
+            margin: 0 0 15px 0;
+            color: #166534;
+        }
+        
+        .estimate-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 8px 0;
+            padding: 8px 0;
+            border-bottom: 1px solid #dcfce7;
+        }
+        
+        .estimate-row:last-child {
+            border-bottom: none;
+            font-weight: bold;
+            color: #166534;
+        }
+        
+        @media only screen and (max-width: 600px) {
+            .container {
+                margin: 10px;
+                border-radius: 8px;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .feature-list {
+                columns: 1;
+            }
+            
+            .tech-grid {
+                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🔔 New Project Booking</h1>
+            <div class="urgent-badge">
+                Requires Review
+            </div>
+        </div>
+        
+        <!-- Content -->
+        <div class="content">
+            <!-- Client Information -->
+            <div class="client-info">
+                <h3>👤 Client Information</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">Name</span>
+                        <span class="info-value">{{ booking.first_name }} {{ booking.last_name }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Email</span>
+                        <span class="info-value">{{ booking.email }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Phone</span>
+                        <span class="info-value">{{ booking.phone or 'Not provided' }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Company</span>
+                        <span class="info-value">{{ booking.company or 'Individual' }}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Project Details -->
+            <div class="project-details">
+                <h3>📋 Project Details</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">Project Name</span>
+                        <span class="info-value">{{ booking.project_name }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Service Type</span>
+                        <span class="info-value">
+                            {% if booking.service_type == 'webDevelopment' %}Web Development
+                            {% elif booking.service_type == 'dataProcessing' %}Data Processing
+                            {% elif booking.service_type == 'realtimeSystems' %}Real-time Systems
+                            {% elif booking.service_type == 'consultation' %}Technical Consultation
+                            {% endif %}
+                        </span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Timeline</span>
+                        <span class="info-value">{{ booking.timeline }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Budget Range</span>
+                        <span class="info-value">{{ booking.budget_range }}</span>
+                    </div>
+                </div>
+                
+                {% if booking.description %}
+                <div style="margin-top: 20px;">
+                    <span class="info-label">Project Description</span>
+                    <div class="description-box">
+                        {{ booking.description }}
+                    </div>
+                </div>
+                {% endif %}
+                
+                {% if booking.technologies %}
+                <div class="tech-section">
+                    <span class="info-label">Preferred Technologies</span>
+                    <div class="tech-grid">
+                        {% for tech in booking.technologies %}
+                        <span class="tech-chip">{{ tech }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+                
+                {% if booking.features %}
+                <div style="margin-top: 20px;">
+                    <span class="info-label">Required Features</span>
+                    <div class="feature-list">
+                        {% for feature in booking.features %}
+                        <div class="feature-item">• {{ feature }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            
+            {% if booking.priority == 'high' %}
+            <div class="priority-high">
+                <div class="priority-label">⚠️ High Priority Booking</div>
+                <div>This booking has been flagged as high priority due to urgent timeline or high budget range.</div>
+            </div>
+            {% endif %}
+            
+            <!-- Estimates -->
+            {% if booking.estimated_cost %}
+            <div class="estimates">
+                <h4>💰 Automatic Estimates</h4>
+                <div class="estimate-row">
+                    <span>Project Complexity:</span>
+                    <span>{{ booking.complexity|title if booking.complexity else 'Not calculated' }}</span>
+                </div>
+                {% if booking.estimated_hours %}
+                <div class="estimate-row">
+                    <span>Estimated Hours:</span>
+                    <span>{{ booking.estimated_hours }} hours</span>
+                </div>
+                {% endif %}
+                <div class="estimate-row">
+                    <span>Estimated Cost:</span>
+                    <span>£{{ "%.2f"|format(booking.estimated_cost) }}</span>
+                </div>
+            </div>
+            {% endif %}
+            
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <a href="{{ admin_url }}/bookings/{{ booking.booking_id }}" class="btn btn-primary">
+                    Review Booking
+                </a>
+                <a href="mailto:{{ booking.email }}?subject=Re: {{ booking.project_name }}" class="btn btn-secondary">
+                    Reply to Client
+                </a>
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; color: #6b7280;">
+                <p><strong>Booking ID:</strong> {{ booking.booking_id }}</p>
+                <p><strong>Submitted:</strong> {{ booking.created_at.strftime('%B %d, %Y at %I:%M %p') }}</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+<!-- backend/templates/email/contact_confirmation.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Message Received - {{ business_name }}</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8fafc;
+            color: #334155;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #16a34a 0%, #059669 100%);
+            padding: 40px 30px;
+            text-align: center;
+            color: white;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        
+        .header p {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+            font-size: 16px;
+        }
+        
+        .content {
+            padding: 40px 30px;
+        }
+        
+        .message-summary {
+            background-color: #f0fdf4;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 25px 0;
+            border-left: 4px solid #16a34a;
+        }
+        
+        .message-summary h3 {
+            margin: 0 0 15px 0;
+            color: #166534;
+            font-size: 18px;
+        }
+        
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #dcfce7;
+        }
+        
+        .detail-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            color: #047857;
+        }
+        
+        .detail-value {
+            color: #166534;
+            text-align: right;
+            max-width: 60%;
+        }
+        
+        .response-time {
+            background-color: #dbeafe;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 25px 0;
+            text-align: center;
+        }
+        
+        .response-time h4 {
+            margin: 0 0 10px 0;
+            color: #1e40af;
+        }
+        
+        .footer {
+            background-color: #1e293b;
+            padding: 30px;
+            text-align: center;
+            color: #94a3b8;
+        }
+        
+        .footer h3 {
+            margin: 0 0 15px 0;
+            color: #ffffff;
+            font-size: 20px;
+        }
+        
+        .footer-links {
+            margin: 20px 0;
+        }
+        
+        .footer-links a {
+            color: #60a5fa;
+            text-decoration: none;
+            margin: 0 15px;
+        }
+        
+        @media only screen and (max-width: 600px) {
+            .container {
+                width: 100% !important;
+            }
+            
+            .header, .content, .footer {
+                padding: 20px !important;
+            }
+            
+            .detail-row {
+                flex-direction: column;
+            }
+            
+            .detail-value {
+                text-align: left;
+                max-width: 100%;
+                margin-top: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>✅ Message Received</h1>
+            <p>Thank you for reaching out!</p>
+        </div>
+        
+        <!-- Content -->
+        <div class="content">
+            <div style="font-size: 18px; margin-bottom: 20px;">
+                <strong>Hello {{ contact.name }},</strong>
+            </div>
+            
+            <p>Thank you for contacting {{ business_name }}! Your message has been received and I appreciate you taking the time to reach out.</p>
+            
+            <!-- Message Summary -->
+            <div class="message-summary">
+                <h3>📨 Your Message</h3>
+                
+                <div class="detail-row">
+                    <span class="detail-label">Subject:</span>
+                    <span class="detail-value">{{ contact.subject }}</span>
+                </div>
+                
+                <div class="detail-row">
+                    <span class="detail-label">Inquiry Type:</span>
+                    <span class="detail-value">
+                        {% if contact.inquiry_type == 'general' %}General Inquiry
+                        {% elif contact.inquiry_type == 'technical' %}Technical Question
+                        {% elif contact.inquiry_type == 'partnership' %}Partnership Opportunity
+                        {% elif contact.inquiry_type == 'support' %}Support Request
+                        {% elif contact.inquiry_type == 'media' %}Media Inquiry
+                        {% endif %}
+                    </span>
+                </div>
+                
+                {% if contact.company %}
+                <div class="detail-row">
+                    <span class="detail-label">Company:</span>
+                    <span class="detail-value">{{ contact.company }}</span>
+                </div>
+                {% endif %}
+                
+                <div class="detail-row">
+                    <span class="detail-label">Submitted:</span>
+                    <span class="detail-value">{{ contact.created_at.strftime('%B %d, %Y at %I:%M %p') }}</span>
+                </div>
+            </div>
+            
+            <!-- Response Time -->
+            <div class="response-time">
+                <h4>⏱️ Expected Response Time</h4>
+                <p>I typically respond to inquiries within <strong>24 hours</strong> during business days (Monday-Friday, 9:00 AM - 6:00 PM GMT).</p>
+                {% if contact.inquiry_type == 'technical' or contact.priority == 'high' %}
+                <p><strong>Priority inquiry detected</strong> - I'll aim to respond within 4-6 hours.</p>
+                {% endif %}
+            </div>
+            
+            <p>In the meantime, feel free to explore my portfolio and recent projects at <a href="https://harrysibbenga-dev.vercel.app" style="color: #2563eb;">harrysibbenga-dev.vercel.app</a></p>
+            
+            <p>If your inquiry is urgent, you can reach me directly:</p>
+            <ul>
+                <li><strong>Email:</strong> <a href="mailto:{{ business_email }}" style="color: #2563eb;">{{ business_email }}</a></li>
+                <li><strong>Phone:</strong> <a href="tel:{{ business_phone }}" style="color: #2563eb;">{{ business_phone }}</a></li>
+            </ul>
+            
+            <p>
+                <strong>Best regards,</strong><br>
+                Harry Sibbenga<br>
+                <em>Python Developer & Technical Consultant</em>
+            </p>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <h3>{{ business_name }}</h3>
+            <p>Professional Python Development Services</p>
+            <p>📍 Milton Keynes, UK | 📧 {{ business_email }}</p>
+            
+            <div class="footer-links">
+                <a href="https://github.com/Harrysibbenga">GitHub</a>
+                <a href="https://www.linkedin.com/in/harry-m-sibbenga-9b8584119/">LinkedIn</a>
+                <a href="https://harrysibbenga-dev.vercel.app">Portfolio</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+<!-- backend/templates/email/newsletter_confirmation.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm Newsletter Subscription - {{ business_name }}</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8fafc;
+            color: #334155;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+            padding: 40px 30px;
+            text-align: center;
+            color: white;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        
+        .content {
+            padding: 40px 30px;
+        }
+        
+        .confirm-button {
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+        }
+        
+        .benefits {
+            background-color: #f0f9ff;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 25px 0;
+            border-left: 4px solid #0ea5e9;
+        }
+        
+        .benefits h3 {
+            margin: 0 0 15px 0;
+            color: #0c4a6e;
+        }
+        
+        .benefits ul {
+            margin: 0;
+            padding-left: 20px;
+            color: #0369a1;
+        }
+        
+        .footer {
+            background-color: #1e293b;
+            padding: 30px;
+            text-align: center;
+            color: #94a3b8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📧 Confirm Your Subscription</h1>
+        </div>
+        
+        <div class="content">
+            <p><strong>Hello,</strong></p>
+            
+            <p>Thank you for subscribing to {{ business_name }} newsletter! To complete your subscription and start receiving updates, please confirm your email address by clicking the button below.</p>
+            
+            <div class="confirm-button">
+                <a href="{{ confirmation_url }}" class="btn">Confirm Subscription</a>
+            </div>
+            
+            <div class="benefits">
+                <h3>📚 What You'll Receive:</h3>
+                <ul>
+                    <li><strong>Development Insights:</strong> Technical articles and coding tutorials</li>
+                    <li><strong>Project Updates:</strong> Behind-the-scenes looks at new projects</li>
+                    <li><strong>Industry News:</strong> Python and web development trends</li>
+                    <li><strong>Exclusive Content:</strong> Early access to new tools and resources</li>
+                </ul>
+            </div>
+            
+            <p>If you didn't subscribe to this newsletter, you can safely ignore this email.</p>
+            
+            <p>
+                <strong>Best regards,</strong><br>
+                Harry Sibbenga
+            </p>
+        </div>
+        
+        <div class="footer">
+            <h3>{{ business_name }}</h3>
+            <p>Professional Python Development Services</p>
+        </div>
+    </div>
+</body>
+</html>
+
+<!-- backend/templates/email/status_update.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Update - {{ booking.project_name }}</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8fafc;
+            color: #334155;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+            padding: 40px 30px;
+            text-align: center;
+            color: white;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        
+        .status-badge {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-top: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .content {
+            padding: 40px 30px;
+        }
+        
+        .status-update {
+            background-color: #f0fdf4;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 25px 0;
+            border-left: 4px solid #16a34a;
+            text-align: center;
+        }
+        
+        .status-update h3 {
+            margin: 0 0 15px 0;
+            color: #166534;
+            font-size: 24px;
+        }
+        
+        .status-description {
+            background-color: #fafafa;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .next-steps {
+            background-color: #eff6ff;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 25px 0;
+            border-left: 4px solid #3b82f6;
+        }
+        
+        .footer {
+            background-color: #1e293b;
+            padding: 30px;
+            text-align: center;
+            color: #94a3b8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Project Update</h1>
+            <div class="status-badge">{{ new_status }}</div>
+        </div>
+        
+        <div class="content">
+            <p><strong>Hello {{ booking.first_name }},</strong></p>
+            
+            <p>I wanted to update you on the progress of your project: <strong>{{ booking.project_name }}</strong></p>
+            
+            <div class="status-update">
+                <h3>Current Status: {{ new_status|title }}</h3>
+                
+                <div class="status-description">
+                    {% if new_status == 'reviewed' %}
+                    <p>Your project has been thoroughly reviewed and I'm excited to work with you! I'll be preparing a detailed proposal with timeline and pricing.</p>
+                    {% elif new_status == 'quoted' %}
+                    <p>Great news! I've prepared a comprehensive project proposal. Please check your email for the detailed quote and timeline.</p>
+                    {% elif new_status == 'accepted' %}
+                    <p>Fantastic! Your project has been approved and we're ready to begin development. I'll set up the project environment and send you access details.</p>
+                    {% elif new_status == 'in_progress' %}
+                    <p>Development is now underway! I'll keep you updated with regular progress reports and milestone completions.</p>
+                    {% elif new_status == 'completed' %}
+                    <p>🎉 Congratulations! Your project has been completed successfully. Thank you for choosing {{ business_name }} for your development needs.</p>
+                    {% else %}
+                    <p>Your project status has been updated. I'll be in touch with more details shortly.</p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            {% if new_status == 'in_progress' %}
+            <div class="next-steps">
+                <h4>📋 What's Next:</h4>
+                <ul>
+                    <li>Development progress updates every 2-3 days</li>
+                    <li>Demo environment setup for testing</li>
+                    <li>Regular milestone reviews and feedback sessions</li>
+                    <li>Final testing and deployment coordination</li>
+                </ul>
+            </div>
+            {% elif new_status == 'completed' %}
+            <div class="next-steps">
+                <h4>🎯 Project Deliverables:</h4>
+                <ul>
+                    <li>Complete source code and documentation</li>
+                    <li>Deployment and setup instructions</li>
+                    <li>30-day support period included</li>
+                    <li>Optional maintenance agreement available</li>
+                </ul>
+            </div>
+            {% endif %}
+            
+            <p>If you have any questions about this update or your project in general, please don't hesitate to reach out. I'm here to ensure your complete satisfaction with the final result.</p>
+            
+            <p>
+                <strong>Best regards,</strong><br>
+                Harry Sibbenga<br>
+                <em>{{ business_name }}</em>
+            </p>
+        </div>
+        
+        <div class="footer">
+            <h3>{{ business_name }}</h3>
+            <p>📧 {{ business_email }} | 📱 {{ business_phone }}</p>
+        </div>
+    </div>
+</body>
+</html>
