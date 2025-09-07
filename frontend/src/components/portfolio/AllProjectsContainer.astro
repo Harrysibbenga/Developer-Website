@@ -1,0 +1,117 @@
+---
+// src/components/portfolio/AllProjectsContainer.astro
+import ProjectCard from './ProjectCard.astro'
+import { getAllProjects, getUniqueCategories, getUniqueTechnologies } from '../../utils/projects'
+
+const allProjects = getAllProjects()
+const categories = getUniqueCategories()
+const technologies = getUniqueTechnologies()
+---
+
+<section id="all-projects-section" class="py-20">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <!-- Filters -->
+    <section class="py-12 px-5 bg-gradient-to-br from-white via-gray-50 to-gray-100 rounded-2xl shadow-md mb-16 border border-gray-200">
+      <div class="max-w-7xl mx-auto">
+
+        <!-- Search + Sort -->
+        <div class="flex flex-col lg:flex-row gap-6 items-center justify-between mb-12">
+          <div class="flex-1 max-w-md">
+            <div class="relative">
+              <input 
+                type="text" 
+                id="portfolio-search"
+                placeholder="Search projects by name, technology, or description..."
+                class="w-full pl-12 pr-4 py-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm text-lg"
+              />
+              <svg class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+              </svg>
+            </div>
+          </div>
+          
+          <div class="flex gap-4">
+            <select 
+              id="portfolio-sort" 
+              class="px-6 py-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm text-lg"
+            >
+              <option value="featured">Featured First</option>
+              <option value="newest">Newest First</option>
+              <option value="oldest">Oldest First</option>
+              <option value="alphabetical">A-Z</option>
+              <option value="live-first">Live Projects First</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Categories -->
+        <div class="mb-8">
+          <h3 class="text-xl font-bold text-gray-900 mb-6">Browse by Category</h3>
+          <div class="flex flex-wrap gap-3">
+            {categories.map((category, index) => (
+              <button 
+                class={`portfolio-category-filter px-6 py-3 rounded-full font-semibold transition-all duration-300 ${
+                  index === 0 
+                    ? 'active bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-lg' 
+                    : 'bg-white text-gray-700 border border-gray-300 hover:border-blue-500 hover:text-blue-600 shadow-sm'
+                }`}
+                data-category={category}
+                data-active={index === 0}
+              >
+                {category}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <!-- Technologies -->
+        <div class="mb-8">
+          <h3 class="text-xl font-bold text-gray-900 mb-6">Filter by Technology</h3>
+          <div class="flex flex-wrap gap-2 max-h-40 overflow-y-auto">
+            {technologies.slice(0, 25).map((tech) => (
+              <button 
+                class="portfolio-tech-filter px-4 py-2 text-sm rounded-full border border-gray-300 bg-white text-gray-700 hover:border-blue-500 hover:text-blue-600 hover:bg-blue-50 transition-all duration-300 shadow-sm"
+                data-tech={tech}
+              >
+                {tech}
+              </button>
+            ))}
+            {technologies.length > 25 && (
+              <span class="px-4 py-2 text-sm text-gray-500 bg-gray-100 rounded-full">
+                +{technologies.length - 25} more technologies
+              </span>
+            )}
+          </div>
+        </div>
+
+        <!-- Selected Filters -->
+        <div id="selected-filters-bar" class="hidden mb-8 flex flex-wrap gap-3">
+          <!-- JS will inject selected filters here -->
+        </div>
+
+        <!-- Summary -->
+        <div class="flex flex-col sm:flex-row justify-between items-center py-4 border-t border-gray-200">
+          <div class="text-lg text-gray-700 mb-4 sm:mb-0">
+            <span id="portfolio-results-count" class="font-semibold text-blue-600">{allProjects.length}</span> 
+            <span>projects found</span>
+          </div>
+          <button 
+            id="portfolio-clear-filters"
+            class="px-6 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors hidden"
+          >
+            Clear all filters
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Grid -->
+    <div id="projects-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 transition-all duration-300">
+      {allProjects.map((project) => (
+        <ProjectCard project={project} featured={false} compact={false} />
+      ))}
+    </div>
+
+  </div>
+</section>

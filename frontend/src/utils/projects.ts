@@ -1,6 +1,6 @@
 // src/utils/projects.ts
 /**
- * Portfolio projects configuration
+ * Portfolio projects configuration and utility functions
  * Includes both completed projects with live links and CV projects for consultation
  */
 
@@ -368,7 +368,11 @@ export const CV_PROJECTS: Project[] = [
   }
 ]
 
-// Utility functions for project management
+// ===== UTILITY FUNCTIONS =====
+
+/**
+ * Get all projects combined and sorted
+ */
 export const getAllProjects = (): Project[] => {
   return [...LIVE_PROJECTS, ...CV_PROJECTS].sort((a, b) => {
     // Featured projects first, then by year (newest first)
@@ -378,61 +382,188 @@ export const getAllProjects = (): Project[] => {
   })
 }
 
+/**
+ * Get only featured projects
+ */
 export const getFeaturedProjects = (): Project[] => {
   return getAllProjects().filter(project => project.featured)
 }
 
+/**
+ * Get projects by category
+ */
 export const getProjectsByCategory = (category: string): Project[] => {
+  if (category === 'All') return getAllProjects()
   return getAllProjects().filter(project => project.category === category)
 }
 
+/**
+ * Get projects by technology
+ */
 export const getProjectsByTechnology = (technology: string): Project[] => {
   return getAllProjects().filter(project => 
-    project.technologies.includes(technology)
+    project.technologies.some(tech => 
+      tech.toLowerCase().includes(technology.toLowerCase())
+    )
   )
 }
 
+/**
+ * Get projects by status
+ */
 export const getProjectsByStatus = (status: Project['status']): Project[] => {
   return getAllProjects().filter(project => project.status === status)
 }
 
+/**
+ * Get projects by year
+ */
 export const getProjectsByYear = (year: number): Project[] => {
   return getAllProjects().filter(project => project.year === year)
 }
 
+/**
+ * Search projects by query
+ */
 export const searchProjects = (query: string): Project[] => {
   const lowercaseQuery = query.toLowerCase()
   return getAllProjects().filter(project =>
     project.title.toLowerCase().includes(lowercaseQuery) ||
     project.description.toLowerCase().includes(lowercaseQuery) ||
+    project.longDescription.toLowerCase().includes(lowercaseQuery) ||
     project.technologies.some(tech => 
       tech.toLowerCase().includes(lowercaseQuery)
     ) ||
-    project.category.toLowerCase().includes(lowercaseQuery)
+    project.category.toLowerCase().includes(lowercaseQuery) ||
+    (project.client && project.client.toLowerCase().includes(lowercaseQuery))
   )
 }
 
+/**
+ * Get unique categories from all projects (including 'All')
+ */
 export const getUniqueCategories = (): string[] => {
   const categories = getAllProjects().map(project => project.category)
-  return [...new Set(categories)].sort()
+  return ['All', ...new Set(categories)].sort()
 }
 
+/**
+ * Get unique technologies from all projects
+ */
 export const getUniqueTechnologies = (): string[] => {
   const technologies = getAllProjects().flatMap(project => project.technologies)
   return [...new Set(technologies)].sort()
 }
 
+/**
+ * Get unique years from all projects
+ */
 export const getProjectYears = (): number[] => {
   const years = getAllProjects().map(project => project.year)
   return [...new Set(years)].sort((a, b) => b - a)
 }
 
-// Project statistics
+/**
+ * Get project by ID
+ */
+export const getProjectById = (id: string): Project | undefined => {
+  return getAllProjects().find(project => project.id === id)
+}
+
+/**
+ * Get recent projects (last 2 years)
+ */
+export const getRecentProjects = (): Project[] => {
+  const currentYear = new Date().getFullYear()
+  return getAllProjects().filter(project => project.year >= currentYear - 2)
+}
+
+/**
+ * Get related projects based on technologies or category
+ */
+export const getRelatedProjects = (project: Project, limit: number = 3): Project[] => {
+  const allProjects = getAllProjects().filter(p => p.id !== project.id)
+  
+  // Score projects based on similarity
+  const scoredProjects = allProjects.map(p => {
+    let score = 0
+    
+    // Same category gets high score
+    if (p.category === project.category) score += 3
+    
+    // Shared technologies get points
+    const sharedTechs = p.technologies.filter(tech => 
+      project.technologies.includes(tech)
+    ).length
+    score += sharedTechs
+    
+    // Recent projects get slight boost
+    if (Math.abs(p.year - project.year) <= 1) score += 1
+    
+    // Same status gets points
+    if (p.status === project.status) score += 1
+    
+    return { project: p, score }
+  })
+  
+  // Sort by score and return top projects
+  return scoredProjects
+    .sort((a, b) => b.score - a.score)
+    .slice(0, limit)
+    .map(item => item.project)
+}
+
+/**
+ * Group projects by year
+ */
+export const getProjectsByYearGrouped = (): Record<number, Project[]> => {
+  const projects = getAllProjects()
+  const groupedByYear: Record<number, Project[]> = {}
+  
+  projects.forEach(project => {
+    if (!groupedByYear[project.year]) {
+      groupedByYear[project.year] = []
+    }
+    groupedByYear[project.year].push(project)
+  })
+  
+  return groupedByYear
+}
+
+/**
+ * Get technology usage statistics
+ */
+export const getTechnologyStats = (): Array<{ technology: string; count: number; percentage: number }> => {
+  const allProjects = getAllProjects()
+  const techCounts: Record<string, number> = {}
+  
+  allProjects.forEach(project => {
+    project.technologies.forEach(tech => {
+      techCounts[tech] = (techCounts[tech] || 0) + 1
+    })
+  })
+  
+  const totalProjects = allProjects.length
+  
+  return Object.entries(techCounts)
+    .map(([technology, count]) => ({
+      technology,
+      count,
+      percentage: Math.round((count / totalProjects) * 100)
+    }))
+    .sort((a, b) => b.count - a.count)
+}
+
+/**
+ * Get comprehensive project statistics
+ */
 export const getProjectStats = () => {
   const allProjects = getAllProjects()
   const liveProjects = getProjectsByStatus('live')
   const consultationProjects = getProjectsByStatus('consultation')
   const caseStudyProjects = getProjectsByStatus('case-study')
+  const categories = getUniqueCategories()
+  const technologies = getUniqueTechnologies()
   
   return {
     total: allProjects.length,
@@ -440,11 +571,106 @@ export const getProjectStats = () => {
     consultation: consultationProjects.length,
     caseStudy: caseStudyProjects.length,
     featured: getFeaturedProjects().length,
-    categories: getUniqueCategories().length,
-    technologies: getUniqueTechnologies().length,
-    years: getProjectYears().length
+    categories: categories.length - 1, // Subtract 'All' category
+    technologies: technologies.length,
+    years: getProjectYears().length,
+    recentProjects: getRecentProjects().length,
+    averageYear: Math.round(
+      allProjects.reduce((sum, project) => sum + project.year, 0) / allProjects.length
+    ),
+    oldestProject: Math.min(...allProjects.map(p => p.year)),
+    newestProject: Math.max(...allProjects.map(p => p.year))
   }
 }
+
+/**
+ * Filter projects by multiple criteria
+ */
+export const filterProjects = (filters: {
+  category?: string
+  technologies?: string[]
+  status?: Project['status']
+  year?: number
+  featured?: boolean
+  search?: string
+}): Project[] => {
+  let filteredProjects = getAllProjects()
+  
+  // Category filter
+  if (filters.category && filters.category !== 'All') {
+    filteredProjects = filteredProjects.filter(p => p.category === filters.category)
+  }
+  
+  // Technology filter
+  if (filters.technologies && filters.technologies.length > 0) {
+    filteredProjects = filteredProjects.filter(p =>
+      filters.technologies!.some(tech =>
+        p.technologies.some(pTech => 
+          pTech.toLowerCase().includes(tech.toLowerCase())
+        )
+      )
+    )
+  }
+  
+  // Status filter
+  if (filters.status) {
+    filteredProjects = filteredProjects.filter(p => p.status === filters.status)
+  }
+  
+  // Year filter
+  if (filters.year) {
+    filteredProjects = filteredProjects.filter(p => p.year === filters.year)
+  }
+  
+  // Featured filter
+  if (filters.featured !== undefined) {
+    filteredProjects = filteredProjects.filter(p => p.featured === filters.featured)
+  }
+  
+  // Search filter
+  if (filters.search) {
+    filteredProjects = searchProjects(filters.search)
+  }
+  
+  return filteredProjects
+}
+
+/**
+ * Sort projects by different criteria
+ */
+export const sortProjects = (projects: Project[], sortBy: string): Project[] => {
+  const projectsCopy = [...projects]
+  
+  switch (sortBy) {
+    case 'featured':
+      return projectsCopy.sort((a, b) => {
+        if (a.featured && !b.featured) return -1
+        if (!a.featured && b.featured) return 1
+        return b.year - a.year
+      })
+    
+    case 'newest':
+      return projectsCopy.sort((a, b) => b.year - a.year)
+    
+    case 'oldest':
+      return projectsCopy.sort((a, b) => a.year - b.year)
+    
+    case 'alphabetical':
+      return projectsCopy.sort((a, b) => a.title.localeCompare(b.title))
+    
+    case 'live-first':
+      return projectsCopy.sort((a, b) => {
+        if (a.status === 'live' && b.status !== 'live') return -1
+        if (a.status !== 'live' && b.status === 'live') return 1
+        return b.year - a.year
+      })
+    
+    default:
+      return projectsCopy
+  }
+}
+
+// ===== CASE STUDIES =====
 
 export const CASE_STUDIES = {
   "mapaction-geospatial-pipeline": {
@@ -502,21 +728,24 @@ export const CASE_STUDIES = {
   }
 } as const
 
-// Technology usage across projects
-export const TECHNOLOGY_USAGE = {
-  "Python": { projects: 7, percentage: 100 },
-  "Django": { projects: 4, percentage: 57 },
-  "Vue.js": { projects: 4, percentage: 57 },
-  "Flask": { projects: 3, percentage: 43 },
-  "PostgreSQL": { projects: 3, percentage: 43 },
-  "JavaScript": { projects: 3, percentage: 43 },
-  "Docker": { projects: 3, percentage: 43 },
-  "WebSockets": { projects: 2, percentage: 29 },
-  "FastAPI": { projects: 2, percentage: 29 },
-  "pytest": { projects: 2, percentage: 29 }
-} as const 
+// ===== TECHNOLOGY USAGE =====
 
-// Export default project configuration
+export const TECHNOLOGY_USAGE = {
+  "Python": { projects: 7, percentage: 78 },
+  "Django": { projects: 4, percentage: 44 },
+  "Vue.js": { projects: 4, percentage: 44 },
+  "React": { projects: 4, percentage: 44 },
+  "JavaScript": { projects: 6, percentage: 67 },
+  "PostgreSQL": { projects: 3, percentage: 33 },
+  "Docker": { projects: 3, percentage: 33 },
+  "WebSockets": { projects: 3, percentage: 33 },
+  "TypeScript": { projects: 2, percentage: 22 },
+  "Flask": { projects: 2, percentage: 22 },
+  "Node.js": { projects: 2, percentage: 22 }
+} as const
+
+// ===== DEFAULT EXPORT =====
+
 export default {
   LIVE_PROJECTS,
   CV_PROJECTS,
@@ -530,5 +759,14 @@ export default {
   getUniqueCategories,
   getUniqueTechnologies,
   getProjectYears,
-  getProjectStats
+  getProjectById,
+  getRecentProjects,
+  getRelatedProjects,
+  getProjectsByYearGrouped,
+  getTechnologyStats,
+  getProjectStats,
+  filterProjects,
+  sortProjects,
+  CASE_STUDIES,
+  TECHNOLOGY_USAGE
 }

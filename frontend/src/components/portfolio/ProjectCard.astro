@@ -1,0 +1,280 @@
+---
+// src/components/portfolio/ProjectCard.astro
+/**
+ * Reusable project card component for portfolio displays
+ */
+
+ import type { Project } from '../../utils/projects'
+
+export interface Props {
+  project: Project
+  featured?: boolean
+  compact?: boolean
+}
+
+const { project, featured = false, compact = false } = Astro.props
+---
+
+<article 
+  class={`project-card group relative bg-white rounded-2xl overflow-hidden border border-gray-200 hover:border-blue-300 hover:shadow-2xl transition-all duration-500 animate-on-scroll ${
+    featured ? 'lg:col-span-2' : ''
+  } ${compact ? 'compact-card' : ''}`}
+  data-category={project.category}
+  data-technologies={project.technologies.join(',')}
+  data-year={project.year}
+  data-title={project.title.toLowerCase()}
+  data-status={project.status}
+  data-featured={project.featured}
+>
+  <!-- Project Image -->
+  <div class={`relative overflow-hidden ${compact ? 'h-48' : featured ? 'h-80' : 'h-64'}`}>
+    <img
+      src={project.image}
+      alt={project.title}
+      loading="lazy"
+      decoding="async"
+      class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+    />
+    
+    <!-- Overlay Gradient -->
+    <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+    
+    <!-- Status Badge -->
+    <div class="absolute top-4 left-4">
+      {project.status === 'live' ? (
+        <div class="flex items-center px-3 py-1.5 bg-green-600/90 backdrop-blur-sm rounded-full text-white text-sm font-medium shadow-lg">
+          <div class="w-2 h-2 bg-green-300 rounded-full mr-2 animate-pulse"></div>
+          Live Project
+        </div>
+      ) : project.status === 'consultation' ? (
+        <div class="flex items-center px-3 py-1.5 bg-blue-600/90 backdrop-blur-sm rounded-full text-white text-sm font-medium shadow-lg">
+          <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-3.582 8-8 8a8.959 8.959 0 01-2.4-.32l-3.6 1.2 1.2-3.6A8.959 8.959 0 013 12c0-4.418 3.582-8 8-8s8 3.582 8 8z"/>
+          </svg>
+          Consultation
+        </div>
+      ) : (
+        <div class="flex items-center px-3 py-1.5 bg-purple-600/90 backdrop-blur-sm rounded-full text-white text-sm font-medium shadow-lg">
+          <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-4m-5 0H3m2 0h4M9 7h6m-6 4h6m-6 4h6"/>
+          </svg>
+          Case Study
+        </div>
+      )}
+    </div>
+
+    <!-- Featured Badge -->
+    {project.featured && (
+      <div class="absolute top-4 right-4">
+        <div class="px-3 py-1.5 bg-yellow-500/90 backdrop-blur-sm rounded-full text-white text-sm font-bold shadow-lg">
+          ⭐ Featured
+        </div>
+      </div>
+    )}
+
+    <!-- Year Badge -->
+    <div class="absolute bottom-4 right-4">
+      <div class="px-3 py-1.5 bg-gray-900/80 backdrop-blur-sm rounded-lg text-white text-sm font-medium shadow-lg">
+        {project.year}
+      </div>
+    </div>
+
+    <!-- Quick Actions Overlay (appears on hover) -->
+    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+      <div class="flex gap-3">
+        {project.status === 'live' && project.liveUrl && (
+          <a
+            href={project.liveUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center px-4 py-2 bg-white text-gray-900 rounded-lg font-semibold hover:bg-gray-100 transition-colors shadow-lg"
+          >
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+            </svg>
+            View Live
+          </a>
+        )}
+        {project.githubUrl && (
+          <a
+            href={project.githubUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center px-4 py-2 bg-gray-900 text-white rounded-lg font-semibold hover:bg-gray-800 transition-colors shadow-lg"
+          >
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+            </svg>
+          </a>
+        )}
+      </div>
+    </div>
+  </div>
+
+  <!-- Project Content -->
+  <div class={`p-6 ${compact ? 'p-4' : featured ? 'p-8' : 'p-6'}`}>
+    <!-- Category -->
+    <div class="flex items-center justify-between mb-3">
+      <span class="text-sm font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
+        {project.category}
+      </span>
+      {project.client && (
+        <span class="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
+          {project.client}
+        </span>
+      )}
+    </div>
+
+    <!-- Project Title -->
+    <h3 class={`font-bold text-gray-900 group-hover:text-blue-600 transition-colors mb-3 leading-tight ${
+      compact ? 'text-lg' : featured ? 'text-3xl' : 'text-xl'
+    }`}>
+      {project.title}
+    </h3>
+
+    <!-- Description -->
+    <p class={`text-gray-600 leading-relaxed mb-4 ${
+      compact ? 'text-sm line-clamp-2' : featured ? 'text-lg line-clamp-3' : 'text-base line-clamp-3'
+    }`}>
+      {featured ? project.longDescription : project.description}
+    </p>
+
+    <!-- Technology Stack -->
+    <div class="mb-4">
+      <h4 class="text-sm font-semibold text-gray-500 mb-2 uppercase tracking-wide">
+        Technologies
+      </h4>
+      <div class="flex flex-wrap gap-2">
+        {project.technologies.slice(0, compact ? 3 : featured ? 6 : 4).map((tech) => (
+          <span class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm font-medium hover:bg-blue-100 hover:text-blue-700 transition-colors cursor-default">
+            {tech}
+          </span>
+        ))}
+        {project.technologies.length > (compact ? 3 : featured ? 6 : 4) && (
+          <span class="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-sm">
+            +{project.technologies.length - (compact ? 3 : featured ? 6 : 4)} more
+          </span>
+        )}
+      </div>
+    </div>
+
+    <!-- Key Results/Features (only for featured or non-compact cards) -->
+    {!compact && (
+      <div class="mb-6">
+        <h4 class="text-sm font-semibold text-gray-500 mb-2 uppercase tracking-wide">
+          Key Results
+        </h4>
+        <ul class="space-y-1">
+          {project.results.slice(0, featured ? 3 : 2).map((result) => (
+            <li class="flex items-start text-sm text-gray-600">
+              <svg class="w-4 h-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+              </svg>
+              <span>{result}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    )}
+
+    <!-- Project Actions -->
+    <div class="flex gap-3">
+      {project.status === 'live' ? (
+        <>
+          {project.liveUrl && (
+            <a
+              href={project.liveUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="flex-1 inline-flex items-center justify-center px-4 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl font-semibold hover:from-green-600 hover:to-green-700 transition-all duration-300 group/btn"
+            >
+              <svg class="w-5 h-5 mr-2 group-hover/btn:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+              </svg>
+              View Live
+            </a>
+          )}
+          {project.githubUrl && (
+            <a
+              href={project.githubUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="px-4 py-3 border border-gray-300 text-gray-700 rounded-xl font-semibold hover:border-gray-400 hover:text-gray-900 transition-all duration-300"
+              aria-label="View source code"
+            >
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+              </svg>
+            </a>
+          )}
+        </>
+      ) : (
+        <a
+          href="/contact"
+          class="flex-1 inline-flex items-center justify-center px-4 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-300"
+        >
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-3.582 8-8 8a8.959 8.959 0 01-2.4-.32l-3.6 1.2 1.2-3.6A8.959 8.959 0 013 12c0-4.418 3.582-8 8-8s8 3.582 8 8z"/>
+          </svg>
+          {project.status === 'consultation' ? 'Discuss Project' : 'View Case Study'}
+        </a>
+      )}
+    </div>
+
+    <!-- Duration Info -->
+    <div class="mt-4 pt-4 border-t border-gray-100">
+      <div class="text-sm text-gray-500">
+        <span class="font-medium">Duration:</span> {project.duration}
+      </div>
+    </div>
+  </div>
+
+  <!-- Hover Effect -->
+  <div class="absolute inset-0 bg-gradient-to-br from-blue-600/5 to-purple-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-2xl"></div>
+</article>
+
+<style>
+  .project-card {
+    transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  
+  .project-card:hover {
+    transform: translateY(-8px);
+  }
+  
+  .project-card.compact-card:hover {
+    transform: translateY(-4px);
+  }
+  
+  /* Line clamp utilities */
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  /* Animation for scroll reveal */
+  .animate-on-scroll {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  
+  .animate-on-scroll.animate-in {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  /* Hide projects that don't match filter */
+  .project-card.hidden {
+    display: none;
+  }
+</style>

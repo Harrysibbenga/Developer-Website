@@ -1,505 +1,263 @@
 ---
 // src/pages/portfolio.astro
 import Layout from '../layouts/Layout.astro'
-import ProjectGallery from '../components/sections/ProjectGallery.astro'
 import { BUSINESS_INFO } from '../utils/constants'
-import { LIVE_PROJECTS, CV_PROJECTS } from '../utils/projects'
+import { getAllProjects, getUniqueCategories, getUniqueTechnologies } from '../utils/projects'
+import FeaturedProjectsContainer from '../components/portfolio/FeaturedProjectsContainer.astro'
+import AllProjectsContainer from '../components/portfolio/AllProjectsContainer.astro'
 
-const pageTitle = 'Portfolio'
-const pageDescription = `Explore ${BUSINESS_INFO.name}'s portfolio of web development projects, featuring modern websites, web applications, and digital solutions.`
+const pageTitle = 'Portfolio - Web Development Projects'
+const pageDescription = `Explore ${BUSINESS_INFO.name}'s complete portfolio of web development projects, featuring modern websites, web applications, and digital solutions built with Python, Vue.js, and more.`
 
-// Combine and sort projects
-const allProjects = [...LIVE_PROJECTS, ...CV_PROJECTS].sort((a, b) => {
-  // Featured projects first, then by year (newest first)
-  if (a.featured && !b.featured) return -1
-  if (!a.featured && b.featured) return 1
-  return b.year - a.year
-})
-
-// Get unique categories for filtering
-const categories = ['All', ...new Set(allProjects.map(project => project.category))]
-
-// Get unique technologies for filtering
-const technologies = [...new Set(allProjects.flatMap(project => project.technologies))].sort()
+// Get all project data for stats
+const allProjects = getAllProjects()
+const liveProjects = allProjects.filter(p => p.status === 'live')
+const categories = getUniqueCategories()
+const technologies = getUniqueTechnologies()
 ---
 
 <Layout title={pageTitle} description={pageDescription}>
-  <main class="min-h-screen bg-gray-50">
+  <main class="min-h-screen">
     
-    <!-- Header Section -->
-    <section class="bg-gradient-to-br from-gray-900 via-blue-900 to-indigo-900 text-white py-20">
+    <!-- Enhanced Header Section -->
+    <section class="bg-gradient-to-br from-gray-900 via-blue-900 to-indigo-900 text-white py-24">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center">
-          <h1 class="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
-            Portfolio
+        <div class="text-center animate-on-scroll">
+          <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold mb-6">
+            <span class="bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent">
+              Portfolio
+            </span>
           </h1>
-          <p class="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto mb-8">
-            Showcasing innovative web solutions and digital experiences
+          <p class="text-xl md:text-2xl text-gray-300 max-w-4xl mx-auto mb-12 leading-relaxed">
+            A comprehensive showcase of web development projects, from interactive applications 
+            you can explore live to enterprise solutions available for consultation.
           </p>
-          <div class="flex flex-wrap justify-center gap-4 text-sm">
-            <span class="px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full">
-              {allProjects.length} Projects
-            </span>
-            <span class="px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full">
-              {LIVE_PROJECTS.length} Live Sites
-            </span>
-            <span class="px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full">
-              {technologies.length}+ Technologies
-            </span>
+          
+          <!-- Enhanced Stats -->
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
+            <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 hover:bg-white/15 transition-colors">
+              <div class="text-3xl font-bold text-cyan-400 mb-2">{allProjects.length}</div>
+              <div class="text-sm text-gray-300">Total Projects</div>
+            </div>
+            <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 hover:bg-white/15 transition-colors">
+              <div class="text-3xl font-bold text-green-400 mb-2">{liveProjects.length}</div>
+              <div class="text-sm text-gray-300">Live Applications</div>
+            </div>
+            <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 hover:bg-white/15 transition-colors">
+              <div class="text-3xl font-bold text-purple-400 mb-2">{categories.length - 1}</div>
+              <div class="text-sm text-gray-300">Categories</div>
+            </div>
+            <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 hover:bg-white/15 transition-colors">
+              <div class="text-3xl font-bold text-yellow-400 mb-2">{technologies.length}+</div>
+              <div class="text-sm text-gray-300">Technologies</div>
+            </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Filter Controls -->
-    <section class="py-12 bg-white border-b border-gray-200">
+    <!-- Projects Container Section -->
+    <section class="py-20">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        <!-- Category Filters -->
-        <div class="mb-8">
-          <h3 class="text-lg font-semibold text-gray-900 mb-4">Filter by Category</h3>
-          <div class="flex flex-wrap gap-2">
-            {categories.map((category) => (
-              <button 
-                class="portfolio-filter-category px-4 py-2 rounded-full border border-gray-300 text-gray-700 hover:border-blue-500 hover:text-blue-600 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                data-category={category}
-                data-active={category === 'All'}
-              >
-                {category}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <!-- Technology Filters -->
-        <div class="mb-8">
-          <h3 class="text-lg font-semibold text-gray-900 mb-4">Filter by Technology</h3>
-          <div class="flex flex-wrap gap-2 max-h-32 overflow-y-auto">
-            {technologies.slice(0, 20).map((tech) => (
-              <button 
-                class="portfolio-filter-tech px-3 py-1 text-sm rounded-full border border-gray-300 text-gray-600 hover:border-blue-500 hover:text-blue-600 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                data-tech={tech}
-              >
-                {tech}
-              </button>
-            ))}
-            {technologies.length > 20 && (
-              <span class="px-3 py-1 text-sm text-gray-500">
-                +{technologies.length - 20} more...
-              </span>
-            )}
-          </div>
-        </div>
-
-        <!-- Search and Sort -->
-        <div class="flex flex-col sm:flex-row gap-4 items-center justify-between">
-          <div class="relative flex-1 max-w-md">
-            <input 
-              type="text" 
-              id="project-search"
-              placeholder="Search projects..."
-              class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
-            <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-            </svg>
-          </div>
-          
-          <div class="flex gap-2">
-            <select 
-              id="project-sort" 
-              class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            >
-              <option value="featured">Featured First</option>
-              <option value="newest">Newest First</option>
-              <option value="oldest">Oldest First</option>
-              <option value="alphabetical">A-Z</option>
-            </select>
-            
-            <button 
-              id="view-toggle"
-              class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
-              title="Toggle view"
-            >
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
-              </svg>
-            </button>
-          </div>
-        </div>
-
-        <!-- Results Info -->
-        <div class="mt-4 text-sm text-gray-600">
-          <span id="results-count">{allProjects.length}</span> projects found
-        </div>
+        <FeaturedProjectsContainer />
+        <AllProjectsContainer />
       </div>
     </section>
 
-    <!-- Projects Grid -->
-    <section class="py-16">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        <!-- Featured Projects Section -->
-        <div class="mb-16">
-          <h2 class="text-3xl font-bold text-gray-900 mb-2">Featured Projects</h2>
-          <p class="text-gray-600 mb-8">Highlighting our most impactful and innovative work</p>
-          
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8" id="featured-projects">
-            {allProjects.filter(project => project.featured).map((project) => (
-              <div 
-                class="portfolio-item group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden"
-                data-category={project.category}
-                data-technologies={project.technologies.join(',')}
-                data-year={project.year}
-                data-title={project.title.toLowerCase()}
-                data-featured="true"
-              >
-                <!-- Project Image -->
-                <div class="relative h-64 overflow-hidden">
-                  <img 
-                    src={project.image} 
-                    alt={project.title}
-                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    loading="lazy"
-                  />
-                  
-                  <!-- Status Badge -->
-                  <div class="absolute top-4 left-4">
-                    {project.status === 'live' ? (
-                      <div class="flex items-center px-3 py-1 bg-green-600/90 backdrop-blur-sm rounded-full text-white text-sm font-medium">
-                        <div class="w-2 h-2 bg-green-300 rounded-full mr-2 animate-pulse"></div>
-                        Live Project
-                      </div>
-                    ) : (
-                      <div class="flex items-center px-3 py-1 bg-blue-600/90 backdrop-blur-sm rounded-full text-white text-sm font-medium">
-                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-3.582 8-8 8a8.959 8.959 0 01-2.4-.32l-3.6 1.2 1.2-3.6A8.959 8.959 0 013 12c0-4.418 3.582-8 8-8s8 3.582 8 8z"/>
-                        </svg>
-                        Case Study
-                      </div>
-                    )}
-                  </div>
-
-                  <!-- Featured Badge -->
-                  <div class="absolute top-4 right-4">
-                    <div class="px-2 py-1 bg-yellow-500/90 backdrop-blur-sm rounded text-white text-xs font-bold">
-                      ⭐ FEATURED
-                    </div>
-                  </div>
-
-                  <!-- Year Badge -->
-                  <div class="absolute bottom-4 right-4 px-2 py-1 bg-gray-900/80 backdrop-blur-sm rounded text-white text-sm font-medium">
-                    {project.year}
-                  </div>
-
-                  <!-- Overlay -->
-                  <div class="absolute inset-0 bg-gradient-to-t from-gray-900/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                </div>
-
-                <!-- Project Content -->
-                <div class="p-8">
-                  <!-- Project Title -->
-                  <h3 class="text-2xl font-bold mb-3 text-gray-900 group-hover:text-blue-600 transition-colors">
-                    {project.title}
-                  </h3>
-
-                  <!-- Description -->
-                  <p class="text-gray-600 text-lg leading-relaxed mb-6">
-                    {project.description}
-                  </p>
-
-                  <!-- Client Info (if available) -->
-                  {project.client && (
-                    <div class="flex items-center mb-4 text-sm text-gray-500">
-                      <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-4m-5 0H3m2 0h4M9 7h6m-6 4h6m-6 4h6"/>
-                      </svg>
-                      <span>Client: {project.client}</span>
-                    </div>
-                  )}
-
-                  <!-- Technology Stack -->
-                  <div class="mb-6">
-                    <h4 class="text-sm font-semibold text-gray-500 mb-3 uppercase tracking-wide">
-                      Technologies Used
-                    </h4>
-                    <div class="flex flex-wrap gap-2">
-                      {project.technologies.slice(0, 6).map((tech) => (
-                        <span class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-blue-100 hover:text-blue-700 transition-colors cursor-default">
-                          {tech}
-                        </span>
-                      ))}
-                      {project.technologies.length > 6 && (
-                        <span class="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-sm">
-                          +{project.technologies.length - 6} more
-                        </span>
-                      )}
-                    </div>
-                  </div>
-
-                  <!-- Key Results -->
-                  <div class="mb-6">
-                    <h4 class="text-sm font-semibold text-gray-500 mb-3 uppercase tracking-wide">
-                      Key Results
-                    </h4>
-                    <ul class="space-y-2">
-                      {project.results.slice(0, 3).map((result) => (
-                        <li class="flex items-start text-sm text-gray-600">
-                          <svg class="w-4 h-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
-                          </svg>
-                          <span>{result}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  <!-- Project Actions -->
-                  <div class="flex gap-3">
-                    {project.status === 'live' ? (
-                      <>
-                        {project.liveUrl && (
-                          <a
-                            href={project.liveUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            class="flex-1 inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl font-semibold hover:from-green-600 hover:to-green-700 transition-all duration-300 group/btn"
-                          >
-                            <svg class="w-5 h-5 mr-2 group-hover/btn:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
-                            </svg>
-                            View Live Site
-                          </a>
-                        )}
-                        {project.githubUrl && (
-                          <a
-                            href={project.githubUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            class="px-6 py-3 border border-gray-300 text-gray-700 rounded-xl font-semibold hover:border-gray-400 hover:text-gray-900 transition-all duration-300"
-                          >
-                            <svg class="w-5 h-5 inline mr-2" fill="currentColor" viewBox="0 0 24 24">
-                              <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-                            </svg>
-                            Code
-                          </a>
-                        )}
-                      </>
-                    ) : (
-                      <button class="flex-1 px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-xl font-semibold hover:from-blue-600 hover:to-indigo-600 transition-all duration-300">
-                        <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-3.582 8-8 8a8.959 8.959 0 01-2.4-.32l-3.6 1.2 1.2-3.6A8.959 8.959 0 013 12c0-4.418 3.582-8 8-8s8 3.582 8 8z"/>
-                        </svg>
-                        Discuss Project
-                      </button>
-                    )}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+    <!-- No Results Message -->
+    <section id="portfolio-no-results" class="hidden py-20 text-center">
+      <div class="max-w-md mx-auto px-4">
+        <div class="bg-gray-100 rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-6">
+          <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6-4h6m2 5.291A7.962 7.962 0 0112 15c-2.34 0-4.29-1.009-5.824-2.412M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+          </svg>
         </div>
-
-        <!-- All Projects Section -->
-        <div>
-          <h2 class="text-3xl font-bold text-gray-900 mb-2">All Projects</h2>
-          <p class="text-gray-600 mb-8">Complete portfolio of development work and case studies</p>
-          
-          <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8" id="all-projects">
-            {allProjects.map((project) => (
-              <div 
-                class="portfolio-item group bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden"
-                data-category={project.category}
-                data-technologies={project.technologies.join(',')}
-                data-year={project.year}
-                data-title={project.title.toLowerCase()}
-                data-featured={project.featured}
-              >
-                <!-- Project Image -->
-                <div class="relative h-48 overflow-hidden">
-                  <img 
-                    src={project.image} 
-                    alt={project.title}
-                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    loading="lazy"
-                  />
-                  
-                  <!-- Status Badge -->
-                  <div class="absolute top-3 left-3">
-                    {project.status === 'live' ? (
-                      <div class="flex items-center px-2 py-1 bg-green-600/90 backdrop-blur-sm rounded-full text-white text-xs font-medium">
-                        <div class="w-1.5 h-1.5 bg-green-300 rounded-full mr-1 animate-pulse"></div>
-                        Live
-                      </div>
-                    ) : (
-                      <div class="px-2 py-1 bg-blue-600/90 backdrop-blur-sm rounded-full text-white text-xs font-medium">
-                        Case Study
-                      </div>
-                    )}
-                  </div>
-
-                  <!-- Featured Badge -->
-                  {project.featured && (
-                    <div class="absolute top-3 right-3">
-                      <div class="px-2 py-1 bg-yellow-500/90 backdrop-blur-sm rounded text-white text-xs font-bold">
-                        ⭐
-                      </div>
-                    </div>
-                  )}
-
-                  <!-- Year Badge -->
-                  <div class="absolute bottom-3 right-3 px-2 py-1 bg-gray-900/80 backdrop-blur-sm rounded text-white text-xs">
-                    {project.year}
-                  </div>
-                </div>
-
-                <!-- Project Content -->
-                <div class="p-6">
-                  <!-- Project Title -->
-                  <h3 class="text-xl font-bold mb-2 text-gray-900 group-hover:text-blue-600 transition-colors line-clamp-2">
-                    {project.title}
-                  </h3>
-
-                  <!-- Category -->
-                  <div class="text-sm text-blue-600 font-medium mb-3">
-                    {project.category}
-                  </div>
-
-                  <!-- Description -->
-                  <p class="text-gray-600 text-sm leading-relaxed mb-4 line-clamp-3">
-                    {project.description}
-                  </p>
-
-                  <!-- Technology Stack Preview -->
-                  <div class="mb-4">
-                    <div class="flex flex-wrap gap-1">
-                      {project.technologies.slice(0, 3).map((tech) => (
-                        <span class="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs font-medium">
-                          {tech}
-                        </span>
-                      ))}
-                      {project.technologies.length > 3 && (
-                        <span class="px-2 py-1 bg-gray-100 text-gray-600 rounded text-xs">
-                          +{project.technologies.length - 3}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-
-                  <!-- Key Achievement -->
-                  <div class="mb-4">
-                    <p class="text-sm text-gray-600 italic">
-                      "{project.results[0]}"
-                    </p>
-                  </div>
-
-                  <!-- Project Actions -->
-                  <div class="flex gap-2">
-                    {project.status === 'live' ? (
-                      <>
-                        {project.liveUrl && (
-                          <a
-                            href={project.liveUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            class="flex-1 inline-flex items-center justify-center px-4 py-2 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-lg text-sm font-semibold hover:from-green-600 hover:to-green-700 transition-all duration-300"
-                          >
-                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
-                            </svg>
-                            View Live
-                          </a>
-                        )}
-                        {project.githubUrl && (
-                          <a
-                            href={project.githubUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg text-sm font-semibold hover:border-gray-400 hover:text-gray-900 transition-all duration-300"
-                          >
-                            Code
-                          </a>
-                        )}
-                      </>
-                    ) : (
-                      <button class="flex-1 px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-lg text-sm font-semibold hover:from-blue-600 hover:to-indigo-600 transition-all duration-300">
-                        Discuss
-                      </button>
-                    )}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <!-- No Results Message -->
-        <div id="no-results" class="hidden text-center py-16">
-          <div class="max-w-md mx-auto">
-            <svg class="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6-4h6m2 5.291A7.962 7.962 0 0112 15c-2.34 0-4.29-1.009-5.824-2.412M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
-            </svg>
-            <h3 class="text-xl font-semibold text-gray-900 mb-2">No projects found</h3>
-            <p class="text-gray-600 mb-4">Try adjusting your filters or search terms</p>
-            <button 
-              id="clear-filters"
-              class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              Clear All Filters
-            </button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- CTA Section -->
-    <section class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-16">
-      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h2 class="text-3xl md:text-4xl font-bold mb-4">
-          Ready to Start Your Project?
-        </h2>
-        <p class="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-          Let's discuss how we can bring your vision to life with modern web technologies and innovative solutions.
+        <h3 class="text-2xl font-bold text-gray-900 mb-4">No projects found</h3>
+        <p class="text-gray-600 mb-6 text-lg">
+          Try adjusting your search terms or filters to discover more projects
         </p>
-        <div class="flex flex-col sm:flex-row gap-4 justify-center">
-          <a 
-            href="/contact" 
-            class="inline-flex items-center px-8 py-4 bg-white text-blue-600 rounded-xl font-semibold hover:bg-gray-50 transition-all duration-300 group"
-          >
-            <svg class="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-3.582 8-8 8a8.959 8.959 0 01-2.4-.32l-3.6 1.2 1.2-3.6A8.959 8.959 0 013 12c0-4.418 3.582-8 8-8s8 3.582 8 8z"/>
-            </svg>
-            Start a Conversation
-          </a>
-          <a 
-            href="/services" 
-            class="inline-flex items-center px-8 py-4 border border-white/30 text-white rounded-xl font-semibold hover:bg-white/10 transition-all duration-300"
-          >
-            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-4m-5 0H3m2 0h4M9 7h6m-6 4h6m-6 4h6"/>
-            </svg>
-            View Services
-          </a>
-        </div>
+        <button 
+          id="portfolio-reset-filters"
+          class="px-8 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors font-semibold"
+        >
+          Show All Projects
+        </button>
       </div>
     </section>
 
+    <!-- Enhanced CTA Section -->
+    <section class="bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 text-white py-20">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div class="animate-on-scroll">
+          <h2 class="text-4xl md:text-5xl font-bold mb-6 leading-tight">
+            Ready to Build Something
+            <span class="block bg-gradient-to-r from-cyan-300 to-yellow-300 bg-clip-text text-transparent">
+              Extraordinary?
+            </span>
+          </h2>
+          <p class="text-xl text-blue-100 mb-10 max-w-3xl mx-auto leading-relaxed">
+            Let's collaborate to bring your vision to life with cutting-edge web technologies, 
+            innovative design, and robust development practices.
+          </p>
+          
+          <div class="flex flex-col sm:flex-row gap-6 justify-center">
+            <a 
+              href="/contact?tab=project" 
+              class="inline-flex items-center px-10 py-5 bg-white text-blue-600 rounded-2xl font-bold text-lg hover:bg-gray-50 transition-all duration-300 transform hover:scale-105 shadow-2xl group"
+            >
+              <svg class="w-6 h-6 mr-3 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+              </svg>
+              Start Your Project
+            </a>
+            
+            <a 
+              href="/services" 
+              class="inline-flex items-center px-10 py-5 border-2 border-white/30 text-white rounded-2xl font-bold text-lg hover:bg-white/10 hover:border-white/50 transition-all duration-300 backdrop-blur-sm"
+            >
+              <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-4m-5 0H3m2 0h4M9 7h6m-6 4h6m-6 4h6"/>
+              </svg>
+              Explore Services
+            </a>
+          </div>
+
+          <!-- Contact Methods -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-16 max-w-4xl mx-auto">
+            <a 
+              href={`mailto:${BUSINESS_INFO.contact.email}`}
+              class="group bg-white/10 backdrop-blur-sm rounded-2xl p-6 hover:bg-white/20 transition-all duration-300 border border-white/20"
+            >
+              <div class="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                <svg class="w-6 h-6 text-cyan-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                </svg>
+              </div>
+              <h3 class="font-semibold mb-2">Email</h3>
+              <p class="text-blue-200 text-sm">Response within 24 hours</p>
+            </a>
+            
+            <a 
+              href={`tel:${BUSINESS_INFO.contact.phone}`}
+              class="group bg-white/10 backdrop-blur-sm rounded-2xl p-6 hover:bg-white/20 transition-all duration-300 border border-white/20"
+            >
+              <div class="w-12 h-12 bg-green-500/20 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                <svg class="w-6 h-6 text-green-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+                </svg>
+              </div>
+              <h3 class="font-semibold mb-2">Phone</h3>
+              <p class="text-blue-200 text-sm">Direct consultation line</p>
+            </a>
+            
+            <div class="group bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
+              <div class="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center mx-auto mb-4">
+                <svg class="w-6 h-6 text-purple-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+              </div>
+              <h3 class="font-semibold mb-2">Location</h3>
+              <p class="text-blue-200 text-sm">{BUSINESS_INFO.contact.address.city}, UK</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   </main>
 </Layout>
 
+<style>
+  /* Enhanced animations */
+  .animate-on-scroll {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  
+  .animate-on-scroll.animate-in {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  /* Filter button active states */
+
+/* Category filter active state */
+.portfolio-category-filter.active {
+  background: linear-gradient(to right, #3b82f6, #6366f1);
+  color: white !important;
+  box-shadow: 0 8px 20px rgba(99, 102, 241, 0.25);
+}
+
+/* Technology filter active state (same as category) */
+.portfolio-tech-filter.active {
+  background: linear-gradient(to right, #3b82f6, #6366f1);
+  color: white !important;
+  border-color: transparent !important;
+  box-shadow: 0 6px 15px rgba(99, 102, 241, 0.25);
+}
+
+/* Selected filters pill */
+.selected-filter {
+  display: inline-flex;
+  align-items: center;
+  background: linear-gradient(to right, #3b82f6, #6366f1);
+  color: white;
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: 0.5rem 0.75rem;
+  border-radius: 9999px;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
+}
+
+.selected-filter button {
+  margin-left: 0.5rem;
+  font-size: 0.875rem;
+  color: white;
+  background: transparent;
+}
+
+
+  
+  /* Custom scrollbar for technology filters */
+  .overflow-y-auto::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .overflow-y-auto::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 3px;
+  }
+  
+  .overflow-y-auto::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 3px;
+  }
+  
+  .overflow-y-auto::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+  }
+  
+  /* Stats card hover effects */
+  .bg-white\/10:hover {
+    transform: translateY(-2px);
+  }
+</style>
+
 <script>
-  // Portfolio filtering and search functionality
+  // Enhanced Portfolio filtering and interaction functionality
   document.addEventListener('DOMContentLoaded', function() {
-    const projectItems = document.querySelectorAll('.portfolio-item');
-    const categoryFilters = document.querySelectorAll('.portfolio-filter-category');
-    const techFilters = document.querySelectorAll('.portfolio-filter-tech');
-    const searchInput = document.getElementById('project-search');
-    const sortSelect = document.getElementById('project-sort');
-    const viewToggle = document.getElementById('view-toggle');
-    const resultsCount = document.getElementById('results-count');
-    const noResults = document.getElementById('no-results');
-    const clearFilters = document.getElementById('clear-filters');
-    
+    const allProjectsSection = document.getElementById('all-projects-section');
+    if (!allProjectsSection) return;
+
+    const searchInput = allProjectsSection.querySelector('#portfolio-search');
+    const sortSelect = allProjectsSection.querySelector('#portfolio-sort');
+    const categoryFilters = allProjectsSection.querySelectorAll('.portfolio-category-filter');
+    const techFilters = allProjectsSection.querySelectorAll('.portfolio-tech-filter');
+    const clearFiltersBtn = allProjectsSection.querySelector('#portfolio-clear-filters');
+    const resultsCount = allProjectsSection.querySelector('#portfolio-results-count');
+    const projectsGrid = allProjectsSection.querySelector('#projects-grid');
+
     let activeFilters = {
       category: 'All',
       technologies: [],
@@ -508,80 +266,300 @@ const technologies = [...new Set(allProjects.flatMap(project => project.technolo
     };
 
     // Initialize
-    updateActiveFilters();
+    initializePortfolio();
     
-    // Category filtering
-    categoryFilters.forEach(filter => {
-      filter.addEventListener('click', function() {
-        const category = this.dataset.category;
-        activeFilters.category = category;
-        
-        // Update active state
-        categoryFilters.forEach(f => {
-          f.classList.remove('bg-blue-600', 'text-white', 'border-blue-600');
-          f.classList.add('border-gray-300', 'text-gray-700');
-        });
-        this.classList.remove('border-gray-300', 'text-gray-700');
-        this.classList.add('bg-blue-600', 'text-white', 'border-blue-600');
-        
-        filterProjects();
-      });
-    });
-    
-    // Technology filtering
-    techFilters.forEach(filter => {
-      filter.addEventListener('click', function() {
-        const tech = this.dataset.tech;
-        const index = activeFilters.technologies.indexOf(tech);
-        
-        if (index > -1) {
-          // Remove technology
-          activeFilters.technologies.splice(index, 1);
-          this.classList.remove('bg-blue-600', 'text-white', 'border-blue-600');
-          this.classList.add('border-gray-300', 'text-gray-600');
-        } else {
-          // Add technology
-          activeFilters.technologies.push(tech);
-          this.classList.remove('border-gray-300', 'text-gray-600');
-          this.classList.add('bg-blue-600', 'text-white', 'border-blue-600');
-        }
-        
-        filterProjects();
-      });
-    });
-    
-    // Search functionality
-    searchInput.addEventListener('input', function() {
-      activeFilters.search = this.value.toLowerCase();
-      filterProjects();
-    });
-    
-    // Sort functionality
-    sortSelect.addEventListener('change', function() {
-      activeFilters.sort = this.value;
-      filterProjects();
-    });
-    
-    // View toggle (grid/list view)
-    viewToggle.addEventListener('click', function() {
-      const allProjectsGrid = document.getElementById('all-projects');
-      const currentClasses = allProjectsGrid.className;
+    function initializePortfolio() {
+      console.log('🎨 Initializing portfolio page functionality...');
       
-      if (currentClasses.includes('xl:grid-cols-3')) {
-        // Switch to list view
-        allProjectsGrid.className = currentClasses.replace('md:grid-cols-2 xl:grid-cols-3', 'grid-cols-1');
-        this.innerHTML = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>';
-        this.title = 'Grid view';
-      } else {
-        // Switch to grid view
-        allProjectsGrid.className = currentClasses.replace('grid-cols-1', 'md:grid-cols-2 xl:grid-cols-3');
-        this.innerHTML = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>';
-        this.title = 'List view';
-      }
-    });
+      setupEventListeners();
+      applyFilters();
+      setupIntersectionObserver();
+      
+      console.log('✅ Portfolio page initialized successfully');
+    }
     
-    // Clear all filters
-    clearFilters.addEventListener('click', function() {
+    function setupEventListeners() {
+      // Search functionality with debouncing
+      if (searchInput) {
+        searchInput.addEventListener('input', debounce((e) => {
+          activeFilters.search = e.target.value.toLowerCase();
+          applyFilters();
+        }, 300));
+      }
+      
+      // Sort functionality
+      if (sortSelect) {
+        sortSelect.addEventListener('change', (e) => {
+          activeFilters.sort = e.target.value;
+          applyFilters();
+        });
+      }
+      
+      // Category filters
+      categoryFilters.forEach(filter => {
+        filter.addEventListener('click', () => {
+          const category = filter.dataset.category;
+          activeFilters.category = category;
+          updateCategoryFilterUI(filter);
+          applyFilters();
+        });
+      });
+      
+      // Technology filters
+      techFilters.forEach(filter => {
+        filter.addEventListener('click', () => {
+          const tech = filter.dataset.tech;
+          toggleTechnologyFilter(tech, filter);
+          applyFilters();
+        });
+      });
+      
+      // Clear filters
+      if (clearFiltersBtn) {
+        clearFiltersBtn.addEventListener('click', clearAllFilters);
+      }
+      
+      if (resetFiltersBtn) {
+        resetFiltersBtn.addEventListener('click', clearAllFilters);
+      }
+    }
+    
+    function updateCategoryFilterUI(activeFilter) {
+      categoryFilters.forEach(f => {
+        f.classList.remove('active');
+        f.className = f.className.replace(
+          'bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-lg',
+          'bg-white text-gray-700 border border-gray-300 hover:border-blue-500 hover:text-blue-600 shadow-sm'
+        );
+      });
+      
+      activeFilter.classList.add('active');
+      activeFilter.className = activeFilter.className.replace(
+        'bg-white text-gray-700 border border-gray-300 hover:border-blue-500 hover:text-blue-600 shadow-sm',
+        'bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-lg'
+      );
+    }
+    
+    function toggleTechnologyFilter(tech, filterElement) {
+      const index = activeFilters.technologies.indexOf(tech);
+
+      if (index > -1) {
+        // remove
+        activeFilters.technologies.splice(index, 1);
+        filterElement.classList.remove('active');
+      } else {
+        // add
+        activeFilters.technologies.push(tech);
+        filterElement.classList.add('active');
+      }
+
+      updateSelectedFiltersBar();
+    }
+
+    function updateSelectedFiltersBar() {
+      const bar = document.getElementById('selected-filters-bar');
+      if (!bar) return;
+
+      // Clear the bar first
+      bar.innerHTML = '';
+
+      // If no active tech filters, hide the bar
+      if (activeFilters.technologies.length === 0) {
+        bar.classList.add('hidden');
+        return;
+      }
+
+      // Style the bar container
+      bar.className = [
+        'mb-8',
+        'flex flex-wrap items-center gap-3',
+        'bg-gray-100 border border-gray-200',
+        'rounded-xl p-4 shadow-sm',
+      ].join(' ');
+
+      // Add a pill for each active technology
+      activeFilters.technologies.forEach((tech) => {
+        const pill = document.createElement('div');
+        pill.className = [
+          'flex items-center gap-2',
+          'px-4 py-2 rounded-full',
+          'text-sm font-semibold text-white',
+          'bg-gradient-to-r from-blue-500 to-indigo-500',
+          'shadow-md hover:shadow-lg',
+          'transition',
+        ].join(' ');
+
+        pill.innerHTML = `
+          <span>${tech}</span>
+          <button
+            class="text-white text-lg leading-none hover:text-gray-200 transition"
+            title="Remove filter"
+          >
+            &times;
+          </button>
+        `;
+
+        // Handle remove button
+        pill.querySelector('button').addEventListener('click', () => {
+          // Remove from active filters
+          activeFilters.technologies = activeFilters.technologies.filter(
+            (t) => t !== tech
+          );
+
+          // Reset the corresponding button state
+          const btn = document.querySelector(
+            `.portfolio-tech-filter[data-tech="${tech}"]`
+          );
+          if (btn) {
+            btn.classList.remove('active');
+          }
+
+          // Re-render bar and reapply filters
+          updateSelectedFiltersBar();
+          applyFilters();
+        });
+
+        bar.appendChild(pill);
+      });
+    }
+
+
+    
+    function applyFilters() {
+      const allProjectsSection = document.getElementById('all-projects-section');
+      if (!allProjectsSection) return;
+
+      const projectCards = allProjectsSection.querySelectorAll('.project-card');
+      let visibleCount = 0;
+
+      projectCards.forEach(card => {
+        const category = card.dataset.category;
+        const technologies = card.dataset.technologies?.split(',') || [];
+        const title = card.dataset.title?.toLowerCase() || '';
+        const description = card.querySelector('p')?.textContent?.toLowerCase() || '';
+
+        let isVisible = true;
+
+        // Category filter
+        if (activeFilters.category !== 'All' && category !== activeFilters.category) {
+          isVisible = false;
+        }
+
+        // Technology filter
+        if (activeFilters.technologies.length > 0) {
+          const hasRequiredTech = activeFilters.technologies.some(tech =>
+            technologies.some(cardTech =>
+              cardTech.trim().toLowerCase().includes(tech.toLowerCase())
+            )
+          );
+          if (!hasRequiredTech) isVisible = false;
+        }
+
+        // Search filter
+        if (
+          activeFilters.search &&
+          !title.includes(activeFilters.search) &&
+          !description.includes(activeFilters.search) &&
+          !technologies.some(tech => tech.toLowerCase().includes(activeFilters.search))
+        ) {
+          isVisible = false;
+        }
+
+        // Show/hide card
+        if (isVisible) {
+          card.style.display = 'block';
+          card.classList.remove('hidden');
+          setTimeout(() => card.classList.add('animate-in'), 50);
+          visibleCount++;
+        } else {
+          card.classList.remove('animate-in');
+          card.classList.add('hidden');
+          setTimeout(() => (card.style.display = 'none'), 300);
+        }
+      });
+
+      // Update results count
+      if (resultsCount) resultsCount.textContent = visibleCount;
+
+      // Show/hide no results
+      updateNoResultsDisplay(visibleCount);
+
+      // Clear filters button
+      updateClearFiltersButton();
+
+      // Sorting
+      applySorting();
+    }
+
+    
+    function updateNoResultsDisplay(visibleCount) {
+      const noResults = document.getElementById('portfolio-no-results');
+      const projectsContainer = document.querySelector('.portfolio-projects-container');
+      
+      if (noResults) {
+        if (visibleCount === 0) {
+          noResults.classList.remove('hidden');
+          if (projectsContainer) {
+            projectsContainer.style.opacity = '0.3';
+          }
+        } else {
+          noResults.classList.add('hidden');
+          if (projectsContainer) {
+            projectsContainer.style.opacity = '1';
+          }
+        }
+      }
+    }
+    
+    function updateClearFiltersButton() {
+      const hasActiveFilters = 
+        activeFilters.category !== 'All' || 
+        activeFilters.technologies.length > 0 || 
+        activeFilters.search !== '';
+        
+      if (clearFiltersBtn) {
+        if (hasActiveFilters) {
+          clearFiltersBtn.classList.remove('hidden');
+        } else {
+          clearFiltersBtn.classList.add('hidden');
+        }
+      }
+    }
+    
+    function clearAllFilters() {
+      // Reset search
+      if (searchInput) {
+        searchInput.value = '';
+      }
+      
+      // Reset sort
+      if (sortSelect) {
+        sortSelect.value = 'featured';
+      }
+      
+      // Reset category filters
+      categoryFilters.forEach((filter, index) => {
+        if (index === 0) {
+          filter.classList.add('active');
+          filter.className = filter.className.replace(
+            'bg-white text-gray-700 border border-gray-300 hover:border-blue-500 hover:text-blue-600 shadow-sm',
+            'bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-lg'
+          );
+        } else {
+          filter.classList.remove('active');
+          filter.className = filter.className.replace(
+            'bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-lg',
+            'bg-white text-gray-700 border border-gray-300 hover:border-blue-500 hover:text-blue-600 shadow-sm'
+          );
+        }
+      });
+      
+      // Reset technology filters
+      techFilters.forEach(filter => {
+        filter.classList.remove('active');
+      });
+      
+      // Reset active filters
       activeFilters = {
         category: 'All',
         technologies: [],
@@ -589,220 +567,76 @@ const technologies = [...new Set(allProjects.flatMap(project => project.technolo
         sort: 'featured'
       };
       
-      // Reset UI
-      searchInput.value = '';
-      sortSelect.value = 'featured';
-      
-      categoryFilters.forEach(f => {
-        f.classList.remove('bg-blue-600', 'text-white', 'border-blue-600');
-        f.classList.add('border-gray-300', 'text-gray-700');
-      });
-      categoryFilters[0].classList.remove('border-gray-300', 'text-gray-700');
-      categoryFilters[0].classList.add('bg-blue-600', 'text-white', 'border-blue-600');
-      
-      techFilters.forEach(f => {
-        f.classList.remove('bg-blue-600', 'text-white', 'border-blue-600');
-        f.classList.add('border-gray-300', 'text-gray-600');
-      });
-      
-      filterProjects();
-    });
-    
-    function filterProjects() {
-      let visibleCount = 0;
-      const projectsArray = Array.from(projectItems);
-      
-      // Filter projects
-      projectsArray.forEach(item => {
-        const category = item.dataset.category;
-        const technologies = item.dataset.technologies.split(',');
-        const title = item.dataset.title;
-        const year = parseInt(item.dataset.year);
-        const featured = item.dataset.featured === 'true';
-        
-        let isVisible = true;
-        
-        // Category filter
-        if (activeFilters.category !== 'All' && category !== activeFilters.category) {
-          isVisible = false;
-        }
-        
-        // Technology filter
-        if (activeFilters.technologies.length > 0) {
-          const hasRequiredTech = activeFilters.technologies.some(tech => 
-            technologies.includes(tech)
-          );
-          if (!hasRequiredTech) {
-            isVisible = false;
-          }
-        }
-        
-        // Search filter
-        if (activeFilters.search && !title.includes(activeFilters.search)) {
-          isVisible = false;
-        }
-        
-        if (isVisible) {
-          item.style.display = 'block';
-          visibleCount++;
-        } else {
-          item.style.display = 'none';
-        }
-      });
-      
-      // Sort visible projects
-      const visibleProjects = projectsArray.filter(item => item.style.display !== 'none');
-      sortProjects(visibleProjects);
-      
-      // Update results count
-      resultsCount.textContent = visibleCount;
-      
-      // Show/hide no results message
-      if (visibleCount === 0) {
-        noResults.classList.remove('hidden');
-      } else {
-        noResults.classList.add('hidden');
-      }
+      // Apply filters
+      applyFilters();
     }
     
-    function sortProjects(projects) {
-      const containers = [
-        document.getElementById('featured-projects'),
-        document.getElementById('all-projects')
-      ];
-      
-      projects.sort((a, b) => {
-        const aYear = parseInt(a.dataset.year);
-        const bYear = parseInt(b.dataset.year);
-        const aFeatured = a.dataset.featured === 'true';
-        const bFeatured = b.dataset.featured === 'true';
-        const aTitle = a.dataset.title;
-        const bTitle = b.dataset.title;
-        
+    function applySorting() {
+      const projectsGrid = document.querySelector('#all-projects-section #projects-grid');
+      const projectCards = Array.from(
+        document.querySelectorAll('#all-projects-section .project-card:not(.hidden)')
+      );
+
+      if (!projectsGrid || projectCards.length === 0) return;
+
+      projectCards.sort((a, b) => {
         switch (activeFilters.sort) {
+          case 'newest':
+            return parseInt(b.dataset.year) - parseInt(a.dataset.year);
+          case 'oldest':
+            return parseInt(a.dataset.year) - parseInt(b.dataset.year);
+          case 'alphabetical':
+            return a.dataset.title.localeCompare(b.dataset.title);
+          case 'live-first':
+            if (a.dataset.status === 'live' && b.dataset.status !== 'live') return -1;
+            if (a.dataset.status !== 'live' && b.dataset.status === 'live') return 1;
+            return parseInt(b.dataset.year) - parseInt(a.dataset.year);
           case 'featured':
+          default:
+            const aFeatured = a.dataset.featured === 'true';
+            const bFeatured = b.dataset.featured === 'true';
             if (aFeatured && !bFeatured) return -1;
             if (!aFeatured && bFeatured) return 1;
-            return bYear - aYear; // Then by newest
-            
-          case 'newest':
-            return bYear - aYear;
-            
-          case 'oldest':
-            return aYear - bYear;
-            
-          case 'alphabetical':
-            return aTitle.localeCompare(bTitle);
-            
-          default:
-            return 0;
+            return parseInt(b.dataset.year) - parseInt(a.dataset.year);
         }
       });
-      
-      // Re-append projects in sorted order
-      projects.forEach(project => {
-        const isFeatured = project.dataset.featured === 'true';
-        const targetContainer = isFeatured ? containers[0] : containers[1];
-        
-        if (targetContainer && project.style.display !== 'none') {
-          targetContainer.appendChild(project);
-        }
-      });
+
+      // Reorder DOM
+      projectCards.forEach(card => projectsGrid.appendChild(card));
     }
+
     
-    function updateActiveFilters() {
-      // Set initial active category filter
-      categoryFilters[0].classList.remove('border-gray-300', 'text-gray-700');
-      categoryFilters[0].classList.add('bg-blue-600', 'text-white', 'border-blue-600');
+    function setupIntersectionObserver() {
+      const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -100px 0px'
+      };
       
-      filterProjects();
-    }
-    
-    // Add smooth scroll to sections
-    function scrollToSection(sectionId) {
-      const section = document.getElementById(sectionId);
-      if (section) {
-        section.scrollIntoView({ 
-          behavior: 'smooth',
-          block: 'start'
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('animate-in');
+          }
         });
-      }
+      }, observerOptions);
+      
+      // Observe all elements with animate-on-scroll class
+      document.querySelectorAll('.animate-on-scroll').forEach(el => {
+        observer.observe(el);
+      });
     }
     
-    // Intersection Observer for scroll animations
-    const observerOptions = {
-      threshold: 0.1,
-      rootMargin: '0px 0px -50px 0px'
-    };
-    
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('animate-fade-in-up');
-        }
-      });
-    }, observerOptions);
-    
-    // Observe project items for animations
-    projectItems.forEach(item => {
-      observer.observe(item);
-    });
+    // Utility function for debouncing
+    function debounce(func, wait) {
+      let timeout;
+      return function executedFunction(...args) {
+        const later = () => {
+          clearTimeout(timeout);
+          func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+      };
+    }
   });
 </script>
-
-<style>
-  /* Custom animations */
-  @keyframes fade-in-up {
-    from {
-      opacity: 0;
-      transform: translateY(30px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  
-  .animate-fade-in-up {
-    animation: fade-in-up 0.6s ease-out forwards;
-  }
-  
-  /* Line clamp utilities */
-  .line-clamp-2 {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-  
-  .line-clamp-3 {
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-  
-  /* Smooth transitions for filter changes */
-  .portfolio-item {
-    transition: all 0.3s ease;
-  }
-  
-  /* Custom scrollbar for technology filters */
-  .overflow-y-auto::-webkit-scrollbar {
-    width: 4px;
-  }
-  
-  .overflow-y-auto::-webkit-scrollbar-track {
-    background: #f1f5f9;
-    border-radius: 2px;
-  }
-  
-  .overflow-y-auto::-webkit-scrollbar-thumb {
-    background: #cbd5e1;
-    border-radius: 2px;
-  }
-  
-  .overflow-y-auto::-webkit-scrollbar-thumb:hover {
-    background: #94a3b8;
-  }
-</style>

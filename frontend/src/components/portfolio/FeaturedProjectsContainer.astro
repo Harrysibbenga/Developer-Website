@@ -1,0 +1,29 @@
+---
+// src/components/portfolio/FeaturedProjectsContainer.astro
+import ProjectCard from './ProjectCard.astro'
+import { getFeaturedProjects } from '../../utils/projects'
+
+const featuredProjects = getFeaturedProjects()
+---
+
+{featuredProjects.length > 0 && (
+  <section class="mb-20 border-b border-gray-200 pb-16">
+    <div class="flex items-center justify-between mb-12">
+      <div>
+        <h2 class="text-4xl font-extrabold text-gray-900 mb-4">Featured Projects</h2>
+        <p class="text-lg text-gray-600">
+          Showcasing the most impactful and innovative work
+        </p>
+      </div>
+      <div class="text-sm text-gray-500">
+        {featuredProjects.length} featured project{featuredProjects.length !== 1 ? 's' : ''}
+      </div>
+    </div>
+
+    <div id="featured-projects-grid" class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
+      {featuredProjects.map((project) => (
+        <ProjectCard project={project} featured={true} />
+      ))}
+    </div>
+  </section>
+)}

@@ -1,5 +1,6 @@
 ---
 // src/layouts/Layout.astro
+
 import { BUSINESS_INFO, SEO_CONFIG } from '../utils/constants'
 import Navigation from '../components/layout/Navigation.astro'
 import Footer from '../components/layout/Footer.astro'
@@ -157,10 +158,60 @@ const finalStructuredData = structuredData
       :focus:not(:focus-visible) {
         outline: none;
       }
+      
+      /* Enhanced animation styles */
+      .animate-on-scroll {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      }
+      
+      .animate-on-scroll.animate-in {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      
+      /* Staggered animations */
+      .stagger-animation {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        transition-delay: var(--animation-delay, 0ms);
+      }
+      
+      .stagger-animation.animate-in {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      
+      /* Loading spinner */
+      .loading-spinner {
+        border: 2px solid #f3f4f6;
+        border-top: 2px solid #2563eb;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        animation: spin 1s linear infinite;
+      }
+      
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+      
+      /* Fade in effect for initial load */
+      .fade-in {
+        opacity: 0;
+        animation: fadeIn 0.5s ease-in-out forwards;
+      }
+      
+      @keyframes fadeIn {
+        to { opacity: 1; }
+      }
     </style>
   </head>
   
-  <body class="min-h-screen bg-white font-inter antialiased">
+  <body class="min-h-screen bg-white font-inter antialiased fade-in">
     <!-- Skip to content link for accessibility -->
     <a 
       href="#main-content" 
@@ -224,107 +275,568 @@ const finalStructuredData = structuredData
     <!-- Loading Indicator for Page Transitions -->
     <div 
       id="page-loading"
-      class="fixed top-0 left-0 w-full h-1 bg-blue-600 transform -translate-x-full transition-transform duration-300 z-50"
+      class="fixed top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-purple-600 transform -translate-x-full transition-transform duration-300 z-50"
       style="display: none;"
     >
     </div>
     
     <!-- Scripts -->
     <script>
-      // Page loading functionality
-      document.addEventListener('DOMContentLoaded', function() {
-        // Back to top button
-        const backToTopButton = document.getElementById('back-to-top');
-        
-        if (backToTopButton) {
-          // Show/hide based on scroll position
-          function toggleBackToTop() {
-            if (window.pageYOffset > 300) {
-              backToTopButton.classList.remove('opacity-0', 'invisible');
-              backToTopButton.classList.add('opacity-100', 'visible');
-            } else {
-              backToTopButton.classList.add('opacity-0', 'invisible');
-              backToTopButton.classList.remove('opacity-100', 'visible');
+      // Global Components Manager - Fixes ALL interactive components including contact page tabs
+      class GlobalComponentsManager {
+        constructor() {
+          this.observers = new Map();
+          this.eventListeners = new Map();
+          this.initialized = false;
+        }
+
+        initialize() {
+          if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => this.initializeComponents());
+          } else {
+            this.initializeComponents();
+          }
+          this.setupPageTransitions();
+        }
+
+        initializeComponents() {
+          console.log('🚀 GlobalComponentsManager: Initializing all components...');
+          this.cleanup();
+          
+          // Initialize all component types
+          this.initializeContactPageTabs(); // THE FIX FOR YOUR CONTACT PAGE!
+          this.initializeScrollAnimations();
+          this.initializeImageLazyLoading();
+          this.initializeFormComponents();
+          this.initializeNavigationComponents();
+          this.initializeModalComponents();
+          this.initializeFilterComponents();
+          
+          this.initialized = true;
+          document.body.classList.add('components-loaded');
+          console.log('✅ GlobalComponentsManager: All components initialized successfully');
+        }
+
+        setupPageTransitions() {
+          document.addEventListener('astro:after-swap', () => {
+            console.log('🔄 Page transition detected, reinitializing components...');
+            setTimeout(() => {
+              this.initializeComponents();
+            }, 100);
+          });
+        }
+
+        // CONTACT PAGE TAB FUNCTIONALITY - THE FIX FOR YOUR ISSUE!
+        initializeContactPageTabs() {
+          const tabButtons = document.querySelectorAll('.tab-button');
+          const tabContents = document.querySelectorAll('.tab-content');
+
+          if (tabButtons.length === 0) return;
+          console.log('📋 Initializing contact page tabs...', tabButtons.length, 'buttons found');
+
+          tabButtons.forEach(button => {
+            const clickHandler = (e) => {
+              e.preventDefault();
+              const tabId = e.currentTarget.dataset.tab;
+              if (!tabId) return;
+
+              console.log('📋 Tab clicked:', tabId);
+
+              // Remove active class from all buttons
+              tabButtons.forEach(btn => {
+                btn.classList.remove('active', 'bg-blue-600', 'text-white');
+                btn.classList.add('text-gray-600', 'hover:text-gray-900');
+              });
+
+              // Add active class to clicked button
+              e.currentTarget.classList.add('active', 'bg-blue-600', 'text-white');
+              e.currentTarget.classList.remove('text-gray-600', 'hover:text-gray-900');
+
+              // Hide all tab contents
+              tabContents.forEach(content => {
+                content.classList.add('hidden');
+                console.log('Hiding tab:', content.id);
+              });
+
+              // Show target tab content
+              const targetContent = document.getElementById(`${tabId}-tab`);
+              if (targetContent) {
+                targetContent.classList.remove('hidden');
+                console.log('Showing tab:', targetContent.id);
+                
+                // Trigger animations for newly visible content
+                const animatedElements = targetContent.querySelectorAll('.animate-on-scroll');
+                animatedElements.forEach(el => {
+                  el.classList.remove('animate-in');
+                  setTimeout(() => el.classList.add('animate-in'), 50);
+                });
+              }
+
+              // Track tab switch
+              if (typeof gtag !== 'undefined') {
+                gtag('event', 'tab_switch', {
+                  event_category: 'Contact',
+                  event_label: tabId
+                });
+              }
+
+              console.log(`📋 Successfully switched to tab: ${tabId}`);
+            };
+
+            button.addEventListener('click', clickHandler);
+            this.addEventListenerToCleanup('contact-tabs', button, 'click', clickHandler);
+          });
+
+          // Set initial active state
+          const activeButton = document.querySelector('.tab-button.active');
+          if (activeButton && activeButton.dataset.tab) {
+            const targetContent = document.getElementById(`${activeButton.dataset.tab}-tab`);
+            if (targetContent) {
+              targetContent.classList.remove('hidden');
+              console.log('📋 Initial active tab set:', activeButton.dataset.tab);
             }
           }
+        }
+
+        // Scroll Animations
+        initializeScrollAnimations() {
+          const animatedElements = document.querySelectorAll('.animate-on-scroll, [data-animate]');
+          if (animatedElements.length === 0) return;
           
-          window.addEventListener('scroll', toggleBackToTop);
-          
-          // Scroll to top when clicked
-          backToTopButton.addEventListener('click', function() {
-            window.scrollTo({
-              top: 0,
-              behavior: 'smooth'
+          console.log('🎭 Initializing scroll animations for', animatedElements.length, 'elements');
+
+          const animationObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('animate-in');
+                const staggeredElements = entry.target.querySelectorAll('.stagger-animation');
+                staggeredElements.forEach((el, index) => {
+                  setTimeout(() => el.classList.add('animate-in'), index * 100);
+                });
+                animationObserver.unobserve(entry.target);
+              }
+            });
+          }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+          animatedElements.forEach((el) => {
+            el.classList.remove('animate-in');
+            animationObserver.observe(el);
+          });
+
+          this.observers.set('scroll-animations', animationObserver);
+        }
+
+        // Image Lazy Loading
+        initializeImageLazyLoading() {
+          const lazyImages = document.querySelectorAll('img[data-src]');
+          if (lazyImages.length === 0) return;
+
+          console.log('🖼️ Initializing image lazy loading for', lazyImages.length, 'images');
+
+          const imageObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                const img = entry.target;
+                if (img.dataset.src) {
+                  const newImg = new Image();
+                  newImg.onload = () => {
+                    img.src = img.dataset.src;
+                    img.classList.remove('loading-skeleton');
+                    img.classList.add('loaded');
+                    imageObserver.unobserve(img);
+                  };
+                  newImg.onerror = () => {
+                    img.src = '/images/placeholder.jpg';
+                    img.alt = 'Image unavailable';
+                    img.classList.remove('loading-skeleton');
+                    imageObserver.unobserve(img);
+                  };
+                  newImg.src = img.dataset.src;
+                }
+              }
+            });
+          }, { threshold: 0.1, rootMargin: '50px' });
+
+          lazyImages.forEach((img) => {
+            img.classList.add('loading-skeleton');
+            imageObserver.observe(img);
+          });
+
+          this.observers.set('image-loading', imageObserver);
+
+          // Error handling for regular images
+          document.querySelectorAll('img:not([data-src])').forEach(img => {
+            img.addEventListener('error', function() {
+              this.src = '/images/placeholder.jpg';
+              this.alt = 'Image unavailable';
             });
           });
         }
-        
-        // Cookie consent functionality
-        const cookieConsent = document.getElementById('cookie-consent');
-        const cookieAccept = document.getElementById('cookie-accept');
-        const cookieDecline = document.getElementById('cookie-decline');
-        
-        // Check if user has already made a choice
-        if (!localStorage.getItem('cookieConsent') && cookieConsent) {
-          setTimeout(() => {
-            cookieConsent.style.display = 'block';
-            cookieConsent.classList.remove('translate-y-full');
-          }, 2000);
+
+        // Form Components
+        initializeFormComponents() {
+          const forms = document.querySelectorAll('form[data-validate]');
+          if (forms.length === 0) return;
+
+          console.log('📝 Initializing form components for', forms.length, 'forms');
+
+          forms.forEach(form => {
+            const submitHandler = (e) => {
+              if (!this.validateForm(form)) e.preventDefault();
+            };
+            form.addEventListener('submit', submitHandler);
+            this.addEventListenerToCleanup('forms', form, 'submit', submitHandler);
+
+            // Add field validation
+            const inputs = form.querySelectorAll('input, textarea, select');
+            inputs.forEach(input => {
+              const blurHandler = () => this.validateField(input);
+              input.addEventListener('blur', blurHandler);
+              this.addEventListenerToCleanup('forms', input, 'blur', blurHandler);
+            });
+          });
         }
-        
-        if (cookieAccept) {
-          cookieAccept.addEventListener('click', function() {
-            localStorage.setItem('cookieConsent', 'accepted');
-            hideCookieConsent();
-            
-            // Initialize analytics if accepted
-            if (typeof gtag !== 'undefined') {
-              gtag('consent', 'update', {
-                'analytics_storage': 'granted'
+
+        // Navigation Components  
+        initializeNavigationComponents() {
+          const mobileMenuButton = document.getElementById('mobile-menu-button');
+          const mobileMenu = document.getElementById('mobile-menu');
+
+          if (mobileMenuButton && mobileMenu) {
+            console.log('🧭 Initializing navigation components...');
+
+            const toggleHandler = () => {
+              const isExpanded = mobileMenuButton.getAttribute('aria-expanded') === 'true';
+              mobileMenuButton.setAttribute('aria-expanded', (!isExpanded).toString());
+              mobileMenu.classList.toggle('hidden');
+              
+              const icon = mobileMenuButton.querySelector('svg path');
+              if (icon) {
+                icon.setAttribute('d', isExpanded ? 'M4 6h16M4 12h16M4 18h16' : 'M6 18L18 6M6 6l12 12');
+              }
+            };
+
+            mobileMenuButton.addEventListener('click', toggleHandler);
+            this.addEventListenerToCleanup('navigation', mobileMenuButton, 'click', toggleHandler);
+
+            // Close menu when clicking outside
+            const outsideClickHandler = (e) => {
+              const target = e.target;
+              if (!mobileMenuButton.contains(target) && !mobileMenu.contains(target)) {
+                mobileMenu.classList.add('hidden');
+                mobileMenuButton.setAttribute('aria-expanded', 'false');
+              }
+            };
+
+            document.addEventListener('click', outsideClickHandler);
+            this.addEventListenerToCleanup('navigation', document, 'click', outsideClickHandler);
+          }
+
+          // Smooth scroll for anchor links
+          document.querySelectorAll('a[href^="#"]').forEach(link => {
+            const clickHandler = (e) => {
+              e.preventDefault();
+              const targetId = e.currentTarget.getAttribute('href')?.substring(1);
+              const targetElement = targetId ? document.getElementById(targetId) : null;
+              
+              if (targetElement) {
+                const headerOffset = 80;
+                const elementPosition = targetElement.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+                
+                window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+              }
+            };
+            link.addEventListener('click', clickHandler);
+            this.addEventListenerToCleanup('navigation', link, 'click', clickHandler);
+          });
+        }
+
+        // Modal Components
+        initializeModalComponents() {
+          const modalTriggers = document.querySelectorAll('[data-modal-target]');
+          const modalCloses = document.querySelectorAll('[data-modal-close]');
+          const modals = document.querySelectorAll('[data-modal]');
+
+          if (modalTriggers.length === 0) return;
+          console.log('🪟 Initializing modal components...');
+
+          // Modal open triggers
+          modalTriggers.forEach(trigger => {
+            const clickHandler = (e) => {
+              e.preventDefault();
+              const target = e.currentTarget.dataset.modalTarget;
+              const modal = document.querySelector(`[data-modal="${target}"]`);
+              
+              if (modal) {
+                modal.classList.remove('hidden');
+                modal.setAttribute('aria-hidden', 'false');
+                document.body.classList.add('modal-open');
+                
+                // Focus first focusable element
+                const firstFocusable = modal.querySelector('button, input, select, textarea, [tabindex]:not([tabindex="-1"])');
+                if (firstFocusable) {
+                  firstFocusable.focus();
+                }
+              }
+            };
+            trigger.addEventListener('click', clickHandler);
+            this.addEventListenerToCleanup('modals', trigger, 'click', clickHandler);
+          });
+
+          // Modal close triggers
+          modalCloses.forEach(closeBtn => {
+            const clickHandler = () => {
+              const modal = closeBtn.closest('[data-modal]');
+              if (modal) {
+                modal.classList.add('hidden');
+                modal.setAttribute('aria-hidden', 'true');
+                document.body.classList.remove('modal-open');
+              }
+            };
+            closeBtn.addEventListener('click', clickHandler);
+            this.addEventListenerToCleanup('modals', closeBtn, 'click', clickHandler);
+          });
+
+          // Close modals on escape
+          const escapeHandler = (e) => {
+            if (e.key === 'Escape') {
+              modals.forEach(modal => {
+                if (!modal.classList.contains('hidden')) {
+                  modal.classList.add('hidden');
+                  modal.setAttribute('aria-hidden', 'true');
+                }
               });
+              document.body.classList.remove('modal-open');
+            }
+          };
+          document.addEventListener('keydown', escapeHandler);
+          this.addEventListenerToCleanup('modals', document, 'keydown', escapeHandler);
+        }
+
+        // Filter Components
+        initializeFilterComponents() {
+          const filterButtons = document.querySelectorAll('[data-filter]');
+          if (filterButtons.length === 0) return;
+
+          console.log('🔍 Initializing filter components...');
+
+          filterButtons.forEach(button => {
+            const clickHandler = (e) => {
+              e.preventDefault();
+              const filterValue = e.currentTarget.dataset.filter;
+
+              filterButtons.forEach(btn => btn.classList.remove('active'));
+              button.classList.add('active');
+
+              document.querySelectorAll('[data-filter-item]').forEach(item => {
+                const itemCategories = item.dataset.filterItem?.split(',') || [];
+                
+                if (filterValue === 'all' || itemCategories.includes(filterValue)) {
+                  item.classList.remove('hidden');
+                  item.classList.add('animate-in');
+                } else {
+                  item.classList.add('hidden');
+                  item.classList.remove('animate-in');
+                }
+              });
+            };
+            button.addEventListener('click', clickHandler);
+            this.addEventListenerToCleanup('filters', button, 'click', clickHandler);
+          });
+        }
+
+        // Utility Methods
+        validateForm(form) {
+          let isValid = true;
+          const inputs = form.querySelectorAll('input[required], textarea[required]');
+          
+          inputs.forEach(input => {
+            if (!input.value.trim()) {
+              this.showFieldError(input, 'This field is required');
+              isValid = false;
+            } else {
+              this.clearFieldError(input);
             }
           });
+          
+          return isValid;
+        }
+
+        validateField(input) {
+          this.clearFieldError(input);
+          
+          if (input.hasAttribute('required') && !input.value.trim()) {
+            this.showFieldError(input, 'This field is required');
+            return;
+          }
+
+          if (input.type === 'email' && input.value) {
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailPattern.test(input.value)) {
+              this.showFieldError(input, 'Please enter a valid email address');
+            }
+          }
+        }
+
+        showFieldError(input, message) {
+          this.clearFieldError(input);
+          const errorElement = document.createElement('div');
+          errorElement.className = 'field-error text-red-600 text-sm mt-1';
+          errorElement.textContent = message;
+          input.classList.add('border-red-500');
+          input.parentNode?.appendChild(errorElement);
+        }
+
+        clearFieldError(input) {
+          input.classList.remove('border-red-500');
+          const existingError = input.parentNode?.querySelector('.field-error');
+          if (existingError) existingError.remove();
+        }
+
+        addEventListenerToCleanup(group, element, event, handler) {
+          if (!this.eventListeners.has(group)) {
+            this.eventListeners.set(group, []);
+          }
+          this.eventListeners.get(group).push({ element, event, handler });
+        }
+
+        cleanup() {
+          console.log('🧹 Cleaning up existing components...');
+          this.observers.forEach(observer => observer.disconnect());
+          this.observers.clear();
+          
+          this.eventListeners.forEach(listeners => {
+            listeners.forEach(({ element, event, handler }) => {
+              element.removeEventListener(event, handler);
+            });
+          });
+          this.eventListeners.clear();
+        }
+
+        reinitialize() {
+          this.initializeComponents();
+        }
+      }
+
+      // Initialize global components manager
+      const globalComponentsManager = new GlobalComponentsManager();
+      
+      // Layout Manager for layout-specific functionality
+      class LayoutManager {
+        constructor() {
+          this.init();
         }
         
-        if (cookieDecline) {
-          cookieDecline.addEventListener('click', function() {
-            localStorage.setItem('cookieConsent', 'declined');
-            hideCookieConsent();
+        init() {
+          // Initialize layout-specific components
+          this.setupBackToTop();
+          this.setupCookieConsent();
+          this.setupPageTransitions();
+          this.setupPerformanceOptimizations();
+          
+          // Initialize the global components manager
+          globalComponentsManager.initialize();
+          
+          console.log('✅ LayoutManager: Layout components initialized');
+        }
+        
+        setupBackToTop() {
+          const backToTopButton = document.getElementById('back-to-top');
+          
+          if (backToTopButton) {
+            const toggleVisibility = () => {
+              if (window.pageYOffset > 300) {
+                backToTopButton.classList.remove('opacity-0', 'invisible');
+                backToTopButton.classList.add('opacity-100', 'visible');
+              } else {
+                backToTopButton.classList.add('opacity-0', 'invisible');
+                backToTopButton.classList.remove('opacity-100', 'visible');
+              }
+            };
+            
+            window.addEventListener('scroll', toggleVisibility);
+            
+            backToTopButton.addEventListener('click', () => {
+              window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+              });
+            });
+          }
+        }
+        
+        setupCookieConsent() {
+          const cookieConsent = document.getElementById('cookie-consent');
+          const cookieAccept = document.getElementById('cookie-accept');
+          const cookieDecline = document.getElementById('cookie-decline');
+          
+          // Check if user has already made a choice
+          if (!localStorage.getItem('cookieConsent') && cookieConsent) {
+            setTimeout(() => {
+              cookieConsent.style.display = 'block';
+              cookieConsent.classList.remove('translate-y-full');
+            }, 2000);
+          }
+          
+          const hideCookieConsent = () => {
+            if (cookieConsent) {
+              cookieConsent.classList.add('translate-y-full');
+              setTimeout(() => {
+                cookieConsent.style.display = 'none';
+              }, 300);
+            }
+          };
+          
+          if (cookieAccept) {
+            cookieAccept.addEventListener('click', () => {
+              localStorage.setItem('cookieConsent', 'accepted');
+              hideCookieConsent();
+              
+              // Initialize analytics if accepted
+              if (typeof gtag !== 'undefined') {
+                gtag('consent', 'update', {
+                  'analytics_storage': 'granted'
+                });
+              }
+            });
+          }
+          
+          if (cookieDecline) {
+            cookieDecline.addEventListener('click', () => {
+              localStorage.setItem('cookieConsent', 'declined');
+              hideCookieConsent();
+            });
+          }
+        }
+        
+        setupPageTransitions() {
+          const pageLoading = document.getElementById('page-loading');
+          
+          // Show loading indicator on navigation
+          document.addEventListener('astro:before-preparation', () => {
+            if (pageLoading) {
+              pageLoading.style.display = 'block';
+              pageLoading.classList.remove('-translate-x-full');
+            }
+          });
+          
+          // Hide loading indicator when page loads
+          document.addEventListener('astro:after-swap', () => {
+            if (pageLoading) {
+              pageLoading.classList.add('-translate-x-full');
+              setTimeout(() => {
+                pageLoading.style.display = 'none';
+              }, 300);
+            }
+            
+            // The global components manager will handle component reinitialization
+            console.log('🔄 Page transition completed, components will be reinitialized');
           });
         }
         
-        function hideCookieConsent() {
-          if (cookieConsent) {
-            cookieConsent.classList.add('translate-y-full');
-            setTimeout(() => {
-              cookieConsent.style.display = 'none';
-            }, 300);
-          }
-        }
-        
-        // Page transition loading indicator
-        const pageLoading = document.getElementById('page-loading');
-        
-        // Show loading indicator on navigation
-        document.addEventListener('astro:before-preparation', function() {
-          if (pageLoading) {
-            pageLoading.style.display = 'block';
-            pageLoading.classList.remove('-translate-x-full');
-          }
-        });
-        
-        // Hide loading indicator when page loads
-        document.addEventListener('astro:after-swap', function() {
-          if (pageLoading) {
-            pageLoading.classList.add('-translate-x-full');
-            setTimeout(() => {
-              pageLoading.style.display = 'none';
-            }, 300);
-          }
-        });
-        
-        // Performance optimization: Preload critical resources
-        function preloadCriticalResources() {
+        setupPerformanceOptimizations() {
+          // Preload critical resources
           const criticalImages = document.querySelectorAll('img[data-preload]');
           criticalImages.forEach(img => {
             const link = document.createElement('link');
@@ -333,104 +845,41 @@ const finalStructuredData = structuredData
             link.href = img.src;
             document.head.appendChild(link);
           });
-        }
-        
-        preloadCriticalResources();
-        
-        // Intersection Observer for lazy loading and animations
-        const observerOptions = {
-          threshold: 0.1,
-          rootMargin: '0px 0px -50px 0px'
-        };
-        
-        const observer = new IntersectionObserver((entries) => {
-          entries.forEach(entry => {
-            if (entry.isIntersecting) {
-              entry.target.classList.add('animate-in');
-              observer.unobserve(entry.target);
-            }
-          });
-        }, observerOptions);
-        
-        // Observe elements for animation
-        const animateElements = document.querySelectorAll('[data-animate]');
-        animateElements.forEach(el => observer.observe(el));
-        
-        // Error handling for images
-        const images = document.querySelectorAll('img');
-        images.forEach(img => {
-          img.addEventListener('error', function() {
-            this.src = '/images/placeholder.jpg';
-            this.alt = 'Image unavailable';
-          });
-        });
-        
-        // Keyboard navigation enhancement
-        document.addEventListener('keydown', function(e) {
-          // ESC key to close modals/overlays
-          if (e.key === 'Escape') {
-            const modals = document.querySelectorAll('[data-modal-open]');
-            modals.forEach(modal => {
-              modal.style.display = 'none';
-              modal.setAttribute('aria-hidden', 'true');
+          
+          // Performance monitoring
+          if ('PerformanceObserver' in window) {
+            const perfObserver = new PerformanceObserver((list) => {
+              for (const entry of list.getEntries()) {
+                if (entry.entryType === 'largest-contentful-paint') {
+                  console.log('LCP:', entry.startTime);
+                }
+                if (entry.entryType === 'first-input') {
+                  console.log('FID:', entry.processingStart - entry.startTime);
+                }
+              }
             });
-          }
-        });
-        
-        // Form validation enhancement
-        const forms = document.querySelectorAll('form[data-validate]');
-        forms.forEach(form => {
-          form.addEventListener('submit', function(e) {
-            if (!validateForm(this)) {
-              e.preventDefault();
+            
+            try {
+              perfObserver.observe({ entryTypes: ['largest-contentful-paint', 'first-input'] });
+            } catch (e) {
+              // Fallback for browsers that don't support these metrics
+              console.log('Performance monitoring not supported');
             }
-          });
-        });
-        
-        function validateForm(form) {
-          let isValid = true;
-          const inputs = form.querySelectorAll('input[required], textarea[required]');
-          
-          inputs.forEach(input => {
-            if (!input.value.trim()) {
-              showFieldError(input, 'This field is required');
-              isValid = false;
-            } else {
-              clearFieldError(input);
-            }
-          });
-          
-          return isValid;
-        }
-        
-        function showFieldError(input, message) {
-          clearFieldError(input);
-          
-          const errorElement = document.createElement('div');
-          errorElement.className = 'field-error text-red-600 text-sm mt-1';
-          errorElement.textContent = message;
-          
-          input.classList.add('border-red-500');
-          input.parentNode.appendChild(errorElement);
-        }
-        
-        function clearFieldError(input) {
-          input.classList.remove('border-red-500');
-          const existingError = input.parentNode.querySelector('.field-error');
-          if (existingError) {
-            existingError.remove();
           }
         }
-      });
+      }
+      
+      // Initialize the layout manager
+      new LayoutManager();
       
       // Service Worker registration
       if ('serviceWorker' in navigator) {
-        window.addEventListener('load', function() {
+        window.addEventListener('load', () => {
           navigator.serviceWorker.register('/sw.js')
-            .then(function(registration) {
+            .then((registration) => {
               console.log('ServiceWorker registration successful');
             })
-            .catch(function(error) {
+            .catch((error) => {
               console.log('ServiceWorker registration failed');
             });
         });
@@ -448,6 +897,15 @@ const finalStructuredData = structuredData
       if (localStorage.getItem('cookieConsent') === 'accepted') {
         trackWebVitals();
       }
+      
+      // Expose global components manager for debugging
+      window.globalComponentsManager = globalComponentsManager;
+      
+      // Manual reinitialization function (useful for debugging)
+      window.reinitializeComponents = () => {
+        console.log('🔧 Manual component reinitialization triggered');
+        globalComponentsManager.reinitialize();
+      };
     </script>
     
     <!-- Google Analytics (conditionally loaded) -->

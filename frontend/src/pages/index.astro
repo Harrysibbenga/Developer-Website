@@ -3,9 +3,10 @@
 /**
  * Homepage for Harry Sibbenga Web Development Services
  * Features hero section, services, tech stack, portfolio preview, and contact CTA
+ * Fixed loading issues and proper component initialization
  */
 
-import Layout from '../layouts/Layout.astro'
+ import Layout from '../layouts/Layout.astro'
 import Hero from '../components/sections/Hero.astro'
 import Services from '../components/sections/Services.astro' 
 import TechStack from '../components/sections/TechStack.astro'
@@ -90,29 +91,43 @@ const structuredData = {
   structuredData={structuredData}
 >
   <!-- Hero Section -->
-  <Hero />
+  <section class="animate-on-scroll">
+    <Hero />
+  </section>
   
   <!-- Services Overview -->
-  <Services />
+  <section class="animate-on-scroll">
+    <Services />
+  </section>
 
   <!-- Technology Stack -->
-  <TechStack />
+  <section class="animate-on-scroll">
+    <TechStack />
+  </section>
 
   <!-- Featured Projects -->
-  <ProjectGallery />
+  <section class="animate-on-scroll">
+    <ProjectGallery />
+  </section>
   
   <!-- Statistics Section -->
-  <Stats />
+  <section class="animate-on-scroll">
+    <Stats />
+  </section>
   
   <!-- Testimonials -->
-  <Testimonials />
+  <section class="animate-on-scroll">
+    <Testimonials />
+  </section>
   
   <!-- Call to Action -->
-  <CTA />
+  <section class="animate-on-scroll">
+    <CTA />
+  </section>
 </Layout>
 
 <style>
-  /* Custom animations for homepage */
+  /* Enhanced animations for homepage */
   @keyframes float {
     0%, 100% { transform: translateY(0px); }
     50% { transform: translateY(-10px); }
@@ -127,6 +142,51 @@ const structuredData = {
     }
   }
   
+  @keyframes slideInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes slideInLeft {
+    from {
+      opacity: 0;
+      transform: translateX(-30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  @keyframes slideInRight {
+    from {
+      opacity: 0;
+      transform: translateX(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  @keyframes fadeInScale {
+    from {
+      opacity: 0;
+      transform: scale(0.8);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  
+  /* Animation utility classes */
   .animate-float {
     animation: float 3s ease-in-out infinite;
   }
@@ -135,11 +195,11 @@ const structuredData = {
     animation: pulse-glow 2s ease-in-out infinite;
   }
   
-  /* Intersection Observer animations */
+  /* Enhanced intersection observer animations */
   .animate-on-scroll {
     opacity: 0;
     transform: translateY(30px);
-    transition: all 0.8s ease-out;
+    transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   }
   
   .animate-on-scroll.animate-in {
@@ -147,97 +207,282 @@ const structuredData = {
     transform: translateY(0);
   }
   
-  /* Staggered animations */
+  /* Staggered animations for child elements */
   .stagger-animation {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     transition-delay: var(--animation-delay, 0ms);
+  }
+  
+  .stagger-animation.animate-in {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  /* Specific animation variants */
+  .animate-slide-up {
+    animation: slideInUp 0.8s ease-out forwards;
+  }
+  
+  .animate-slide-left {
+    animation: slideInLeft 0.8s ease-out forwards;
+  }
+  
+  .animate-slide-right {
+    animation: slideInRight 0.8s ease-out forwards;
+  }
+  
+  .animate-fade-scale {
+    animation: fadeInScale 0.8s ease-out forwards;
+  }
+  
+  /* Loading state for images */
+  img[data-src] {
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+  }
+  
+  img[data-src].loaded {
+    opacity: 1;
+  }
+  
+  /* Smooth scrolling behavior */
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  /* Focus styles for accessibility */
+  .animate-on-scroll:focus {
+    outline: 2px solid #2563eb;
+    outline-offset: 2px;
   }
 </style>
 
 <script>
-  // Intersection Observer for scroll animations
-  document.addEventListener('DOMContentLoaded', () => {
+  // Enhanced homepage initialization and animation handling
+  document.addEventListener('DOMContentLoaded', function() {
+    console.log('Homepage: Initializing animations and interactions...');
+    
+    // Initialize intersection observer for scroll animations
+    initializeScrollAnimations();
+    
+    // Initialize image lazy loading
+    initializeImageLazyLoading();
+    
+    // Initialize smooth scroll for internal links
+    initializeSmoothScroll();
+    
+    // Initialize performance optimizations
+    initializePerformanceOptimizations();
+    
+    console.log('Homepage: Initialization complete');
+  });
+  
+  // Handle page transitions (Astro View Transitions)
+  document.addEventListener('astro:after-swap', function() {
+    console.log('Homepage: Re-initializing after page transition...');
+    
+    // Re-initialize all components after page transition
+    setTimeout(() => {
+      initializeScrollAnimations();
+      initializeImageLazyLoading();
+      initializeSmoothScroll();
+    }, 100);
+  });
+  
+  function initializeScrollAnimations() {
+    // Clean up existing observers to prevent duplicates
+    if (window.homepageScrollObserver) {
+      window.homepageScrollObserver.disconnect();
+    }
+    
     const observerOptions = {
       threshold: 0.1,
       rootMargin: '0px 0px -50px 0px'
-    }
+    };
     
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          entry.target.classList.add('animate-in')
+          const element = entry.target;
+          
+          // Add main animation class
+          element.classList.add('animate-in');
           
           // Handle staggered animations for child elements
-          const staggeredElements = entry.target.querySelectorAll('.stagger-animation')
+          const staggeredElements = element.querySelectorAll('.stagger-animation');
           staggeredElements.forEach((el, index) => {
-            el.style.setProperty('--animation-delay', `${index * 100}ms`)
-          })
+            setTimeout(() => {
+              el.classList.add('animate-in');
+            }, index * 100);
+          });
+          
+          // Handle specific animation types
+          const slideUpElements = element.querySelectorAll('.animate-slide-up');
+          slideUpElements.forEach((el, index) => {
+            setTimeout(() => {
+              el.style.animationDelay = `${index * 0.1}s`;
+              el.classList.add('animate-slide-up');
+            }, index * 100);
+          });
+          
+          // Unobserve the element after animation to improve performance
+          observer.unobserve(element);
         }
-      })
-    }, observerOptions)
+      });
+    }, observerOptions);
     
-    // Observe all elements with animation class
+    // Observe all elements with animation classes
     document.querySelectorAll('.animate-on-scroll').forEach((el) => {
-      observer.observe(el)
-    })
-  })
+      // Reset animation state
+      el.classList.remove('animate-in');
+      observer.observe(el);
+    });
+    
+    // Store observer globally for cleanup
+    window.homepageScrollObserver = observer;
+  }
   
-  // Performance optimization: Lazy load images
-  if ('IntersectionObserver' in window) {
-    const imageObserver = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const img = entry.target as HTMLImageElement
-          if (img.dataset.src) {
-            img.src = img.dataset.src
-            img.classList.remove('loading-skeleton')
-            imageObserver.unobserve(img)
+  function initializeImageLazyLoading() {
+    if ('IntersectionObserver' in window) {
+      // Clean up existing image observer
+      if (window.homepageImageObserver) {
+        window.homepageImageObserver.disconnect();
+      }
+      
+      const imageObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const img = entry.target;
+            
+            if (img.dataset.src) {
+              // Create a new image to preload
+              const newImg = new Image();
+              
+              newImg.onload = () => {
+                img.src = img.dataset.src;
+                img.classList.remove('loading-skeleton');
+                img.classList.add('loaded');
+                imageObserver.unobserve(img);
+              };
+              
+              newImg.onerror = () => {
+                console.error('Failed to load image:', img.dataset.src);
+                img.classList.remove('loading-skeleton');
+                imageObserver.unobserve(img);
+              };
+              
+              newImg.src = img.dataset.src;
+            }
+          }
+        });
+      }, {
+        threshold: 0.1,
+        rootMargin: '50px'
+      });
+      
+      // Observe all images with data-src attribute
+      document.querySelectorAll('img[data-src]').forEach((img) => {
+        img.classList.add('loading-skeleton');
+        imageObserver.observe(img);
+      });
+      
+      window.homepageImageObserver = imageObserver;
+    } else {
+      // Fallback for browsers without IntersectionObserver
+      document.querySelectorAll('img[data-src]').forEach((img) => {
+        img.src = img.dataset.src;
+        img.classList.add('loaded');
+      });
+    }
+  }
+  
+  function initializeSmoothScroll() {
+    // Handle smooth scrolling for internal links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        
+        const targetId = this.getAttribute('href').substring(1);
+        const targetElement = document.getElementById(targetId);
+        
+        if (targetElement) {
+          const headerOffset = 80; // Account for fixed header
+          const elementPosition = targetElement.getBoundingClientRect().top;
+          const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+          
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+          });
+        }
+      });
+    });
+  }
+  
+  function initializePerformanceOptimizations() {
+    // Preload critical resources
+    const criticalImages = [
+      '/images/hero-bg.jpg',
+      '/images/profile-photo.jpg'
+    ];
+    
+    criticalImages.forEach(src => {
+      const link = document.createElement('link');
+      link.rel = 'preload';
+      link.as = 'image';
+      link.href = src;
+      document.head.appendChild(link);
+    });
+    
+    // Prefetch important pages
+    const importantPages = ['/services', '/portfolio', '/contact'];
+    
+    importantPages.forEach(page => {
+      const link = document.createElement('link');
+      link.rel = 'prefetch';
+      link.href = page;
+      document.head.appendChild(link);
+    });
+    
+    // Performance monitoring
+    if ('PerformanceObserver' in window) {
+      const perfObserver = new PerformanceObserver((list) => {
+        for (const entry of list.getEntries()) {
+          if (entry.entryType === 'largest-contentful-paint') {
+            console.log('LCP:', entry.startTime);
+          }
+          if (entry.entryType === 'first-input') {
+            console.log('FID:', entry.processingStart - entry.startTime);
           }
         }
-      })
-    })
-    
-    document.querySelectorAll('img[data-src]').forEach((img) => {
-      imageObserver.observe(img)
-    })
-  }
-  
-  // Smooth scrolling for anchor links
-  document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
-    anchor.addEventListener('click', function (e) {
-      e.preventDefault()
-      const target = document.querySelector(this.getAttribute('href'))
-      if (target) {
-        target.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start'
-        })
-      }
-    })
-  })
-  
-  // Add active states to navigation based on scroll position
-  const sections = document.querySelectorAll('section[id]')
-  const navLinks = document.querySelectorAll('nav a[href^="#"]')
-  
-  const updateActiveLink = () => {
-    const scrollPosition = window.scrollY + 100
-    
-    sections.forEach((section) => {
-      const sectionTop = section.offsetTop
-      const sectionHeight = section.offsetHeight
-      const sectionId = section.getAttribute('id')
+      });
       
-      if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
-        navLinks.forEach((link) => {
-          link.classList.remove('active')
-          if (link.getAttribute('href') === `#${sectionId}`) {
-            link.classList.add('active')
-          }
-        })
-      }
-    })
+      perfObserver.observe({ entryTypes: ['largest-contentful-paint', 'first-input'] });
+    }
   }
   
-  window.addEventListener('scroll', updateActiveLink)
-  updateActiveLink() // Run on page load
+  // Handle visibility change to pause/resume animations
+  document.addEventListener('visibilitychange', function() {
+    const animatedElements = document.querySelectorAll('.animate-float, .animate-pulse-glow');
+    
+    if (document.hidden) {
+      animatedElements.forEach(el => {
+        el.style.animationPlayState = 'paused';
+      });
+    } else {
+      animatedElements.forEach(el => {
+        el.style.animationPlayState = 'running';
+      });
+    }
+  });
+  
+  // Error handling for failed resource loads
+  window.addEventListener('error', function(e) {
+    if (e.target.tagName === 'IMG') {
+      console.error('Image failed to load:', e.target.src);
+      e.target.style.display = 'none';
+    }
+  }, true);
 </script>
