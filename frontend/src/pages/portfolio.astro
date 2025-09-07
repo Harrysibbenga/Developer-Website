@@ -638,5 +638,274 @@ const technologies = getUniqueTechnologies()
         timeout = setTimeout(later, wait);
       };
     }
+
+    function initializePortfolioFiltering() {
+    const projectItems = document.querySelectorAll('.portfolio-item');
+    const categoryFilters = document.querySelectorAll('.portfolio-filter-category');
+    const techFilters = document.querySelectorAll('.portfolio-filter-tech');
+    const searchInput = document.getElementById('project-search');
+    const sortSelect = document.getElementById('project-sort');
+    const viewToggle = document.getElementById('view-toggle');
+    const resultsCount = document.getElementById('results-count');
+    const noResults = document.getElementById('no-results');
+    const clearFilters = document.getElementById('clear-filters');
+    
+    // Exit early if required elements don't exist
+    if (!projectItems.length) return;
+    
+    let activeFilters = {
+      category: 'All',
+      technologies: [],
+      search: '',
+      sort: 'featured'
+    };
+
+    // Clean up existing event listeners by cloning elements
+    function cleanupEventListeners() {
+      // Category filters - only if they exist
+      if (categoryFilters.length > 0) {
+        categoryFilters.forEach(filter => {
+          const newFilter = filter.cloneNode(true);
+          filter.parentNode.replaceChild(newFilter, filter);
+        });
+      }
+      
+      // Tech filters - only if they exist
+      if (techFilters.length > 0) {
+        techFilters.forEach(filter => {
+          const newFilter = filter.cloneNode(true);
+          filter.parentNode.replaceChild(newFilter, filter);
+        });
+      }
+      
+      // Search input - only if it exists
+      if (searchInput) {
+        const newSearchInput = searchInput.cloneNode(true);
+        searchInput.parentNode.replaceChild(newSearchInput, searchInput);
+      }
+      
+      // Sort select - only if it exists
+      if (sortSelect) {
+        const newSortSelect = sortSelect.cloneNode(true);
+        sortSelect.parentNode.replaceChild(newSortSelect, sortSelect);
+      }
+      
+      // View toggle - only if it exists
+      if (viewToggle) {
+        const newViewToggle = viewToggle.cloneNode(true);
+        viewToggle.parentNode.replaceChild(newViewToggle, viewToggle);
+      }
+      
+      // Clear filters button - only if it exists
+      if (clearFilters) {
+        const newClearFilters = clearFilters.cloneNode(true);
+        clearFilters.parentNode.replaceChild(newClearFilters, clearFilters);
+      }
+    }
+    
+    function filterProjects() {
+      let visibleCount = 0;
+      const projectsArray = Array.from(projectItems);
+      
+      // Filter projects
+      projectsArray.forEach(item => {
+        const category = item.dataset.category;
+        const technologies = item.dataset.technologies ? item.dataset.technologies.split(',') : [];
+        const title = item.dataset.title || '';
+        const year = parseInt(item.dataset.year) || 0;
+        const featured = item.dataset.featured === 'true';
+        
+        let isVisible = true;
+        
+        // Category filter
+        if (activeFilters.category !== 'All' && category !== activeFilters.category) {
+          isVisible = false;
+        }
+        
+        // Technology filter
+        if (activeFilters.technologies.length > 0) {
+          const hasRequiredTech = activeFilters.technologies.some(tech => 
+            technologies.includes(tech)
+          );
+          if (!hasRequiredTech) {
+            isVisible = false;
+          }
+        }
+        
+        // Search filter
+        if (activeFilters.search && !title.toLowerCase().includes(activeFilters.search.toLowerCase())) {
+          isVisible = false;
+        }
+        
+        if (isVisible) {
+          item.style.display = 'block';
+          item.classList.remove('hidden');
+          visibleCount++;
+        } else {
+          item.style.display = 'none';
+          item.classList.add('hidden');
+        }
+      });
+      
+      // Update results count
+      if (resultsCount) {
+        resultsCount.textContent = `${visibleCount} project${visibleCount !== 1 ? 's' : ''}`;
+      }
+      
+      // Show/hide no results message
+      if (noResults) {
+        noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+      }
+      
+      // Sort visible projects
+      sortProjects(projectsArray.filter(item => !item.classList.contains('hidden')));
+    }
+    
+    function sortProjects(visibleProjects) {
+      if (!visibleProjects.length) return;
+      
+      const container = visibleProjects[0].parentNode;
+      
+      visibleProjects.sort((a, b) => {
+        const aYear = parseInt(a.dataset.year) || 0;
+        const bYear = parseInt(b.dataset.year) || 0;
+        const aFeatured = a.dataset.featured === 'true';
+        const bFeatured = b.dataset.featured === 'true';
+        
+        switch (activeFilters.sort) {
+          case 'featured':
+            if (aFeatured && !bFeatured) return -1;
+            if (!aFeatured && bFeatured) return 1;
+            return bYear - aYear;
+          case 'newest':
+            return bYear - aYear;
+          case 'oldest':
+            return aYear - bYear;
+          case 'name':
+            return (a.dataset.title || '').localeCompare(b.dataset.title || '');
+          default:
+            return 0;
+        }
+      });
+      
+      // Re-append sorted elements
+      visibleProjects.forEach(project => {
+        container.appendChild(project);
+      });
+    }
+    
+    function setupEventListeners() {
+      // Re-query elements after cleanup
+      const newCategoryFilters = document.querySelectorAll('.portfolio-filter-category');
+      const newTechFilters = document.querySelectorAll('.portfolio-filter-tech');
+      const newSearchInput = document.getElementById('project-search');
+      const newSortSelect = document.getElementById('project-sort');
+      const newClearFilters = document.getElementById('clear-filters');
+      
+      // Category filtering
+      newCategoryFilters.forEach(filter => {
+        filter.addEventListener('click', function() {
+          const category = this.dataset.category;
+          activeFilters.category = category;
+          
+          // Update active state
+          newCategoryFilters.forEach(f => {
+            f.classList.remove('bg-blue-600', 'text-white', 'border-blue-600');
+            f.classList.add('border-gray-300', 'text-gray-700');
+          });
+          this.classList.remove('border-gray-300', 'text-gray-700');
+          this.classList.add('bg-blue-600', 'text-white', 'border-blue-600');
+          
+          filterProjects();
+        });
+      });
+      
+      // Technology filtering
+      newTechFilters.forEach(filter => {
+        filter.addEventListener('click', function() {
+          const tech = this.dataset.tech;
+          const index = activeFilters.technologies.indexOf(tech);
+          
+          if (index > -1) {
+            // Remove technology
+            activeFilters.technologies.splice(index, 1);
+            this.classList.remove('bg-blue-600', 'text-white', 'border-blue-600');
+            this.classList.add('border-gray-300', 'text-gray-600');
+          } else {
+            // Add technology
+            activeFilters.technologies.push(tech);
+            this.classList.remove('border-gray-300', 'text-gray-600');
+            this.classList.add('bg-blue-600', 'text-white', 'border-blue-600');
+          }
+          
+          filterProjects();
+        });
+      });
+      
+      // Search functionality
+      if (newSearchInput) {
+        newSearchInput.addEventListener('input', function() {
+          activeFilters.search = this.value;
+          filterProjects();
+        });
+      }
+      
+      // Sort functionality
+      if (newSortSelect) {
+        newSortSelect.addEventListener('change', function() {
+          activeFilters.sort = this.value;
+          filterProjects();
+        });
+      }
+      
+      // Clear filters
+      if (newClearFilters) {
+        newClearFilters.addEventListener('click', function() {
+          activeFilters = {
+            category: 'All',
+            technologies: [],
+            search: '',
+            sort: 'featured'
+          };
+          
+          // Reset UI
+          if (newSearchInput) newSearchInput.value = '';
+          if (newSortSelect) newSortSelect.value = 'featured';
+          
+          newCategoryFilters.forEach((f, index) => {
+            f.classList.remove('bg-blue-600', 'text-white', 'border-blue-600');
+            f.classList.add('border-gray-300', 'text-gray-700');
+            if (index === 0) {
+              f.classList.remove('border-gray-300', 'text-gray-700');
+              f.classList.add('bg-blue-600', 'text-white', 'border-blue-600');
+            }
+          });
+          
+          newTechFilters.forEach(f => {
+            f.classList.remove('bg-blue-600', 'text-white', 'border-blue-600');
+            f.classList.add('border-gray-300', 'text-gray-600');
+          });
+          
+          filterProjects();
+        });
+      }
+    }
+    
+    // Initialize
+    cleanupEventListeners();
+    setupEventListeners();
+    filterProjects();
+  }
+  
+  // Initialize on page load
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializePortfolioFiltering);
+  } else {
+    initializePortfolioFiltering();
+  }
+  
+  // Re-initialize on Astro page navigation
+  document.addEventListener('astro:page-load', initializePortfolioFiltering);
+  document.addEventListener('astro:after-swap', initializePortfolioFiltering);
   });
 </script>

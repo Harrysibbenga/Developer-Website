@@ -318,10 +318,13 @@ const PROJECT_CATEGORIES = getUniqueCategories()
 </style>
 
 <script>
-  // Project filtering functionality
-  document.addEventListener('DOMContentLoaded', () => {
+  // Project filtering functionality - Fixed for Astro navigation
+  function initializeProjectFiltering() {
     const filterButtons = document.querySelectorAll('.filter-btn')
     const projectCards = document.querySelectorAll('.project-card')
+    
+    // Exit early if elements don't exist
+    if (!filterButtons.length || !projectCards.length) return;
     
     const filterProjects = (category) => {
       projectCards.forEach((card) => {
@@ -338,12 +341,22 @@ const PROJECT_CATEGORIES = getUniqueCategories()
       })
     }
     
+    // Remove existing event listeners to prevent duplicates
     filterButtons.forEach((button) => {
+      // Clone node to remove all event listeners
+      const newButton = button.cloneNode(true);
+      button.parentNode.replaceChild(newButton, button);
+    });
+    
+    // Re-query after cloning
+    const newFilterButtons = document.querySelectorAll('.filter-btn');
+    
+    newFilterButtons.forEach((button) => {
       button.addEventListener('click', () => {
         const category = button.getAttribute('data-filter')
         
         // Update active button
-        filterButtons.forEach((btn) => {
+        newFilterButtons.forEach((btn) => {
           btn.classList.remove('active')
           btn.setAttribute('aria-pressed', 'false')
           btn.className = btn.className.replace(
@@ -366,5 +379,16 @@ const PROJECT_CATEGORIES = getUniqueCategories()
     
     // Initialize with 'All' filter
     filterProjects('All')
-  })
+  }
+  
+  // Initialize on page load
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeProjectFiltering);
+  } else {
+    initializeProjectFiltering();
+  }
+  
+  // Re-initialize on Astro page navigation
+  document.addEventListener('astro:page-load', initializeProjectFiltering);
+  document.addEventListener('astro:after-swap', initializeProjectFiltering);
 </script>
