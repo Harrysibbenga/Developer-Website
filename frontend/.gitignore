@@ -1,0 +1,14 @@
+node_modules
+dist
+.astro
+.DS_Store
+.env
+.vscode
+.idea
+*.log
+*.lock
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+coverage    

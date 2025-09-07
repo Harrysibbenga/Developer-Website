@@ -5,8 +5,11 @@
  * Features live projects with links and CV projects for consultation
  */
 
-import { FEATURED_PROJECTS, PROJECT_CATEGORIES } from '../../utils/projects'
+import { getFeaturedProjects, getUniqueCategories } from '../../utils/projects'
 import TechIcon from '../decor/TechIcon.astro'
+
+const FEATURED_PROJECTS = getFeaturedProjects()
+const PROJECT_CATEGORIES = getUniqueCategories()
 ---
 
 <section id="portfolio" class="py-20 bg-gradient-to-br from-slate-900 via-gray-900 to-indigo-900 text-white relative overflow-hidden">

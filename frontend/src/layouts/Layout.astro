@@ -1,102 +1,81 @@
 ---
 // src/layouts/Layout.astro
-/**
- * Main layout template for Harry Sibbenga Web Development Services
- * Provides consistent structure, SEO, and navigation across all pages
- */
-
-import { ViewTransitions } from 'astro:transitions'
-import Navigation from '../components/navigation/Navigation.vue'
-import Footer from '../components/layout/Footer.astro'
 import { BUSINESS_INFO, SEO_CONFIG } from '../utils/constants'
+import Navigation from '../components/layout/Navigation.astro'
+import Footer from '../components/layout/Footer.astro'
+import { ViewTransitions } from 'astro:transitions'
+import "../styles/global.css";
 
 export interface Props {
   title?: string
   description?: string
   image?: string
-  noIndex?: boolean
   canonical?: string
-  type?: 'website' | 'article'
+  noindex?: boolean
+  ogType?: 'website' | 'article' | 'product'
   publishedTime?: string
   modifiedTime?: string
-  structuredData?: object
+  structuredData?: Record<string, any>
 }
 
-const {
-  title = SEO_CONFIG.defaultTitle,
+const { 
+  title = '',
   description = SEO_CONFIG.defaultDescription,
   image = SEO_CONFIG.image,
-  noIndex = false,
   canonical,
-  type = 'website',
+  noindex = false,
+  ogType = 'website',
   publishedTime,
   modifiedTime,
   structuredData
 } = Astro.props
 
-// Construct full title
-const fullTitle = title === SEO_CONFIG.defaultTitle 
-  ? title 
-  : `${title} | ${BUSINESS_INFO.name}`
+// Build full title
+const fullTitle = title 
+  ? `${title} | ${BUSINESS_INFO.name}`
+  : SEO_CONFIG.defaultTitle
 
-// Construct canonical URL
+// Build canonical URL
 const canonicalURL = canonical || new URL(Astro.url.pathname, Astro.site).href
 
-// Construct full image URL
-const fullImageURL = image.startsWith('http') 
-  ? image 
-  : new URL(image, Astro.site).href
+// Build full image URL
+const fullImageURL = new URL(image, Astro.site).href
 
-// Default structured data
-const defaultStructuredData = {
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  "name": BUSINESS_INFO.fullBusinessName,
-  "description": description,
-  "url": SEO_CONFIG.siteUrl,
-  "author": {
-    "@type": "Person",
-    "name": BUSINESS_INFO.name,
-    "jobTitle": "Python Developer",
-    "email": BUSINESS_INFO.contact.email,
-    "url": SEO_CONFIG.siteUrl,
-    "sameAs": [
-      BUSINESS_INFO.social.github,
-      BUSINESS_INFO.social.linkedin
-    ]
-  },
-  "potentialAction": {
-    "@type": "SearchAction",
-    "target": `${SEO_CONFIG.siteUrl}/portfolio?search={search_term_string}`,
-    "query-input": "required name=search_term_string"
-  }
-}
-
-const finalStructuredData = structuredData || defaultStructuredData
+// Merge structured data
+const defaultStructuredData = SEO_CONFIG.structuredData
+const finalStructuredData = structuredData 
+  ? { ...defaultStructuredData, ...structuredData }
+  : defaultStructuredData
 ---
 
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
   <head>
-    <!-- Basic Meta Tags -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content={Astro.generator} />
     
-    <!-- SEO Meta Tags -->
+    <!-- Primary Meta Tags -->
     <title>{fullTitle}</title>
+    <meta name="title" content={fullTitle} />
     <meta name="description" content={description} />
-    <meta name="author" content={SEO_CONFIG.author} />
+    <meta name="author" content={BUSINESS_INFO.name} />
     <meta name="keywords" content={SEO_CONFIG.keywords.join(', ')} />
-    <link rel="canonical" href={canonicalURL} />
-    {noIndex && <meta name="robots" content="noindex, nofollow" />}
     
-    <!-- Open Graph Meta Tags -->
+    <!-- Canonical URL -->
+    <link rel="canonical" href={canonicalURL} />
+    
+    <!-- Robots -->
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content={ogType} />
+    <meta property="og:url" content={canonicalURL} />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={fullImageURL} />
-    <meta property="og:url" content={canonicalURL} />
-    <meta property="og:type" content={type} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
     <meta property="og:site_name" content={BUSINESS_INFO.fullBusinessName} />
     <meta property="og:locale" content="en_GB" />
     {publishedTime && <meta property="article:published_time" content={publishedTime} />}
@@ -107,6 +86,8 @@ const finalStructuredData = structuredData || defaultStructuredData
     <meta name="twitter:title" content={fullTitle} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={fullImageURL} />
+    <meta name="twitter:creator" content={SEO_CONFIG.twitterHandle} />
+    <meta name="twitter:site" content={SEO_CONFIG.twitterHandle} />
     
     <!-- Favicon and Icons -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -114,14 +95,23 @@ const finalStructuredData = structuredData || defaultStructuredData
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
+
     <meta name="theme-color" content="#2563eb" />
+    <meta name="msapplication-TileColor" content="#2563eb" />
     
     <!-- Preconnect to external domains -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     
     <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link 
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" 
+      rel="stylesheet" 
+    />
+    
+    <!-- DNS Prefetch -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="//fonts.gstatic.com" />
     
     <!-- Structured Data -->
     <script type="application/ld+json" set:html={JSON.stringify(finalStructuredData)} />
@@ -143,108 +133,330 @@ const finalStructuredData = structuredData || defaultStructuredData
         100% { background-position: -200% 0; }
       }
       
-      /* Smooth scroll behavior */
+      /* Font loading optimization */
+      .font-inter { font-family: 'Inter', system-ui, sans-serif; }
+      .font-mono { font-family: 'JetBrains Mono', Monaco, 'Cascadia Code', monospace; }
+      
+      /* Prevent layout shift */
+      .hero-section {
+        min-height: 60vh;
+      }
+      
+      /* Smooth scrolling */
       html {
         scroll-behavior: smooth;
       }
       
-      /* Focus styles for accessibility */
-      .focus-visible {
+      /* Focus outline for accessibility */
+      :focus-visible {
         outline: 2px solid #3b82f6;
         outline-offset: 2px;
+      }
+      
+      /* Remove outline for mouse users */
+      :focus:not(:focus-visible) {
+        outline: none;
       }
     </style>
   </head>
   
-  <body class="bg-gray-50 text-gray-900 antialiased">
-    <!-- Skip to main content for accessibility -->
-    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-blue-600 text-white px-4 py-2 rounded-md z-50">
+  <body class="min-h-screen bg-white font-inter antialiased">
+    <!-- Skip to content link for accessibility -->
+    <a 
+      href="#main-content" 
+      class="sr-only focus:not-sr-only fixed top-4 left-4 z-50 px-4 py-2 bg-blue-600 text-white rounded-lg font-medium transition-all duration-300"
+    >
       Skip to main content
     </a>
     
-    <!-- Navigation -->
-    <Navigation client:load />
+    <!-- Header/Navigation -->
+    <Navigation />
     
     <!-- Main Content -->
-    <main id="main-content" class="min-h-screen">
+    <main id="main-content" class="flex-1">
       <slot />
     </main>
     
     <!-- Footer -->
     <Footer />
     
-    <!-- Analytics and Scripts -->
+    <!-- Cookie Consent Banner -->
+    <div 
+      id="cookie-consent" 
+      class="fixed bottom-0 left-0 right-0 bg-gray-900 text-white p-4 transform translate-y-full transition-transform duration-300 z-50"
+      style="display: none;"
+    >
+      <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="flex-1">
+          <p class="text-sm">
+            We use cookies to enhance your browsing experience and analyze our traffic. 
+            <a href="/cookies" class="underline hover:text-blue-300">Learn more</a>
+          </p>
+        </div>
+        <div class="flex gap-3">
+          <button 
+            id="cookie-decline"
+            class="px-4 py-2 text-sm border border-gray-600 rounded-lg hover:bg-gray-800 transition-colors"
+          >
+            Decline
+          </button>
+          <button 
+            id="cookie-accept"
+            class="px-4 py-2 text-sm bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            Accept All
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Back to Top Button -->
+    <button 
+      id="back-to-top"
+      class="fixed bottom-6 right-6 w-12 h-12 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-300 opacity-0 invisible"
+      aria-label="Back to top"
+    >
+      <svg class="w-6 h-6 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/>
+      </svg>
+    </button>
+    
+    <!-- Loading Indicator for Page Transitions -->
+    <div 
+      id="page-loading"
+      class="fixed top-0 left-0 w-full h-1 bg-blue-600 transform -translate-x-full transition-transform duration-300 z-50"
+      style="display: none;"
+    >
+    </div>
+    
+    <!-- Scripts -->
     <script>
-      // Simple analytics tracking (replace with your preferred analytics)
-      if (typeof gtag !== 'undefined') {
-        gtag('config', 'GA_MEASUREMENT_ID', {
-          page_title: document.title,
-          page_location: window.location.href
-        })
-      }
+      // Page loading functionality
+      document.addEventListener('DOMContentLoaded', function() {
+        // Back to top button
+        const backToTopButton = document.getElementById('back-to-top');
+        
+        if (backToTopButton) {
+          // Show/hide based on scroll position
+          function toggleBackToTop() {
+            if (window.pageYOffset > 300) {
+              backToTopButton.classList.remove('opacity-0', 'invisible');
+              backToTopButton.classList.add('opacity-100', 'visible');
+            } else {
+              backToTopButton.classList.add('opacity-0', 'invisible');
+              backToTopButton.classList.remove('opacity-100', 'visible');
+            }
+          }
+          
+          window.addEventListener('scroll', toggleBackToTop);
+          
+          // Scroll to top when clicked
+          backToTopButton.addEventListener('click', function() {
+            window.scrollTo({
+              top: 0,
+              behavior: 'smooth'
+            });
+          });
+        }
+        
+        // Cookie consent functionality
+        const cookieConsent = document.getElementById('cookie-consent');
+        const cookieAccept = document.getElementById('cookie-accept');
+        const cookieDecline = document.getElementById('cookie-decline');
+        
+        // Check if user has already made a choice
+        if (!localStorage.getItem('cookieConsent') && cookieConsent) {
+          setTimeout(() => {
+            cookieConsent.style.display = 'block';
+            cookieConsent.classList.remove('translate-y-full');
+          }, 2000);
+        }
+        
+        if (cookieAccept) {
+          cookieAccept.addEventListener('click', function() {
+            localStorage.setItem('cookieConsent', 'accepted');
+            hideCookieConsent();
+            
+            // Initialize analytics if accepted
+            if (typeof gtag !== 'undefined') {
+              gtag('consent', 'update', {
+                'analytics_storage': 'granted'
+              });
+            }
+          });
+        }
+        
+        if (cookieDecline) {
+          cookieDecline.addEventListener('click', function() {
+            localStorage.setItem('cookieConsent', 'declined');
+            hideCookieConsent();
+          });
+        }
+        
+        function hideCookieConsent() {
+          if (cookieConsent) {
+            cookieConsent.classList.add('translate-y-full');
+            setTimeout(() => {
+              cookieConsent.style.display = 'none';
+            }, 300);
+          }
+        }
+        
+        // Page transition loading indicator
+        const pageLoading = document.getElementById('page-loading');
+        
+        // Show loading indicator on navigation
+        document.addEventListener('astro:before-preparation', function() {
+          if (pageLoading) {
+            pageLoading.style.display = 'block';
+            pageLoading.classList.remove('-translate-x-full');
+          }
+        });
+        
+        // Hide loading indicator when page loads
+        document.addEventListener('astro:after-swap', function() {
+          if (pageLoading) {
+            pageLoading.classList.add('-translate-x-full');
+            setTimeout(() => {
+              pageLoading.style.display = 'none';
+            }, 300);
+          }
+        });
+        
+        // Performance optimization: Preload critical resources
+        function preloadCriticalResources() {
+          const criticalImages = document.querySelectorAll('img[data-preload]');
+          criticalImages.forEach(img => {
+            const link = document.createElement('link');
+            link.rel = 'preload';
+            link.as = 'image';
+            link.href = img.src;
+            document.head.appendChild(link);
+          });
+        }
+        
+        preloadCriticalResources();
+        
+        // Intersection Observer for lazy loading and animations
+        const observerOptions = {
+          threshold: 0.1,
+          rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('animate-in');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, observerOptions);
+        
+        // Observe elements for animation
+        const animateElements = document.querySelectorAll('[data-animate]');
+        animateElements.forEach(el => observer.observe(el));
+        
+        // Error handling for images
+        const images = document.querySelectorAll('img');
+        images.forEach(img => {
+          img.addEventListener('error', function() {
+            this.src = '/images/placeholder.jpg';
+            this.alt = 'Image unavailable';
+          });
+        });
+        
+        // Keyboard navigation enhancement
+        document.addEventListener('keydown', function(e) {
+          // ESC key to close modals/overlays
+          if (e.key === 'Escape') {
+            const modals = document.querySelectorAll('[data-modal-open]');
+            modals.forEach(modal => {
+              modal.style.display = 'none';
+              modal.setAttribute('aria-hidden', 'true');
+            });
+          }
+        });
+        
+        // Form validation enhancement
+        const forms = document.querySelectorAll('form[data-validate]');
+        forms.forEach(form => {
+          form.addEventListener('submit', function(e) {
+            if (!validateForm(this)) {
+              e.preventDefault();
+            }
+          });
+        });
+        
+        function validateForm(form) {
+          let isValid = true;
+          const inputs = form.querySelectorAll('input[required], textarea[required]');
+          
+          inputs.forEach(input => {
+            if (!input.value.trim()) {
+              showFieldError(input, 'This field is required');
+              isValid = false;
+            } else {
+              clearFieldError(input);
+            }
+          });
+          
+          return isValid;
+        }
+        
+        function showFieldError(input, message) {
+          clearFieldError(input);
+          
+          const errorElement = document.createElement('div');
+          errorElement.className = 'field-error text-red-600 text-sm mt-1';
+          errorElement.textContent = message;
+          
+          input.classList.add('border-red-500');
+          input.parentNode.appendChild(errorElement);
+        }
+        
+        function clearFieldError(input) {
+          input.classList.remove('border-red-500');
+          const existingError = input.parentNode.querySelector('.field-error');
+          if (existingError) {
+            existingError.remove();
+          }
+        }
+      });
       
-      // Performance monitoring
-      if ('performance' in window) {
-        window.addEventListener('load', () => {
-          const perfData = performance.getEntriesByType('navigation')[0]
-          console.log('Page load time:', perfData.loadEventEnd - perfData.loadEventStart, 'ms')
-        })
-      }
-      
-      // Service worker registration for PWA functionality
+      // Service Worker registration
       if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
+        window.addEventListener('load', function() {
           navigator.serviceWorker.register('/sw.js')
-            .then(registration => console.log('SW registered:', registration))
-            .catch(registrationError => console.log('SW registration failed:', registrationError))
-        })
+            .then(function(registration) {
+              console.log('ServiceWorker registration successful');
+            })
+            .catch(function(error) {
+              console.log('ServiceWorker registration failed');
+            });
+        });
+      }
+      
+      // Web Vitals tracking
+      function trackWebVitals() {
+        if (typeof gtag !== 'undefined') {
+          // Core Web Vitals tracking would go here
+          // This is a placeholder for analytics integration
+        }
+      }
+      
+      // Call web vitals tracking if analytics is enabled
+      if (localStorage.getItem('cookieConsent') === 'accepted') {
+        trackWebVitals();
       }
     </script>
     
-    <!-- Schema.org structured data for developer -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "ProfessionalService",
-      "name": "Harry Sibbenga Web Development Services",
-      "description": "Professional Python development services specializing in web applications, data processing, and real-time systems",
-      "provider": {
-        "@type": "Person",
-        "name": "Harry Sibbenga",
-        "jobTitle": "Python Developer",
-        "email": "sibbengaharry@gmail.com",
-        "telephone": "+447802738966",
-        "address": {
-          "@type": "PostalAddress",
-          "streetAddress": "118 Vellan Ave, Fishermead",
-          "addressLocality": "Milton Keynes",
-          "postalCode": "MK6 2SW",
-          "addressCountry": "GB"
-        }
-      },
-      "serviceType": [
-        "Web Development",
-        "Python Development", 
-        "Data Processing",
-        "Real-time Systems",
-        "API Development"
-      ],
-      "areaServed": [
-        "Milton Keynes",
-        "Northampton", 
-        "Bedford",
-        "Luton",
-        "Oxford",
-        "Cambridge",
-        "London",
-        "United Kingdom"
-      ],
-      "url": "https://harrysibbenga-dev.vercel.app",
-      "sameAs": [
-        "https://github.com/Harrysibbenga",
-        "https://www.linkedin.com/in/harry-m-sibbenga-9b8584119/"
-      ]
-    }
+    <!-- Google Analytics (conditionally loaded) -->
+    <script is:inline>
+      // Only load analytics if cookies are accepted
+      if (localStorage.getItem('cookieConsent') === 'accepted') {
+        // Google Analytics script would go here
+        // Example: gtag configuration
+      }
     </script>
   </body>
 </html>
