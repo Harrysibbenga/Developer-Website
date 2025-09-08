@@ -5,7 +5,7 @@
  * Professional design with contact information and service areas
  */
 
-import { BUSINESS_INFO, SERVICES } from '../../utils/constants'
+ import { BUSINESS_INFO, SERVICES } from '../../utils/constants'
 
 const currentYear = new Date().getFullYear()
 
@@ -261,13 +261,73 @@ const serviceAreas = BUSINESS_INFO.serviceAreas.slice(0, 6) // Show first 6 area
       </div>
     </div>
 
+    <!-- Legal Entity Information Section -->
+    <div class="border-t border-gray-800 pt-8 mt-8">
+      <div class="bg-gray-800/50 rounded-xl p-6">
+        <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+          <svg class="w-5 h-5 text-blue-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+          </svg>
+          Legal Entity Information
+        </h3>
+        
+        <div class="grid md:grid-cols-2 gap-6">
+          <div>
+            <h4 class="text-blue-300 font-medium mb-3">Trading Information</h4>
+            <div class="space-y-2 text-sm text-gray-300">
+              <div class="flex justify-between">
+                <span class="text-gray-400">Trading as:</span>
+                <span>{BUSINESS_INFO.fullBusinessName}</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-400">Personal Brand:</span>
+                <span>{BUSINESS_INFO.name}</span>
+              </div>
+            </div>
+          </div>
+          
+          <div>
+            <h4 class="text-blue-300 font-medium mb-3">Company Details</h4>
+            <div class="space-y-2 text-sm text-gray-300">
+              <div class="flex justify-between">
+                <span class="text-gray-400">Legal Entity:</span>
+                <span>{BUSINESS_INFO.legalEntity.name}</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-400">Type:</span>
+                <span>{BUSINESS_INFO.legalEntity.type}</span>
+              </div>
+              {BUSINESS_INFO.legalEntity.companyNumber && (
+                <div class="flex justify-between">
+                  <span class="text-gray-400">Company No:</span>
+                  <span class="font-mono">{BUSINESS_INFO.legalEntity.companyNumber}</span>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+        
+        <div class="mt-6 pt-6 border-t border-gray-700">
+          <h4 class="text-blue-300 font-medium mb-3">Registered Office</h4>
+          <div class="text-sm text-gray-300">
+            <div>{BUSINESS_INFO.legalEntity.registeredOffice.street}</div>
+            <div>{BUSINESS_INFO.legalEntity.registeredOffice.area}</div>
+            <div>
+              {BUSINESS_INFO.legalEntity.registeredOffice.city} {BUSINESS_INFO.legalEntity.registeredOffice.postcode}
+            </div>
+            <div>{BUSINESS_INFO.legalEntity.registeredOffice.country}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Bottom Footer -->
     <div class="border-t border-gray-800 pt-8 mt-8">
       <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
         
         <!-- Copyright -->
         <div class="text-gray-400 text-sm">
-          © {currentYear} {BUSINESS_INFO.fullBusinessName}. All rights reserved.
+          © {currentYear} {BUSINESS_INFO.legalEntity.name}. All rights reserved.
         </div>
 
         <!-- Legal Links -->

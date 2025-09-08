@@ -45,21 +45,28 @@ const pageDescription = `Privacy policy for ${BUSINESS_INFO.name}. Learn how we 
             highlight={true}
           >
             <p>
-              This privacy policy explains how {BUSINESS_INFO.name} ("we", "us", "our") collects, uses, and protects 
+              This privacy policy explains how {BUSINESS_INFO.name}, trading as {BUSINESS_INFO.fullBusinessName} 
+              through the legal entity {BUSINESS_INFO.legalEntity.name} ("we", "us", "our") collects, uses, and protects 
               your personal information when you visit our website or use our development services.
             </p>
 
             <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 my-6">
               <h4 class="text-blue-800 font-semibold mb-3">Contact Information</h4>
               <div class="text-blue-700 space-y-1">
-                <p><strong>Name:</strong> {BUSINESS_INFO.name}</p>
+                <p><strong>Trading Name:</strong> {BUSINESS_INFO.fullBusinessName}</p>
+                <p><strong>Personal Brand:</strong> {BUSINESS_INFO.name}</p>
+                <p><strong>Legal Entity:</strong> {BUSINESS_INFO.legalEntity.name}</p>
+                <p><strong>Entity Type:</strong> {BUSINESS_INFO.legalEntity.type}</p>
+                {BUSINESS_INFO.legalEntity.companyNumber && (
+                  <p><strong>Company Number:</strong> {BUSINESS_INFO.legalEntity.companyNumber}</p>
+                )}
                 <p><strong>Email:</strong> {BUSINESS_INFO.contact.email}</p>
-                <p><strong>Address:</strong> {BUSINESS_INFO.contact.address.city}, {BUSINESS_INFO.contact.address.country}</p>
+                <p><strong>Address:</strong> {BUSINESS_INFO.legalEntity.registeredOffice.city}, {BUSINESS_INFO.legalEntity.registeredOffice.country}</p>
               </div>
             </div>
 
             <p>
-              As a UK-based freelance developer, we are committed to protecting your privacy and complying with 
+              As a UK-based limited company, we are committed to protecting your privacy and complying with 
               applicable data protection laws, including the UK General Data Protection Regulation (UK GDPR).
             </p>
           </LegalSection>
@@ -88,7 +95,7 @@ const pageDescription = `Privacy policy for ${BUSINESS_INFO.name}. Learn how we 
             <div class="bg-amber-50 border border-amber-200 rounded-lg p-6 my-6">
               <h4 class="text-amber-800 font-semibold mb-3">⚡ Minimal Data Collection</h4>
               <p class="text-amber-700">
-                As a small freelance operation, we only collect information that is necessary for providing 
+                As a small limited company operation, we only collect information that is necessary for providing 
                 our services and communicating with potential clients. We do not sell or share your data 
                 with third parties for marketing purposes.
               </p>
@@ -142,7 +149,7 @@ const pageDescription = `Privacy policy for ${BUSINESS_INFO.name}. Learn how we 
             icon="🔗"
           >
             <p>
-              As a solo freelance developer, we have minimal data sharing. However, we do use some 
+              As a small limited company, we have minimal data sharing. However, we do use some 
               third-party services that may process your data:
             </p>
 
@@ -187,7 +194,7 @@ const pageDescription = `Privacy policy for ${BUSINESS_INFO.name}. Learn how we 
             <div class="bg-red-50 border border-red-200 rounded-lg p-6">
               <h4 class="text-red-800 font-semibold mb-3">🔒 No Data Sales</h4>
               <p class="text-red-700">
-                We never sell, rent, or trade your personal information to third parties for marketing purposes. 
+                {BUSINESS_INFO.legalEntity.name} never sells, rents, or trades your personal information to third parties for marketing purposes. 
                 Your data is only shared when necessary to provide our services or as required by law.
               </p>
             </div>
@@ -302,7 +309,7 @@ const pageDescription = `Privacy policy for ${BUSINESS_INFO.name}. Learn how we 
             client:load
             id="policy-updates"
             title="7. Changes to This Policy"
-            icon="🔄"
+            icon="📄"
           >
             <p>
               We may update this privacy policy from time to time to reflect changes in our practices, 
