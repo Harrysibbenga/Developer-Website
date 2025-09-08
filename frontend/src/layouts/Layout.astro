@@ -94,14 +94,19 @@ const GA_MEASUREMENT_ID = import.meta.env.PUBLIC_GA_MEASUREMENT_ID || 'GA_MEASUR
     <meta name="twitter:site" content={SEO_CONFIG.twitterHandle} />
     
     <!-- Favicon and Icons -->
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/icon-16x16.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/icon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="48x48" href="/icon-48x48.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/logo-180.png" />
     <link rel="manifest" href="/site.webmanifest" />
 
     <meta name="theme-color" content="#2563eb" />
     <meta name="msapplication-TileColor" content="#2563eb" />
+
+    <!-- Adaptive Logo (Light/Dark) -->
+    <link rel="icon" href="/logo.svg" type="image/svg+xml" media="(prefers-color-scheme: light)" />
+    <link rel="icon" href="/logo-dark.svg" type="image/svg+xml" media="(prefers-color-scheme: dark)" />
     
     <!-- Preconnect to external domains -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />

@@ -152,7 +152,7 @@ export const SEO_CONFIG = {
   defaultTitle: "Harry Sibbenga - Python Developer & Web Development Services",
   defaultDescription: "Professional Python developer with 5+ years experience building scalable web applications, data processing systems, and real-time solutions. Based in Milton Keynes, serving UK businesses.",
   author: "Harry Sibbenga",
-  image: "/images/harry-sibbenga-developer.jpg",
+  image: "/logo-512.png",
   
   keywords: [
     "Python developer", "Django development", "Flask development", "web development Milton Keynes",
