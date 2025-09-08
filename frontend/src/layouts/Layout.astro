@@ -400,6 +400,8 @@ const GA_MEASUREMENT_ID = import.meta.env.PUBLIC_GA_MEASUREMENT_ID || 'GA_MEASUR
           this.initializeNavigation()
           this.initializeScrollFeatures()
           this.initializeAnimations()
+          this.initializeContactPageTabs()     
+          this.initializeAccordionComponents() 
           this.initializePortfolioFilters()
           this.initializeCookieConsent()
           this.initializePageTransitions()
@@ -556,6 +558,106 @@ const GA_MEASUREMENT_ID = import.meta.env.PUBLIC_GA_MEASUREMENT_ID || 'GA_MEASUR
           
           this.observers.push(observer)
           console.log(`🎭 Animations ready (${elements.length} elements)`)
+        }
+
+        // === CONTACT PAGE TABS ===
+        initializeContactPageTabs() {
+          const tabButtons = document.querySelectorAll('.tab-button')
+          const tabContents = document.querySelectorAll('.tab-content')
+          
+          if (tabButtons.length === 0) return
+          
+          console.log('📋 Initializing contact page tabs...')
+          
+          tabButtons.forEach(button => {
+            this.addListener(button, 'click', (e) => {
+              e.preventDefault()
+              const tabId = button.dataset.tab
+              
+              if (!tabId) return
+              
+              console.log('📋 Tab clicked:', tabId)
+              
+              // Update button states
+              tabButtons.forEach(btn => {
+                btn.classList.remove('active', 'bg-blue-600', 'text-white')
+                btn.classList.add('text-gray-600', 'hover:text-gray-900')
+                
+                // Remove gradient classes if they exist
+                btn.classList.remove('bg-gradient-to-r', 'from-blue-500', 'to-indigo-500')
+              })
+              
+              // Style active button
+              button.classList.add('active', 'bg-blue-600', 'text-white')
+              button.classList.remove('text-gray-600', 'hover:text-gray-900')
+              
+              // Update content visibility
+              tabContents.forEach(content => {
+                content.classList.add('hidden')
+              })
+              
+              // Show target content
+              const targetContent = document.getElementById(`${tabId}-tab`)
+              if (targetContent) {
+                targetContent.classList.remove('hidden')
+                
+                // Trigger animations for elements in the new tab
+                const animatedElements = targetContent.querySelectorAll('.animate-on-scroll')
+                animatedElements.forEach(el => {
+                  el.classList.remove('animate-in')
+                  setTimeout(() => el.classList.add('animate-in'), 50)
+                })
+              }
+              
+              console.log('📋 Successfully switched to tab:', tabId)
+            })
+          })
+          
+          // Set initial active state
+          const activeButton = document.querySelector('.tab-button.active')
+          if (activeButton?.dataset.tab) {
+            const targetContent = document.getElementById(`${activeButton.dataset.tab}-tab`)
+            if (targetContent) {
+              targetContent.classList.remove('hidden')
+            }
+          }
+          
+          console.log('📋 Contact page tabs ready')
+        }
+
+        // === ACCORDION FUNCTIONALITY ===
+        initializeAccordionComponents() {
+          const accordionTriggers = document.querySelectorAll('[data-accordion-trigger]')
+          if (accordionTriggers.length === 0) return
+          
+          console.log('📖 Initializing accordion components...')
+          
+          accordionTriggers.forEach(trigger => {
+            this.addListener(trigger, 'click', (e) => {
+              e.preventDefault()
+              const target = trigger.dataset.accordionTrigger
+              const content = document.querySelector(`[data-accordion-content="${target}"]`)
+              const icon = trigger.querySelector('.accordion-icon')
+              
+              if (content) {
+                const isExpanded = trigger.getAttribute('aria-expanded') === 'true'
+                
+                trigger.setAttribute('aria-expanded', (!isExpanded).toString())
+                
+                if (isExpanded) {
+                  // Collapse
+                  content.classList.add('hidden')
+                  if (icon) icon.style.transform = 'rotate(0deg)'
+                } else {
+                  // Expand
+                  content.classList.remove('hidden')
+                  if (icon) icon.style.transform = 'rotate(180deg)'
+                }
+              }
+            })
+          })
+          
+          console.log('📖 Accordion components ready')
         }
         
         // === PORTFOLIO FILTERS ===
