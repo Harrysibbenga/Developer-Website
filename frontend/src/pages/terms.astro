@@ -46,14 +46,21 @@ const pageDescription = `Terms of service for ${BUSINESS_INFO.name}. Important i
           >
             <p>
               These Terms of Service ("Terms") govern your use of our website and development services 
-              provided by {BUSINESS_INFO.name} ("we", "us", "our").
+              provided by {BUSINESS_INFO.name}, trading as {BUSINESS_INFO.fullBusinessName}, 
+              through the legal entity {BUSINESS_INFO.legalEntity.name} ("we", "us", "our").
             </p>
 
             <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 my-6">
               <h4 class="text-blue-800 font-semibold mb-3">Key Information</h4>
               <div class="text-blue-700 space-y-1">
-                <p><strong>Service Provider:</strong> {BUSINESS_INFO.name}</p>
-                <p><strong>Location:</strong> {BUSINESS_INFO.contact.address.city}, {BUSINESS_INFO.contact.address.country}</p>
+                <p><strong>Trading Name:</strong> {BUSINESS_INFO.fullBusinessName}</p>
+                <p><strong>Personal Brand:</strong> {BUSINESS_INFO.name}</p>
+                <p><strong>Legal Entity:</strong> {BUSINESS_INFO.legalEntity.name}</p>
+                <p><strong>Entity Type:</strong> {BUSINESS_INFO.legalEntity.type}</p>
+                {BUSINESS_INFO.legalEntity.companyNumber && (
+                  <p><strong>Company Number:</strong> {BUSINESS_INFO.legalEntity.companyNumber}</p>
+                )}
+                <p><strong>Registered Office:</strong> {BUSINESS_INFO.legalEntity.registeredOffice.city}, {BUSINESS_INFO.legalEntity.registeredOffice.country}</p>
                 <p><strong>Contact:</strong> {BUSINESS_INFO.contact.email}</p>
                 <p><strong>Governed by:</strong> English Law</p>
               </div>
@@ -101,7 +108,7 @@ const pageDescription = `Terms of service for ${BUSINESS_INFO.name}. Important i
             <div class="bg-amber-50 border border-amber-200 rounded-lg p-6">
               <h4 class="text-amber-800 font-semibold mb-3">Service Availability</h4>
               <p class="text-amber-700">
-                Services are provided on a project basis. We reserve the right to refuse service to 
+                Services are provided on a project basis by {BUSINESS_INFO.legalEntity.name}. We reserve the right to refuse service to 
                 anyone for any reason. All services are subject to availability and our capacity to deliver.
               </p>
             </div>
@@ -225,7 +232,7 @@ const pageDescription = `Terms of service for ${BUSINESS_INFO.name}. Important i
 
             <h3>Limitation of Liability</h3>
             <p>
-              Our total liability for any project or service shall not exceed the total amount paid by 
+              {BUSINESS_INFO.legalEntity.name}'s total liability for any project or service shall not exceed the total amount paid by 
               the client for that specific project. We are not liable for indirect, consequential, or 
               punitive damages including lost profits or business interruption.
             </p>
@@ -233,7 +240,7 @@ const pageDescription = `Terms of service for ${BUSINESS_INFO.name}. Important i
             <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
               <h4 class="text-yellow-800 font-semibold mb-3">Insurance Notice</h4>
               <p class="text-yellow-700">
-                As a freelance developer, we carry professional indemnity insurance appropriate to our 
+                {BUSINESS_INFO.legalEntity.name} carries professional indemnity insurance appropriate to our 
                 business size and risk profile. Clients requiring specific insurance levels should 
                 discuss this before project commencement.
               </p>
@@ -379,7 +386,7 @@ const pageDescription = `Terms of service for ${BUSINESS_INFO.name}. Important i
             client:load
             id="changes-to-terms"
             title="9. Changes to These Terms"
-            icon="📝"
+            icon="🔄"
           >
             <p>
               We reserve the right to modify these terms at any time. Changes will be effective 
@@ -448,12 +455,17 @@ const pageDescription = `Terms of service for ${BUSINESS_INFO.name}. Important i
               </div>
 
               <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
-                <h4 class="font-semibold mb-4 text-gray-900">Response Times</h4>
+                <h4 class="font-semibold mb-4 text-gray-900">Legal Entity</h4>
                 <div class="space-y-2 text-sm text-gray-600">
-                  <p><strong>General inquiries:</strong> Within 48 hours</p>
-                  <p><strong>Project discussions:</strong> Within 24 hours</p>
-                  <p><strong>Support requests:</strong> Within 12 hours</p>
-                  <p><strong>Urgent issues:</strong> Within 4 hours</p>
+                  <p><strong>Company:</strong> {BUSINESS_INFO.legalEntity.name}</p>
+                  <p><strong>Type:</strong> {BUSINESS_INFO.legalEntity.type}</p>
+                  {BUSINESS_INFO.legalEntity.companyNumber && (
+                    <p><strong>Company No:</strong> {BUSINESS_INFO.legalEntity.companyNumber}</p>
+                  )}
+                  <p><strong>Registered Office:</strong><br/>
+                     {BUSINESS_INFO.legalEntity.registeredOffice.street}<br/>
+                     {BUSINESS_INFO.legalEntity.registeredOffice.area}<br/>
+                     {BUSINESS_INFO.legalEntity.registeredOffice.city} {BUSINESS_INFO.legalEntity.registeredOffice.postcode}</p>
                 </div>
               </div>
             </div>

@@ -10,6 +10,20 @@ export const BUSINESS_INFO = {
   tagline: "Full-Stack Solutions",
   description: "Experienced Python developer specializing in scalable web applications, data processing, and real-time systems. 5+ years building robust solutions for humanitarian, corporate, and IoT domains.",
   
+  // Legal Entity Information
+  legalEntity: {
+    name: "CodeForge Solutions LTD",
+    type: "Limited Company",
+    companyNumber: "12345678", // To be added when received
+    registeredOffice: {
+      street: "118 Vellan Ave",
+      area: "Fishermead", 
+      city: "Milton Keynes",
+      postcode: "MK6 2SW",
+      country: "United Kingdom"
+    }
+  },
+  
   // Contact Information
   contact: {
     email: "sibbengaharry@gmail.com",
@@ -39,7 +53,7 @@ export const BUSINESS_INFO = {
   // Business Hours
   businessHours: {
     weekdays: "9:00 AM - 6:00 PM",
-    weekends: "10:00 AM - 4:00 PM",
+    weekends: "9:00 AM - 4:00 PM",
     timezone: "GMT"
   }
 } as const
@@ -167,6 +181,11 @@ export const SEO_CONFIG = {
     "jobTitle": "Python Developer",
     "description": "Professional Python developer specializing in web applications and data processing",
     "url": "https://harrysibbenga-dev.vercel.app",
+    "worksFor": {
+      "@type": "Organization",
+      "name": "CodeForge Solutions LTD",
+      "legalName": "CodeForge Solutions LTD"
+    },
     "sameAs": [
       "https://github.com/Harrysibbenga",
       "https://www.linkedin.com/in/harry-m-sibbenga-9b8584119/"
