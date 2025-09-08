@@ -371,24 +371,51 @@ const GA_MEASUREMENT_ID = import.meta.env.PUBLIC_GA_MEASUREMENT_ID || 'GA_MEASUR
       class ApplicationManager {
         constructor() {
           this.initialized = false
-          this.init()
+          // Wait for DOM to be ready
+          if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => this.init())
+          } else {
+            this.init()
+          }
         }
         
         async init() {
           console.log('🚀 Application Manager: Starting initialization...')
           
-          // Wait for enhanced components manager
-          const { enhancedComponentsManager } = await import('/src/utils/enhanced-components-manager.ts')
-          
-          // Initialize core application features
+          // Initialize core features directly instead of relying on imports
           this.setupApplicationFeatures()
-          
-          // Initialize all components
-          await enhancedComponentsManager.initialize()
-          enhancedComponentsManager.setupPageTransitions()
+          this.initializeNavigationDirect() // Add this method
           
           this.initialized = true
           console.log('✅ Application Manager: Fully initialized')
+        }
+        
+        initializeNavigationDirect() {
+          const mobileMenuButton = document.getElementById('mobile-menu-button')
+          const mobileMenu = document.getElementById('mobile-menu')
+          
+          if (mobileMenuButton && mobileMenu) {
+            mobileMenuButton.addEventListener('click', () => {
+              const isExpanded = mobileMenuButton.getAttribute('aria-expanded') === 'true'
+              mobileMenuButton.setAttribute('aria-expanded', (!isExpanded).toString())
+              
+              if (!isExpanded) {
+                mobileMenu.classList.remove('hidden')
+                // Update icon to X
+                const svg = mobileMenuButton.querySelector('svg path')
+                if (svg) svg.setAttribute('d', 'M6 18L18 6M6 6l12 12')
+              } else {
+                mobileMenu.classList.add('hidden')
+                // Update icon to hamburger
+                const svg = mobileMenuButton.querySelector('svg path')
+                if (svg) svg.setAttribute('d', 'M4 6h16M4 12h16M4 18h16')
+              }
+            })
+            
+            console.log('✅ Navigation initialized successfully')
+          } else {
+            console.warn('❌ Navigation elements not found')
+          }
         }
         
         setupApplicationFeatures() {
