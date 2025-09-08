@@ -49,5 +49,12 @@ env.bak/
 # Astro cache
 .astro
 
+# Ignore all .gitignore files themselves
+# (Uncomment the next line if you want to ignore all .gitignore files)
+# .gitignore
+
+# Ignore all .gitignore files in all subdirectories
+**/.gitignore
+
 personal_docs
 
