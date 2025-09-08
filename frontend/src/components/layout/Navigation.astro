@@ -155,118 +155,53 @@ const isActive = (href: string) => {
 </header>
 
 <!-- Enhanced Navigation Manager Script -->
+<!-- Replace the entire script section in Navigation.astro with this -->
+
 <script>
-  // Enhanced Navigation Manager - Works with Enhanced Components Manager
-  class NavigationManager {
-    constructor() {
-      this.scrollProgress = null
-      this.header = null
-      this.init()
-    }
+  // Simplified Navigation Script - Just visual effects, no component management
+  console.log('🧭 Navigation: Loading visual effects only...')
+  
+  // Only handle header background effects (not managed by unified manager)
+  function initializeHeaderEffects() {
+    const header = document.querySelector('header')
+    if (!header) return
     
-    init() {
-      // Wait for DOM to be ready
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => this.initializeNavigation())
-      } else {
-        this.initializeNavigation()
-      }
-      
-      // Handle page transitions
-      this.setupPageTransitions()
-    }
-    
-    initializeNavigation() {
-      console.log('🧭 Navigation Manager: Initializing...')
-      
-      this.initializeScrollProgress()
-      this.initializeHeaderEffects()
-      
-      // Note: Mobile menu is handled by Enhanced Components Manager
-      console.log('✅ Navigation Manager: Initialized (mobile menu handled by Enhanced Components Manager)')
-    }
-    
-    setupPageTransitions() {
-      // Reinitialize on page transitions
-      document.addEventListener('astro:after-swap', () => {
-        console.log('🧭 Navigation Manager: Reinitializing after page transition...')
-        setTimeout(() => {
-          this.initializeNavigation()
-        }, 50)
+    let ticking = false
+    const updateHeaderBackground = () => {
+      if (ticking) return
+      ticking = true
+      requestAnimationFrame(() => {
+        const scrollY = window.scrollY
+        
+        if (scrollY > 10) {
+          header.classList.add('shadow-sm')
+          header.style.backgroundColor = 'rgba(255, 255, 255, 0.98)'
+        } else {
+          header.classList.remove('shadow-sm')
+          header.style.backgroundColor = 'rgba(255, 255, 255, 0.95)'
+        }
+        
+        ticking = false
       })
     }
     
-    initializeScrollProgress() {
-      this.scrollProgress = document.getElementById('scroll-progress')
-      
-      if (!this.scrollProgress) return
-      
-      // Throttled scroll handler for better performance
-      let ticking = false
-      const updateScrollProgress = () => {
-        if (!ticking) {
-          requestAnimationFrame(() => {
-            const scrollTop = window.pageYOffset || document.documentElement.scrollTop
-            const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight
-            const scrollPercentage = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0
-            
-            if (this.scrollProgress) {
-              this.scrollProgress.style.transform = `scaleX(${Math.min(scrollPercentage / 100, 1)})`
-            }
-            
-            ticking = false
-          })
-          ticking = true
-        }
-      }
-      
-      window.addEventListener('scroll', updateScrollProgress, { passive: true })
-      updateScrollProgress() // Initial call
-    }
-    
-    initializeHeaderEffects() {
-      this.header = document.querySelector('header')
-      
-      if (!this.header) return
-      
-      // Throttled scroll handler for header effects
-      let ticking = false
-      const updateHeaderBackground = () => {
-        if (!ticking) {
-          requestAnimationFrame(() => {
-            const scrollY = window.scrollY
-            
-            if (this.header) {
-              if (scrollY > 10) {
-                this.header.classList.add('shadow-sm')
-                this.header.style.backgroundColor = 'rgba(255, 255, 255, 0.98)'
-              } else {
-                this.header.classList.remove('shadow-sm')
-                this.header.style.backgroundColor = 'rgba(255, 255, 255, 0.95)'
-              }
-            }
-            
-            ticking = false
-          })
-          ticking = true
-        }
-      }
-      
-      window.addEventListener('scroll', updateHeaderBackground, { passive: true })
-      updateHeaderBackground() // Initial call
-    }
+    window.addEventListener('scroll', updateHeaderBackground, { passive: true })
+    updateHeaderBackground() // Initial call
   }
   
-  // Initialize Navigation Manager
-  new NavigationManager()
+  // Initialize after DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeHeaderEffects)
+  } else {
+    initializeHeaderEffects()
+  }
   
-  // Handle visibility change to pause/resume animations
-  document.addEventListener('visibilitychange', () => {
-    const progress = document.getElementById('scroll-progress')
-    if (progress) {
-      progress.style.animationPlayState = document.hidden ? 'paused' : 'running'
-    }
+  // Reinitialize on page transitions
+  document.addEventListener('astro:after-swap', () => {
+    setTimeout(initializeHeaderEffects, 100)
   })
+  
+  console.log('✅ Navigation: Visual effects ready')
 </script>
 
 <style>
