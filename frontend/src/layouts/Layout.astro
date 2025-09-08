@@ -367,7 +367,7 @@ const GA_MEASUREMENT_ID = import.meta.env.PUBLIC_GA_MEASUREMENT_ID || 'GA_MEASUR
     
     <!-- Scripts -->
     <script define:vars={{ GA_MEASUREMENT_ID }}>
-      // Enhanced Application Manager - Clean and Efficient
+      // Enhanced Application Manager - Production Ready
       class ApplicationManager {
         constructor() {
           this.initialized = false
@@ -375,46 +375,22 @@ const GA_MEASUREMENT_ID = import.meta.env.PUBLIC_GA_MEASUREMENT_ID || 'GA_MEASUR
           if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', () => this.init())
           } else {
-            this.init()
+            // Small delay to ensure all elements are rendered
+            setTimeout(() => this.init(), 100)
           }
         }
         
         async init() {
           console.log('🚀 Application Manager: Starting initialization...')
           
-          // Initialize core features directly instead of relying on imports
-          this.setupApplicationFeatures()
-          this.initializeNavigationDirect() // Add this method
-          
-          this.initialized = true
-          console.log('✅ Application Manager: Fully initialized')
-        }
-        
-        initializeNavigationDirect() {
-          const mobileMenuButton = document.getElementById('mobile-menu-button')
-          const mobileMenu = document.getElementById('mobile-menu')
-          
-          if (mobileMenuButton && mobileMenu) {
-            mobileMenuButton.addEventListener('click', () => {
-              const isExpanded = mobileMenuButton.getAttribute('aria-expanded') === 'true'
-              mobileMenuButton.setAttribute('aria-expanded', (!isExpanded).toString())
-              
-              if (!isExpanded) {
-                mobileMenu.classList.remove('hidden')
-                // Update icon to X
-                const svg = mobileMenuButton.querySelector('svg path')
-                if (svg) svg.setAttribute('d', 'M6 18L18 6M6 6l12 12')
-              } else {
-                mobileMenu.classList.add('hidden')
-                // Update icon to hamburger
-                const svg = mobileMenuButton.querySelector('svg path')
-                if (svg) svg.setAttribute('d', 'M4 6h16M4 12h16M4 18h16')
-              }
-            })
+          try {
+            // Initialize core application features
+            this.setupApplicationFeatures()
             
-            console.log('✅ Navigation initialized successfully')
-          } else {
-            console.warn('❌ Navigation elements not found')
+            this.initialized = true
+            console.log('✅ Application Manager: Fully initialized')
+          } catch (error) {
+            console.error('❌ Application Manager initialization failed:', error)
           }
         }
         
@@ -423,6 +399,76 @@ const GA_MEASUREMENT_ID = import.meta.env.PUBLIC_GA_MEASUREMENT_ID || 'GA_MEASUR
           this.setupCookieConsent()
           this.setupPageTransitions()
           this.setupPerformanceMonitoring()
+          this.setupBasicNavigation() // Navigation fallback
+        }
+        
+        setupBasicNavigation() {
+          const mobileMenuButton = document.getElementById('mobile-menu-button')
+          const mobileMenu = document.getElementById('mobile-menu')
+          
+          if (mobileMenuButton && mobileMenu) {
+            console.log('📱 Setting up basic navigation...')
+            
+            mobileMenuButton.addEventListener('click', () => {
+              const isExpanded = mobileMenuButton.getAttribute('aria-expanded') === 'true'
+              
+              mobileMenuButton.setAttribute('aria-expanded', (!isExpanded).toString())
+              
+              if (!isExpanded) {
+                // Show menu
+                mobileMenu.classList.remove('hidden')
+                
+                // Update icon to close icon
+                const svg = mobileMenuButton.querySelector('svg path')
+                if (svg) {
+                  svg.setAttribute('d', 'M6 18L18 6M6 6l12 12')
+                }
+              } else {
+                // Hide menu
+                mobileMenu.classList.add('hidden')
+                
+                // Update icon to hamburger icon
+                const svg = mobileMenuButton.querySelector('svg path')
+                if (svg) {
+                  svg.setAttribute('d', 'M4 6h16M4 12h16M4 18h16')
+                }
+              }
+            })
+            
+            // Close menu when clicking outside
+            document.addEventListener('click', (e) => {
+              const target = e.target
+              if (!mobileMenuButton.contains(target) && !mobileMenu.contains(target)) {
+                mobileMenu.classList.add('hidden')
+                mobileMenuButton.setAttribute('aria-expanded', 'false')
+                
+                // Reset icon to hamburger
+                const svg = mobileMenuButton.querySelector('svg path')
+                if (svg) {
+                  svg.setAttribute('d', 'M4 6h16M4 12h16M4 18h16')
+                }
+              }
+            })
+            
+            // Close menu when navigating
+            const mobileLinks = mobileMenu.querySelectorAll('a')
+            mobileLinks.forEach(link => {
+              link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden')
+                mobileMenuButton.setAttribute('aria-expanded', 'false')
+                
+                // Reset icon to hamburger
+                const svg = mobileMenuButton.querySelector('svg path')
+                if (svg) {
+                  svg.setAttribute('d', 'M4 6h16M4 12h16M4 18h16')
+                }
+              })
+            })
+            
+            console.log('✅ Basic navigation initialized')
+          } else {
+            console.warn('⚠️ Mobile navigation elements not found')
+          }
         }
         
         setupBackToTop() {
@@ -509,103 +555,36 @@ const GA_MEASUREMENT_ID = import.meta.env.PUBLIC_GA_MEASUREMENT_ID || 'GA_MEASUR
             performance: false
           }
           
-          // Load existing preferences
-          const existingConsent = getCookie('cookie-consent')
-          if (existingConsent) {
-            try {
-              cookieConsent = JSON.parse(existingConsent)
-              this.loadAnalytics()
-            } catch (e) {
-              console.error('Error parsing cookie consent:', e)
-            }
-          } else {
-            // Show banner if no consent recorded
-            this.showCookieBanner()
-          }
-          
-          // Update toggle states
-          if (analyticsToggle) analyticsToggle.checked = cookieConsent.analytics
-          if (performanceToggle) performanceToggle.checked = cookieConsent.performance
-          
-          // Banner event listeners
-          if (customizeBtn) {
-            customizeBtn.addEventListener('click', () => {
-              this.hideCookieBanner()
-              this.showCookieModal()
-            })
-          }
-          
-          if (acceptAllBtn) {
-            acceptAllBtn.addEventListener('click', () => {
-              cookieConsent = { analytics: true, performance: true }
-              this.saveConsentAndHide()
-            })
-          }
-          
-          // Make functions global for modal
-          window.closeGlobalCookieModal = () => this.hideCookieModal()
-          window.acceptAllGlobalCookies = () => {
-            cookieConsent = { analytics: true, performance: true }
-            if (analyticsToggle) analyticsToggle.checked = true
-            if (performanceToggle) performanceToggle.checked = true
-            this.saveConsentAndHide()
-          }
-          window.rejectAllGlobalCookies = () => {
-            cookieConsent = { analytics: false, performance: false }
-            if (analyticsToggle) analyticsToggle.checked = false
-            if (performanceToggle) performanceToggle.checked = false
-            clearAnalyticsCookies()
-            this.saveConsentAndHide()
-          }
-          window.saveGlobalPreferences = () => {
-            cookieConsent = {
-              analytics: analyticsToggle ? analyticsToggle.checked : false,
-              performance: performanceToggle ? performanceToggle.checked : false
-            }
-            if (!cookieConsent.analytics) {
-              clearAnalyticsCookies()
-            }
-            this.saveConsentAndHide()
-          }
-          
-          // Helper methods
-          this.saveConsentAndHide = () => {
-            setCookie('cookie-consent', JSON.stringify(cookieConsent), 365)
-            this.hideCookieBanner()
-            this.hideCookieModal()
-            this.loadAnalytics()
-            this.showNotification('Cookie preferences saved')
-          }
-          
-          this.showCookieBanner = () => {
+          // Helper methods - defined as regular functions
+          const showCookieBanner = () => {
             if (banner) {
               banner.classList.remove('hidden')
               setTimeout(() => banner.classList.remove('translate-y-full'), 100)
             }
           }
           
-          this.hideCookieBanner = () => {
+          const hideCookieBanner = () => {
             if (banner) {
               banner.classList.add('translate-y-full')
               setTimeout(() => banner.classList.add('hidden'), 300)
             }
           }
           
-          this.showCookieModal = () => {
+          const showCookieModal = () => {
             if (modal) {
               modal.classList.remove('hidden')
               document.body.style.overflow = 'hidden'
             }
           }
           
-          this.hideCookieModal = () => {
+          const hideCookieModal = () => {
             if (modal) {
               modal.classList.add('hidden')
               document.body.style.overflow = 'auto'
             }
           }
           
-          this.loadAnalytics = () => {
+          const loadAnalytics = () => {
             if (cookieConsent.analytics && GA_MEASUREMENT_ID && GA_MEASUREMENT_ID !== 'GA_MEASUREMENT_ID') {
               // Load Google Analytics
               if (typeof gtag === 'undefined') {
@@ -628,7 +607,15 @@ const GA_MEASUREMENT_ID = import.meta.env.PUBLIC_GA_MEASUREMENT_ID || 'GA_MEASUR
             }
           }
           
-          this.showNotification = (message) => {
+          const saveConsentAndHide = () => {
+            setCookie('cookie-consent', JSON.stringify(cookieConsent), 365)
+            hideCookieBanner()
+            hideCookieModal()
+            loadAnalytics()
+            showNotification('Cookie preferences saved')
+          }
+          
+          const showNotification = (message) => {
             const notification = document.createElement('div')
             notification.className = 'fixed top-4 right-4 bg-green-600 text-white px-4 py-2 rounded-lg shadow-lg z-50 transition-all duration-300'
             notification.textContent = message
@@ -637,10 +624,69 @@ const GA_MEASUREMENT_ID = import.meta.env.PUBLIC_GA_MEASUREMENT_ID || 'GA_MEASUR
             setTimeout(() => notification.remove(), 3000)
           }
           
+          // Load existing preferences
+          const existingConsent = getCookie('cookie-consent')
+          if (existingConsent) {
+            try {
+              cookieConsent = JSON.parse(existingConsent)
+              loadAnalytics()
+            } catch (e) {
+              console.error('Error parsing cookie consent:', e)
+            }
+          } else {
+            // Show banner if no consent recorded
+            showCookieBanner()
+          }
+          
+          // Update toggle states
+          if (analyticsToggle) analyticsToggle.checked = cookieConsent.analytics
+          if (performanceToggle) performanceToggle.checked = cookieConsent.performance
+          
+          // Banner event listeners
+          if (customizeBtn) {
+            customizeBtn.addEventListener('click', () => {
+              hideCookieBanner()
+              showCookieModal()
+            })
+          }
+          
+          if (acceptAllBtn) {
+            acceptAllBtn.addEventListener('click', () => {
+              cookieConsent = { analytics: true, performance: true }
+              saveConsentAndHide()
+            })
+          }
+          
+          // Make functions global for modal
+          window.closeGlobalCookieModal = hideCookieModal
+          window.acceptAllGlobalCookies = () => {
+            cookieConsent = { analytics: true, performance: true }
+            if (analyticsToggle) analyticsToggle.checked = true
+            if (performanceToggle) performanceToggle.checked = true
+            saveConsentAndHide()
+          }
+          window.rejectAllGlobalCookies = () => {
+            cookieConsent = { analytics: false, performance: false }
+            if (analyticsToggle) analyticsToggle.checked = false
+            if (performanceToggle) performanceToggle.checked = false
+            clearAnalyticsCookies()
+            saveConsentAndHide()
+          }
+          window.saveGlobalPreferences = () => {
+            cookieConsent = {
+              analytics: analyticsToggle ? analyticsToggle.checked : false,
+              performance: performanceToggle ? performanceToggle.checked : false
+            }
+            if (!cookieConsent.analytics) {
+              clearAnalyticsCookies()
+            }
+            saveConsentAndHide()
+          }
+          
           // Close modal when clicking outside
           if (modal) {
             modal.addEventListener('click', (e) => {
-              if (e.target === modal) this.hideCookieModal()
+              if (e.target === modal) hideCookieModal()
             })
           }
         }
@@ -664,6 +710,11 @@ const GA_MEASUREMENT_ID = import.meta.env.PUBLIC_GA_MEASUREMENT_ID || 'GA_MEASUR
                 pageLoading.style.display = 'none'
               }, 300)
             }
+            
+            // Reinitialize on page swap
+            setTimeout(() => {
+              this.init()
+            }, 100)
           })
         }
         
@@ -699,8 +750,25 @@ const GA_MEASUREMENT_ID = import.meta.env.PUBLIC_GA_MEASUREMENT_ID || 'GA_MEASUR
         }
       }
       
-      // Initialize the application
-      new ApplicationManager()
+      // Initialize the application with error handling
+      try {
+        new ApplicationManager()
+      } catch (error) {
+        console.error('Failed to initialize Application Manager:', error)
+        
+        // Emergency fallback for navigation
+        setTimeout(() => {
+          const mobileMenuButton = document.getElementById('mobile-menu-button')
+          const mobileMenu = document.getElementById('mobile-menu')
+          
+          if (mobileMenuButton && mobileMenu) {
+            mobileMenuButton.addEventListener('click', () => {
+              const isHidden = mobileMenu.classList.contains('hidden')
+              mobileMenu.classList.toggle('hidden', !isHidden)
+            })
+          }
+        }, 500)
+      }
       
       // Global error handling
       window.addEventListener('error', (e) => {
