@@ -1,20 +1,21 @@
 // src/utils/constants.ts
 /**
  * Centralized business configuration for Harry Sibbenga Web Development Services
- * This file controls all business information, services, and site-wide settings
+ * Personal brand with CodeForge Solutions Ltd as the legal entity
  */
 
 export const BUSINESS_INFO = {
+  // Personal branding (for website content)
   name: "Harry Sibbenga",
-  fullBusinessName: "Harry Sibbenga Web Development Services", 
+  fullBusinessName: "Harry Sibbenga Software Solution Services",
   tagline: "Full-Stack Solutions",
   description: "Experienced Python developer specializing in scalable web applications, data processing, and real-time systems. 5+ years building robust solutions for humanitarian, corporate, and IoT domains.",
   
-  // Legal Entity Information
+  // Legal entity information
   legalEntity: {
-    name: "CodeForge Solutions LTD",
+    name: "CodeForge Solutions Ltd",
     type: "Limited Company",
-    companyNumber: "12345678", // To be added when received
+    companyNumber: "123456789", // Update when you receive it
     registeredOffice: {
       street: "118 Vellan Ave",
       area: "Fishermead", 
@@ -60,12 +61,30 @@ export const BUSINESS_INFO = {
 
 // Development Services Configuration
 export const SERVICES = {
+  websiteDevelopment: {
+    title: "Website Development",
+    description: "Professional business websites that convert visitors into customers. Mobile-responsive, fast-loading, and SEO optimized.",
+    icon: "🌐",
+    technologies: ["Python", "Django", "Vue.js", "HTML5", "CSS3", "JavaScript"],
+    startingPrice: "From £1,500",
+    hourlyRate: "£65-75/hour",
+    features: [
+      "Custom website design and development",
+      "Mobile-responsive layouts",
+      "SEO optimization",
+      "Content management systems",
+      "Contact forms and integrations",
+      "Fast loading performance"
+    ]
+  },
+
   webDevelopment: {
     title: "Web Application Development",
     description: "Custom web applications using Python frameworks like Django and Flask, with modern frontend technologies",
-    icon: "🌐",
+    icon: "⚙️",
     technologies: ["Python", "Django", "Flask", "Vue.js", "JavaScript", "PostgreSQL"],
-    startingPrice: "£2,500",
+    startingPrice: "From £3,000",
+    hourlyRate: "£85-100/hour",
     features: [
       "Custom web application development",
       "RESTful API development", 
@@ -81,7 +100,8 @@ export const SERVICES = {
     description: "Automated data pipelines, analysis workflows, and insights extraction using Python data science tools",
     icon: "📊", 
     technologies: ["Python", "Pandas", "NumPy", "PostgreSQL", "MongoDB", "Jupyter"],
-    startingPrice: "£1,800",
+    startingPrice: "From £2,500",
+    hourlyRate: "£90-110/hour",
     features: [
       "Data pipeline development",
       "Automated workflow creation", 
@@ -97,7 +117,8 @@ export const SERVICES = {
     description: "WebSocket servers, real-time communication systems, and IoT device integration",
     icon: "⚡",
     technologies: ["Python", "Django Channels", "WebSockets", "Redis", "Docker"],
-    startingPrice: "£3,200",
+    startingPrice: "From £5,000",
+    hourlyRate: "£120-140/hour",
     features: [
       "Real-time communication systems",
       "WebSocket server development",
@@ -113,7 +134,8 @@ export const SERVICES = {
     description: "Architecture review, code optimization, and technical guidance for existing projects",
     icon: "💡",
     technologies: ["Python", "System Architecture", "Code Review", "Performance"],
-    startingPrice: "£120/hour",
+    startingPrice: "£120-150/hour",
+    hourlyRate: "£120-150/hour",
     features: [
       "Code review and optimization",
       "Architecture consultation",
@@ -162,7 +184,7 @@ export const TECHNOLOGIES = {
 
 // SEO Configuration
 export const SEO_CONFIG = {
-  siteUrl: "https://harrysibbenga-dev.vercel.app",
+  siteUrl: "https://harrysibbenga.dev",
   defaultTitle: "Harry Sibbenga - Python Developer & Web Development Services",
   defaultDescription: "Professional Python developer with 5+ years experience building scalable web applications, data processing systems, and real-time solutions. Based in Milton Keynes, serving UK businesses.",
   author: "Harry Sibbenga",
@@ -174,17 +196,23 @@ export const SEO_CONFIG = {
     "full-stack developer", "Vue.js developer", "PostgreSQL", "web applications UK"
   ],
   
+  twitterHandle: "@harrysibbenga", // Add if you have Twitter
+  
   structuredData: {
     "@context": "https://schema.org",
     "@type": "Person",
     "name": "Harry Sibbenga",
     "jobTitle": "Python Developer",
     "description": "Professional Python developer specializing in web applications and data processing",
-    "url": "https://harrysibbenga-dev.vercel.app",
+    "url": "https://harrysibbenga.dev",
     "worksFor": {
       "@type": "Organization",
-      "name": "CodeForge Solutions LTD",
-      "legalName": "CodeForge Solutions LTD"
+      "name": "CodeForge Solutions Ltd",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Milton Keynes",
+        "addressCountry": "GB"
+      }
     },
     "sameAs": [
       "https://github.com/Harrysibbenga",
@@ -201,6 +229,7 @@ export const SEO_CONFIG = {
 // Project Categories for Portfolio
 export const PROJECT_CATEGORIES = [
   "All",
+  "Websites",
   "Web Applications", 
   "Data Processing",
   "Real-time Systems",
@@ -254,7 +283,8 @@ export const TESTIMONIALS = [
 // Contact Form Configuration
 export const CONTACT_CONFIG = {
   subjects: [
-    "Web Development Project",
+    "Website Development",
+    "Web Application Development",
     "Data Processing Solution", 
     "Real-time System Development",
     "Technical Consultation",
@@ -263,9 +293,9 @@ export const CONTACT_CONFIG = {
   ],
   
   budgetRanges: [
-    "Under £1,000",
-    "£1,000 - £2,500", 
-    "£2,500 - £5,000",
+    "Under £1,500",
+    "£1,500 - £3,000", 
+    "£3,000 - £5,000",
     "£5,000 - £10,000",
     "£10,000+",
     "Hourly Rate Discussion"
