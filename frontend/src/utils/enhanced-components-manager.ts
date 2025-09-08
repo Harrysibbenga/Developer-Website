@@ -404,7 +404,7 @@ export class EnhancedComponentsManager {
   }
 
   /**
-   * Scroll animations
+   * Scroll animations with skill bars
    */
   private initializeScrollAnimations(): void {
     const animatedElements = document.querySelectorAll('.animate-on-scroll, [data-animate]')
@@ -415,13 +415,19 @@ export class EnhancedComponentsManager {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          entry.target.classList.add('animate-in')
+          const element = entry.target as HTMLElement
+          element.classList.add('animate-in')
           
           // Handle staggered animations
-          const staggeredElements = entry.target.querySelectorAll('.stagger-animation')
+          const staggeredElements = element.querySelectorAll('.stagger-animation')
           staggeredElements.forEach((el, index) => {
             setTimeout(() => el.classList.add('animate-in'), index * 100)
           })
+          
+          // Handle skill bar animations for TechStack
+          if (element.dataset.animate === 'skills') {
+            this.animateSkillBars(element)
+          }
           
           observer.unobserve(entry.target)
         }
@@ -437,6 +443,30 @@ export class EnhancedComponentsManager {
     })
 
     this.observers.set('scroll-animations', { observer, group: 'animations' })
+  }
+
+  /**
+   * Animate skill bars in TechStack section
+   */
+  private animateSkillBars(container: HTMLElement): void {
+    const skillBars = container.querySelectorAll('.skill-progress')
+    
+    skillBars.forEach((bar, index) => {
+      setTimeout(() => {
+        const htmlBar = bar as HTMLElement
+        const width = htmlBar.getAttribute('data-width')
+        
+        if (width) {
+          // Animate width
+          htmlBar.style.width = `${width}%`
+          
+          // Add animated class for glow effect
+          setTimeout(() => {
+            htmlBar.classList.add('animated')
+          }, 500)
+        }
+      }, index * 150) // Stagger animations
+    })
   }
 
   /**

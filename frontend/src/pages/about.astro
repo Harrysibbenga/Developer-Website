@@ -2,6 +2,7 @@
 // src/pages/about.astro
 /**
  * About page showcasing Harry Sibbenga's background, experience, and approach
+ * Enhanced with responsive timeline design
  */
 
  import Layout from '../layouts/Layout.astro'
@@ -54,25 +55,25 @@ const pageDescription = 'Learn about Harry Sibbenga\'s 5+ years of Python develo
       <div class="grid lg:grid-cols-2 gap-12 items-center">
         <!-- Left Content -->
         <div class="animate-on-scroll">
-          <h1 class="text-5xl lg:text-6xl font-black mb-6 leading-tight">
+          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black mb-6 leading-tight">
             About
             <span class="block bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
               Harry Sibbenga
             </span>
           </h1>
           
-          <p class="text-xl text-blue-100 mb-8 leading-relaxed">
+          <p class="text-lg sm:text-xl text-blue-100 mb-8 leading-relaxed">
             Python Developer with {STATS.experience} years of experience building scalable solutions 
             for humanitarian organizations, enterprise clients, and innovative startups.
           </p>
           
           <div class="grid grid-cols-2 gap-6">
             <div class="text-center">
-              <div class="text-3xl font-bold text-cyan-400 mb-2">{STATS.projects}</div>
+              <div class="text-2xl sm:text-3xl font-bold text-cyan-400 mb-2">{STATS.projects}</div>
               <div class="text-blue-200 text-sm">{STATS.projectsLabel}</div>
             </div>
             <div class="text-center">
-              <div class="text-3xl font-bold text-purple-400 mb-2">{STATS.clients}</div>
+              <div class="text-2xl sm:text-3xl font-bold text-purple-400 mb-2">{STATS.clients}</div>
               <div class="text-blue-200 text-sm">{STATS.clientsLabel}</div>
             </div>
           </div>
@@ -85,8 +86,8 @@ const pageDescription = 'Learn about Harry Sibbenga\'s 5+ years of Python develo
               <!-- Professional Photo Container -->
               <div class="aspect-square bg-gradient-to-br from-blue-600/20 to-purple-600/20 rounded-2xl border border-blue-400/30 flex items-center justify-center backdrop-blur-sm">
                 <div class="text-center">
-                  <div class="w-32 h-32 bg-gradient-to-br from-blue-600 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <span class="text-white font-bold text-4xl">HS</span>
+                  <div class="w-24 sm:w-32 h-24 sm:h-32 bg-gradient-to-br from-blue-600 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span class="text-white font-bold text-2xl sm:text-4xl">HS</span>
                   </div>
                   <p class="text-blue-200 text-sm">Professional Photo</p>
                   <p class="text-blue-300 text-xs mt-1">Milton Keynes, UK</p>
@@ -95,14 +96,14 @@ const pageDescription = 'Learn about Harry Sibbenga\'s 5+ years of Python develo
             </div>
             
             <!-- Floating Achievement Badges -->
-            <div class="absolute -top-4 -right-4 bg-green-600 rounded-lg p-3 shadow-lg animate-float">
-              <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+            <div class="absolute -top-4 -right-4 bg-green-600 rounded-lg p-2 sm:p-3 shadow-lg animate-float">
+              <svg class="w-4 h-4 sm:w-6 sm:h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
               </svg>
             </div>
             
-            <div class="absolute -bottom-4 -left-4 bg-blue-600 rounded-lg p-3 shadow-lg animate-float" style="animation-delay: 1s">
-              <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+            <div class="absolute -bottom-4 -left-4 bg-blue-600 rounded-lg p-2 sm:p-3 shadow-lg animate-float" style="animation-delay: 1s">
+              <svg class="w-4 h-4 sm:w-6 sm:h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0L19.2 12l-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/>
               </svg>
             </div>
@@ -116,68 +117,121 @@ const pageDescription = 'Learn about Harry Sibbenga\'s 5+ years of Python develo
   <section class="py-20 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="text-center mb-16 animate-on-scroll">
-        <h2 class="text-4xl font-bold text-gray-900 mb-6">
+        <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">
           Professional Journey
         </h2>
-        <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+        <p class="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto">
           From physics graduate to Python expert, my path has been driven by a passion 
           for solving complex problems through elegant code.
         </p>
       </div>
 
-      <!-- Timeline -->
+      <!-- Responsive Timeline -->
       <div class="relative animate-on-scroll">
-        <!-- Timeline Line -->
-        <div class="absolute left-1/2 transform -translate-x-px h-full w-0.5 bg-gradient-to-b from-blue-600 to-purple-600"></div>
+        <!-- Desktop Timeline Line (hidden on mobile) -->
+        <div class="hidden md:block absolute left-1/2 transform -translate-x-px h-full w-0.5 bg-gradient-to-b from-blue-600 to-purple-600"></div>
+        
+        <!-- Mobile Timeline Line (visible on mobile) -->
+        <div class="md:hidden absolute left-8 top-0 bottom-0 w-0.5 bg-gradient-to-b from-blue-600 to-purple-600"></div>
         
         <!-- Timeline Items -->
-        <div class="space-y-16">
+        <div class="space-y-8 md:space-y-16">
           <!-- Current Role -->
           <div class="relative flex items-center">
-            <div class="flex-1 text-right pr-8">
-              <div class="bg-blue-50 rounded-lg p-6 border border-blue-200">
-                <h3 class="text-xl font-bold text-blue-900 mb-2">Python Developer</h3>
-                <p class="text-blue-700 font-semibold mb-2">MapAction • January 2024 - Present</p>
-                <p class="text-gray-600">
-                  Improving geospatial data pipelines for humanitarian crisis response. 
-                  Achieved 20% reduction in processing time, enabling faster disaster relief efforts.
-                </p>
-                <div class="mt-3 flex flex-wrap gap-2 justify-end">
-                  <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-sm">Python</span>
-                  <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-sm">Docker</span>
-                  <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-sm">CI/CD</span>
+            <!-- Mobile Layout -->
+            <div class="md:hidden flex items-start w-full">
+              <div class="absolute left-8 transform -translate-x-1/2 w-6 h-6 bg-blue-600 rounded-full border-4 border-white shadow-lg flex items-center justify-center">
+                <div class="w-2 h-2 bg-white rounded-full"></div>
+              </div>
+              <div class="ml-16 flex-1">
+                <div class="bg-blue-50 rounded-lg p-4 sm:p-6 border border-blue-200">
+                  <h3 class="text-lg sm:text-xl font-bold text-blue-900 mb-2">Python Developer</h3>
+                  <p class="text-blue-700 font-semibold mb-2 text-sm sm:text-base">MapAction • January 2024 - Present</p>
+                  <p class="text-gray-600 text-sm sm:text-base">
+                    Improving geospatial data pipelines for humanitarian crisis response. 
+                    Achieved 20% reduction in processing time, enabling faster disaster relief efforts.
+                  </p>
+                  <div class="mt-3 flex flex-wrap gap-2">
+                    <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs sm:text-sm">Python</span>
+                    <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs sm:text-sm">Docker</span>
+                    <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs sm:text-sm">CI/CD</span>
+                  </div>
                 </div>
               </div>
             </div>
-            
-            <!-- Timeline Dot -->
-            <div class="absolute left-1/2 transform -translate-x-1/2 w-8 h-8 bg-blue-600 rounded-full border-4 border-white shadow-lg flex items-center justify-center">
-              <div class="w-3 h-3 bg-white rounded-full"></div>
+
+            <!-- Desktop Layout -->
+            <div class="hidden md:flex items-center w-full">
+              <div class="flex-1 text-right pr-8">
+                <div class="bg-blue-50 rounded-lg p-6 border border-blue-200">
+                  <h3 class="text-xl font-bold text-blue-900 mb-2">Python Developer</h3>
+                  <p class="text-blue-700 font-semibold mb-2">MapAction • January 2024 - Present</p>
+                  <p class="text-gray-600">
+                    Improving geospatial data pipelines for humanitarian crisis response. 
+                    Achieved 20% reduction in processing time, enabling faster disaster relief efforts.
+                  </p>
+                  <div class="mt-3 flex flex-wrap gap-2 justify-end">
+                    <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-sm">Python</span>
+                    <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-sm">Docker</span>
+                    <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-sm">CI/CD</span>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Timeline Dot -->
+              <div class="absolute left-1/2 transform -translate-x-1/2 w-8 h-8 bg-blue-600 rounded-full border-4 border-white shadow-lg flex items-center justify-center">
+                <div class="w-3 h-3 bg-white rounded-full"></div>
+              </div>
+              
+              <div class="flex-1 pl-8"></div>
             </div>
-            
-            <div class="flex-1 pl-8"></div>
           </div>
 
           <!-- Previous Role -->
           <div class="relative flex items-center">
-            <div class="flex-1 pr-8"></div>
-            
-            <div class="absolute left-1/2 transform -translate-x-1/2 w-8 h-8 bg-purple-600 rounded-full border-4 border-white shadow-lg flex items-center justify-center">
-              <div class="w-3 h-3 bg-white rounded-full"></div>
+            <!-- Mobile Layout -->
+            <div class="md:hidden flex items-start w-full">
+              <div class="absolute left-8 transform -translate-x-1/2 w-6 h-6 bg-purple-600 rounded-full border-4 border-white shadow-lg flex items-center justify-center">
+                <div class="w-2 h-2 bg-white rounded-full"></div>
+              </div>
+              <div class="ml-16 flex-1">
+                <div class="bg-purple-50 rounded-lg p-4 sm:p-6 border border-purple-200">
+                  <h3 class="text-lg sm:text-xl font-bold text-purple-900 mb-2">Python Developer</h3>
+                  <p class="text-purple-700 font-semibold mb-2 text-sm sm:text-base">Tensator Group • November 2021 - December 2023</p>
+                  <p class="text-gray-600 text-sm sm:text-base">
+                    Developed real-time queue management systems using Django Channels and WebSockets. 
+                    Improved customer wait time accuracy by 15% across multiple deployment locations.
+                  </p>
+                  <div class="mt-3 flex flex-wrap gap-2">
+                    <span class="px-2 py-1 bg-purple-100 text-purple-800 rounded text-xs sm:text-sm">Django</span>
+                    <span class="px-2 py-1 bg-purple-100 text-purple-800 rounded text-xs sm:text-sm">WebSockets</span>
+                    <span class="px-2 py-1 bg-purple-100 text-purple-800 rounded text-xs sm:text-sm">Real-time</span>
+                  </div>
+                </div>
+              </div>
             </div>
-            
-            <div class="flex-1 pl-8">
-              <div class="bg-purple-50 rounded-lg p-6 border border-purple-200">
-                <h3 class="text-xl font-bold text-purple-900 mb-2">Python Developer</h3>
-                <p class="text-purple-700 font-semibold mb-2">Tensator Group • November 2021 - December 2023</p>
-                <p class="text-gray-600">
-                  Developed real-time queue management systems using Django Channels and WebSockets. 
-                  Improved customer wait time accuracy by 15% across multiple deployment locations.
-                </p>
-                <div class="mt-3 flex flex-wrap gap-2">
-                  <span class="px-2 py-1 bg-purple-100 text-purple-800 rounded text-sm">Django</span>
-                  <span class="px-2 py-1 bg-purple-100 text-purple-800 rounded text-sm">WebSockets</span>
-                  <span class="px-2 py-1 bg-purple-100 text-purple-800 rounded text-sm">Real-time</span>
+
+            <!-- Desktop Layout -->
+            <div class="hidden md:flex items-center w-full">
+              <div class="flex-1 pr-8"></div>
+              
+              <div class="absolute left-1/2 transform -translate-x-1/2 w-8 h-8 bg-purple-600 rounded-full border-4 border-white shadow-lg flex items-center justify-center">
+                <div class="w-3 h-3 bg-white rounded-full"></div>
+              </div>
+              
+              <div class="flex-1 pl-8">
+                <div class="bg-purple-50 rounded-lg p-6 border border-purple-200">
+                  <h3 class="text-xl font-bold text-purple-900 mb-2">Python Developer</h3>
+                  <p class="text-purple-700 font-semibold mb-2">Tensator Group • November 2021 - December 2023</p>
+                  <p class="text-gray-600">
+                    Developed real-time queue management systems using Django Channels and WebSockets. 
+                    Improved customer wait time accuracy by 15% across multiple deployment locations.
+                  </p>
+                  <div class="mt-3 flex flex-wrap gap-2">
+                    <span class="px-2 py-1 bg-purple-100 text-purple-800 rounded text-sm">Django</span>
+                    <span class="px-2 py-1 bg-purple-100 text-purple-800 rounded text-sm">WebSockets</span>
+                    <span class="px-2 py-1 bg-purple-100 text-purple-800 rounded text-sm">Real-time</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -185,49 +239,99 @@ const pageDescription = 'Learn about Harry Sibbenga\'s 5+ years of Python develo
 
           <!-- Web Developer Role -->
           <div class="relative flex items-center">
-            <div class="flex-1 text-right pr-8">
-              <div class="bg-green-50 rounded-lg p-6 border border-green-200">
-                <h3 class="text-xl font-bold text-green-900 mb-2">Web Developer Executive</h3>
-                <p class="text-green-700 font-semibold mb-2">Torque Motorsport • May 2019 - November 2021</p>
-                <p class="text-gray-600">
-                  Built custom web applications for motorsport industry using Flask, Django, and Vue.js. 
-                  Created professional websites for drivers to attract sponsors and engage fans.
-                </p>
-                <div class="mt-3 flex flex-wrap gap-2 justify-end">
-                  <span class="px-2 py-1 bg-green-100 text-green-800 rounded text-sm">Flask</span>
-                  <span class="px-2 py-1 bg-green-100 text-green-800 rounded text-sm">Vue.js</span>
-                  <span class="px-2 py-1 bg-green-100 text-green-800 rounded text-sm">APIs</span>
+            <!-- Mobile Layout -->
+            <div class="md:hidden flex items-start w-full">
+              <div class="absolute left-8 transform -translate-x-1/2 w-6 h-6 bg-green-600 rounded-full border-4 border-white shadow-lg flex items-center justify-center">
+                <div class="w-2 h-2 bg-white rounded-full"></div>
+              </div>
+              <div class="ml-16 flex-1">
+                <div class="bg-green-50 rounded-lg p-4 sm:p-6 border border-green-200">
+                  <h3 class="text-lg sm:text-xl font-bold text-green-900 mb-2">Web Developer Executive</h3>
+                  <p class="text-green-700 font-semibold mb-2 text-sm sm:text-base">Torque Motorsport • May 2019 - November 2021</p>
+                  <p class="text-gray-600 text-sm sm:text-base">
+                    Built custom web applications for motorsport industry using Flask, Django, and Vue.js. 
+                    Created professional websites for drivers to attract sponsors and engage fans.
+                  </p>
+                  <div class="mt-3 flex flex-wrap gap-2">
+                    <span class="px-2 py-1 bg-green-100 text-green-800 rounded text-xs sm:text-sm">Flask</span>
+                    <span class="px-2 py-1 bg-green-100 text-green-800 rounded text-xs sm:text-sm">Vue.js</span>
+                    <span class="px-2 py-1 bg-green-100 text-green-800 rounded text-xs sm:text-sm">APIs</span>
+                  </div>
                 </div>
               </div>
             </div>
-            
-            <div class="absolute left-1/2 transform -translate-x-1/2 w-8 h-8 bg-green-600 rounded-full border-4 border-white shadow-lg flex items-center justify-center">
-              <div class="w-3 h-3 bg-white rounded-full"></div>
+
+            <!-- Desktop Layout -->
+            <div class="hidden md:flex items-center w-full">
+              <div class="flex-1 text-right pr-8">
+                <div class="bg-green-50 rounded-lg p-6 border border-green-200">
+                  <h3 class="text-xl font-bold text-green-900 mb-2">Web Developer Executive</h3>
+                  <p class="text-green-700 font-semibold mb-2">Torque Motorsport • May 2019 - November 2021</p>
+                  <p class="text-gray-600">
+                    Built custom web applications for motorsport industry using Flask, Django, and Vue.js. 
+                    Created professional websites for drivers to attract sponsors and engage fans.
+                  </p>
+                  <div class="mt-3 flex flex-wrap gap-2 justify-end">
+                    <span class="px-2 py-1 bg-green-100 text-green-800 rounded text-sm">Flask</span>
+                    <span class="px-2 py-1 bg-green-100 text-green-800 rounded text-sm">Vue.js</span>
+                    <span class="px-2 py-1 bg-green-100 text-green-800 rounded text-sm">APIs</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="absolute left-1/2 transform -translate-x-1/2 w-8 h-8 bg-green-600 rounded-full border-4 border-white shadow-lg flex items-center justify-center">
+                <div class="w-3 h-3 bg-white rounded-full"></div>
+              </div>
+              
+              <div class="flex-1 pl-8"></div>
             </div>
-            
-            <div class="flex-1 pl-8"></div>
           </div>
 
           <!-- Education -->
           <div class="relative flex items-center">
-            <div class="flex-1 pr-8"></div>
-            
-            <div class="absolute left-1/2 transform -translate-x-1/2 w-8 h-8 bg-orange-600 rounded-full border-4 border-white shadow-lg flex items-center justify-center">
-              <div class="w-3 h-3 bg-white rounded-full"></div>
+            <!-- Mobile Layout -->
+            <div class="md:hidden flex items-start w-full">
+              <div class="absolute left-8 transform -translate-x-1/2 w-6 h-6 bg-orange-600 rounded-full border-4 border-white shadow-lg flex items-center justify-center">
+                <div class="w-2 h-2 bg-white rounded-full"></div>
+              </div>
+              <div class="ml-16 flex-1">
+                <div class="bg-orange-50 rounded-lg p-4 sm:p-6 border border-orange-200">
+                  <h3 class="text-lg sm:text-xl font-bold text-orange-900 mb-2">Full Stack Web Developer</h3>
+                  <p class="text-orange-700 font-semibold mb-2 text-sm sm:text-base">Coding Institute • January 2018 - September 2019</p>
+                  <p class="text-gray-600 text-sm sm:text-base">
+                    Comprehensive training in modern web development technologies. 
+                    Built foundation in HTML, CSS, JavaScript, Python, and development best practices.
+                  </p>
+                  <div class="mt-3 flex flex-wrap gap-2">
+                    <span class="px-2 py-1 bg-orange-100 text-orange-800 rounded text-xs sm:text-sm">Full-Stack</span>
+                    <span class="px-2 py-1 bg-orange-100 text-orange-800 rounded text-xs sm:text-sm">JavaScript</span>
+                    <span class="px-2 py-1 bg-orange-100 text-orange-800 rounded text-xs sm:text-sm">Best Practices</span>
+                  </div>
+                </div>
+              </div>
             </div>
-            
-            <div class="flex-1 pl-8">
-              <div class="bg-orange-50 rounded-lg p-6 border border-orange-200">
-                <h3 class="text-xl font-bold text-orange-900 mb-2">Full Stack Web Developer</h3>
-                <p class="text-orange-700 font-semibold mb-2">Coding Institute • January 2018 - September 2019</p>
-                <p class="text-gray-600">
-                  Comprehensive training in modern web development technologies. 
-                  Built foundation in HTML, CSS, JavaScript, Python, and development best practices.
-                </p>
-                <div class="mt-3 flex flex-wrap gap-2">
-                  <span class="px-2 py-1 bg-orange-100 text-orange-800 rounded text-sm">Full-Stack</span>
-                  <span class="px-2 py-1 bg-orange-100 text-orange-800 rounded text-sm">JavaScript</span>
-                  <span class="px-2 py-1 bg-orange-100 text-orange-800 rounded text-sm">Best Practices</span>
+
+            <!-- Desktop Layout -->
+            <div class="hidden md:flex items-center w-full">
+              <div class="flex-1 pr-8"></div>
+              
+              <div class="absolute left-1/2 transform -translate-x-1/2 w-8 h-8 bg-orange-600 rounded-full border-4 border-white shadow-lg flex items-center justify-center">
+                <div class="w-3 h-3 bg-white rounded-full"></div>
+              </div>
+              
+              <div class="flex-1 pl-8">
+                <div class="bg-orange-50 rounded-lg p-6 border border-orange-200">
+                  <h3 class="text-xl font-bold text-orange-900 mb-2">Full Stack Web Developer</h3>
+                  <p class="text-orange-700 font-semibold mb-2">Coding Institute • January 2018 - September 2019</p>
+                  <p class="text-gray-600">
+                    Comprehensive training in modern web development technologies. 
+                    Built foundation in HTML, CSS, JavaScript, Python, and development best practices.
+                  </p>
+                  <div class="mt-3 flex flex-wrap gap-2">
+                    <span class="px-2 py-1 bg-orange-100 text-orange-800 rounded text-sm">Full-Stack</span>
+                    <span class="px-2 py-1 bg-orange-100 text-orange-800 rounded text-sm">JavaScript</span>
+                    <span class="px-2 py-1 bg-orange-100 text-orange-800 rounded text-sm">Best Practices</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -241,18 +345,18 @@ const pageDescription = 'Learn about Harry Sibbenga\'s 5+ years of Python develo
   <section class="py-20 bg-gray-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="text-center mb-16 animate-on-scroll">
-        <h2 class="text-4xl font-bold text-gray-900 mb-6">
+        <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">
           Skills & Expertise
         </h2>
-        <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+        <p class="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto">
           A comprehensive toolkit built through years of hands-on development 
           and continuous learning in the rapidly evolving tech landscape.
         </p>
       </div>
 
-      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
         <!-- Core Programming -->
-        <div class="bg-white rounded-2xl shadow-lg p-8 border border-gray-200 animate-on-scroll">
+        <div class="bg-white rounded-2xl shadow-lg p-6 sm:p-8 border border-gray-200 animate-on-scroll">
           <div class="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mb-6">
             <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
@@ -270,7 +374,7 @@ const pageDescription = 'Learn about Harry Sibbenga\'s 5+ years of Python develo
         </div>
 
         <!-- Frontend Development -->
-        <div class="bg-white rounded-2xl shadow-lg p-8 border border-gray-200 animate-on-scroll">
+        <div class="bg-white rounded-2xl shadow-lg p-6 sm:p-8 border border-gray-200 animate-on-scroll">
           <div class="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center mb-6">
             <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
@@ -288,7 +392,7 @@ const pageDescription = 'Learn about Harry Sibbenga\'s 5+ years of Python develo
         </div>
 
         <!-- DevOps & Tools -->
-        <div class="bg-white rounded-2xl shadow-lg p-8 border border-gray-200 animate-on-scroll">
+        <div class="bg-white rounded-2xl shadow-lg p-6 sm:p-8 border border-gray-200 animate-on-scroll md:col-span-2 lg:col-span-1">
           <div class="w-16 h-16 bg-purple-100 rounded-2xl flex items-center justify-center mb-6">
             <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
@@ -312,11 +416,11 @@ const pageDescription = 'Learn about Harry Sibbenga\'s 5+ years of Python develo
   <!-- Personal Philosophy -->
   <section class="py-20 bg-white">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center animate-on-scroll">
-      <h2 class="text-4xl font-bold text-gray-900 mb-8">
+      <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-8">
         Development Philosophy
       </h2>
       
-      <div class="grid md:grid-cols-3 gap-8 mb-12">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 mb-12">
         <div class="p-6">
           <div class="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
             <span class="text-2xl">🎯</span>
@@ -342,10 +446,10 @@ const pageDescription = 'Learn about Harry Sibbenga\'s 5+ years of Python develo
         </div>
       </div>
       
-      <blockquote class="text-2xl text-gray-600 italic leading-relaxed border-l-4 border-blue-600 pl-8 text-left">
+      <blockquote class="text-xl sm:text-2xl text-gray-600 italic leading-relaxed border-l-4 border-blue-600 pl-6 sm:pl-8 text-left">
         "Great software isn't just about the technology—it's about understanding the problem deeply, 
         designing elegant solutions, and delivering results that make a real difference."
-        <footer class="text-lg text-gray-500 mt-4 not-italic">— Harry Sibbenga</footer>
+        <footer class="text-base sm:text-lg text-gray-500 mt-4 not-italic">— Harry Sibbenga</footer>
       </blockquote>
     </div>
   </section>
@@ -353,14 +457,14 @@ const pageDescription = 'Learn about Harry Sibbenga\'s 5+ years of Python develo
   <!-- Contact CTA -->
   <section class="py-20 bg-gradient-to-br from-blue-600 to-purple-600 text-white">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center animate-on-scroll">
-      <h2 class="text-4xl font-bold mb-6">Ready to Work Together?</h2>
-      <p class="text-xl text-blue-100 mb-8 leading-relaxed">
+      <h2 class="text-3xl sm:text-4xl font-bold mb-6">Ready to Work Together?</h2>
+      <p class="text-lg sm:text-xl text-blue-100 mb-8 leading-relaxed">
         Let's discuss how my experience and expertise can help bring your project to life.
       </p>
       <div class="flex flex-col sm:flex-row gap-4 justify-center">
         <a
           href="/contact"
-          class="inline-flex items-center px-8 py-4 bg-white text-blue-600 rounded-xl font-semibold hover:bg-blue-50 transition-colors duration-300"
+          class="inline-flex items-center justify-center px-6 sm:px-8 py-3 sm:py-4 bg-white text-blue-600 rounded-xl font-semibold hover:bg-blue-50 transition-colors duration-300"
         >
           <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-3.582 8-8 8a8.959 8.959 0 01-2.4-.32l-3.6 1.2 1.2-3.6A8.959 8.959 0 013 12c0-4.418 3.582-8 8-8s8 3.582 8 8z"/>
@@ -370,7 +474,7 @@ const pageDescription = 'Learn about Harry Sibbenga\'s 5+ years of Python develo
         
         <a
           href="/portfolio"
-          class="inline-flex items-center px-8 py-4 border-2 border-white text-white rounded-xl font-semibold hover:bg-white hover:text-blue-600 transition-all duration-300"
+          class="inline-flex items-center justify-center px-6 sm:px-8 py-3 sm:py-4 border-2 border-white text-white rounded-xl font-semibold hover:bg-white hover:text-blue-600 transition-all duration-300"
         >
           <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
@@ -402,24 +506,64 @@ const pageDescription = 'Learn about Harry Sibbenga\'s 5+ years of Python develo
     opacity: 1;
     transform: translateY(0);
   }
-</style>
 
-<script>
-  // Intersection Observer for animations
-  document.addEventListener('DOMContentLoaded', () => {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('animate-in')
-        }
-      })
-    }, {
-      threshold: 0.1,
-      rootMargin: '0px 0px -50px 0px'
-    })
+  /* Mobile timeline optimizations */
+  @media (max-width: 768px) {
+    .timeline-item {
+      padding-left: 4rem;
+    }
     
-    document.querySelectorAll('.animate-on-scroll').forEach((el) => {
-      observer.observe(el)
-    })
-  })
-</script>
+    .timeline-dot {
+      left: 2rem;
+    }
+    
+    .timeline-content {
+      margin-left: 0;
+    }
+  }
+
+  /* Ensure proper spacing on small screens */
+  @media (max-width: 640px) {
+    .hero-title {
+      font-size: 2.5rem;
+      line-height: 1.1;
+    }
+    
+    .hero-subtitle {
+      font-size: 1rem;
+    }
+    
+    .timeline-card {
+      padding: 1rem;
+    }
+    
+    .skill-card {
+      padding: 1.5rem;
+    }
+  }
+
+  /* Timeline line adjustments for mobile */
+  .timeline-line-mobile {
+    left: 2rem;
+    width: 2px;
+  }
+
+  /* Improved touch targets for mobile */
+  @media (max-width: 768px) {
+    .cta-button {
+      min-height: 48px;
+      font-size: 1rem;
+    }
+  }
+
+  /* Better text contrast on mobile */
+  @media (max-width: 640px) {
+    .text-blue-200 {
+      color: rgb(191 219 254);
+    }
+    
+    .text-gray-600 {
+      color: rgb(75 85 99);
+    }
+  }
+</style>

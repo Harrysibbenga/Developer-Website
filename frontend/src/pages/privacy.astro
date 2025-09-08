@@ -1,0 +1,331 @@
+---
+// src/pages/privacy.astro
+import Layout from '../layouts/Layout.astro'
+import LegalSection from '../components/ui/LegalSection.vue'
+import { BUSINESS_INFO } from '../utils/constants'
+
+const pageTitle = 'Privacy Policy'
+const pageDescription = `Privacy policy for ${BUSINESS_INFO.name}. Learn how we collect, use, and protect your personal information when you use our website and services.`
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <main class="min-h-screen bg-white">
+    <!-- Header Section -->
+    <section class="bg-gradient-to-br from-blue-50 to-indigo-100 py-16">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center">
+          <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+            Privacy Policy
+          </h1>
+          <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+            How we collect, use, and protect your personal information when you use our website and development services.
+          </p>
+          <div class="mt-6 text-sm text-gray-500">
+            Last updated: {new Date().toLocaleDateString('en-GB', { 
+              year: 'numeric', 
+              month: 'long', 
+              day: 'numeric' 
+            })}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Content Sections -->
+    <section class="py-12">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="space-y-12">
+          
+          <!-- Section 1: Introduction -->
+          <LegalSection 
+            client:load
+            id="introduction"
+            title="1. Who We Are"
+            icon="👋"
+            highlight={true}
+          >
+            <p>
+              This privacy policy explains how {BUSINESS_INFO.name} ("we", "us", "our") collects, uses, and protects 
+              your personal information when you visit our website or use our development services.
+            </p>
+
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 my-6">
+              <h4 class="text-blue-800 font-semibold mb-3">Contact Information</h4>
+              <div class="text-blue-700 space-y-1">
+                <p><strong>Name:</strong> {BUSINESS_INFO.name}</p>
+                <p><strong>Email:</strong> {BUSINESS_INFO.contact.email}</p>
+                <p><strong>Address:</strong> {BUSINESS_INFO.contact.address.city}, {BUSINESS_INFO.contact.address.country}</p>
+              </div>
+            </div>
+
+            <p>
+              As a UK-based freelance developer, we are committed to protecting your privacy and complying with 
+              applicable data protection laws, including the UK General Data Protection Regulation (UK GDPR).
+            </p>
+          </LegalSection>
+
+          <!-- Section 2: Information We Collect -->
+          <LegalSection 
+            client:load
+            id="information-collected"
+            title="2. Information We Collect"
+            icon="📊"
+          >
+            <h3>Information You Provide Directly</h3>
+            <ul>
+              <li><strong>Contact Forms:</strong> Name, email address, phone number, project details</li>
+              <li><strong>Email Communications:</strong> Correspondence about projects and services</li>
+              <li><strong>Project Information:</strong> Requirements, specifications, and related business information</li>
+            </ul>
+
+            <h3>Information Collected Automatically</h3>
+            <ul>
+              <li><strong>Website Analytics:</strong> IP address, browser type, pages visited, time spent on site</li>
+              <li><strong>Cookies:</strong> Essential cookies for site functionality and optional analytics cookies</li>
+              <li><strong>Technical Data:</strong> Device information, operating system, screen resolution</li>
+            </ul>
+
+            <div class="bg-amber-50 border border-amber-200 rounded-lg p-6 my-6">
+              <h4 class="text-amber-800 font-semibold mb-3">⚡ Minimal Data Collection</h4>
+              <p class="text-amber-700">
+                As a small freelance operation, we only collect information that is necessary for providing 
+                our services and communicating with potential clients. We do not sell or share your data 
+                with third parties for marketing purposes.
+              </p>
+            </div>
+          </LegalSection>
+
+          <!-- Section 3: How We Use Your Information -->
+          <LegalSection 
+            client:load
+            id="how-we-use-info"
+            title="3. How We Use Your Information"
+            icon="🎯"
+          >
+            <p>We use your personal information for the following purposes:</p>
+
+            <div class="grid md:grid-cols-2 gap-6 my-6">
+              <div class="bg-green-50 border border-green-200 rounded-lg p-6">
+                <h4 class="text-green-800 font-semibold mb-3">Service Delivery</h4>
+                <ul class="text-green-700 space-y-1 text-sm">
+                  <li>• Responding to inquiries and providing quotes</li>
+                  <li>• Delivering development services</li>
+                  <li>• Project communication and updates</li>
+                  <li>• Technical support and maintenance</li>
+                </ul>
+              </div>
+              
+              <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
+                <h4 class="text-blue-800 font-semibold mb-3">Website Improvement</h4>
+                <ul class="text-blue-700 space-y-1 text-sm">
+                  <li>• Understanding how our website is used</li>
+                  <li>• Improving user experience</li>
+                  <li>• Fixing technical issues</li>
+                  <li>• Optimizing content and layout</li>
+                </ul>
+              </div>
+            </div>
+
+            <h3>Legal Basis for Processing</h3>
+            <ul>
+              <li><strong>Legitimate Interest:</strong> Providing information about our services and improving our website</li>
+              <li><strong>Contract Performance:</strong> Delivering agreed development services</li>
+              <li><strong>Consent:</strong> Optional analytics and marketing communications (where applicable)</li>
+            </ul>
+          </LegalSection>
+
+          <!-- Section 4: Data Sharing -->
+          <LegalSection 
+            client:load
+            id="data-sharing"
+            title="4. Data Sharing and Third Parties"
+            icon="🔗"
+          >
+            <p>
+              As a solo freelance developer, we have minimal data sharing. However, we do use some 
+              third-party services that may process your data:
+            </p>
+
+            <div class="space-y-4 my-6">
+              <div class="border border-gray-200 rounded-lg p-6">
+                <div class="flex items-center mb-3">
+                  <img src="/images/icons/google-analytics.svg" alt="Google Analytics" class="w-8 h-8 mr-3" />
+                  <h4 class="text-lg font-semibold">Google Analytics</h4>
+                </div>
+                <p class="text-gray-600 mb-3">
+                  Website analytics to understand visitor behavior and improve our site.
+                </p>
+                <div class="flex items-center text-sm">
+                  <span class="text-gray-500 mr-4">Data: Anonymous usage statistics</span>
+                  <a 
+                    href="https://policies.google.com/privacy" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    class="text-blue-600 hover:text-blue-800 underline"
+                  >
+                    Google's Privacy Policy →
+                  </a>
+                </div>
+              </div>
+
+              <div class="border border-gray-200 rounded-lg p-6">
+                <div class="flex items-center mb-3">
+                  <div class="w-8 h-8 bg-blue-600 rounded mr-3 flex items-center justify-center">
+                    <span class="text-white text-xs font-bold">📧</span>
+                  </div>
+                  <h4 class="text-lg font-semibold">Email Services</h4>
+                </div>
+                <p class="text-gray-600 mb-3">
+                  Professional email hosting for secure client communications.
+                </p>
+                <div class="text-sm text-gray-500">
+                  Data: Email communications with explicit consent
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-red-50 border border-red-200 rounded-lg p-6">
+              <h4 class="text-red-800 font-semibold mb-3">🔒 No Data Sales</h4>
+              <p class="text-red-700">
+                We never sell, rent, or trade your personal information to third parties for marketing purposes. 
+                Your data is only shared when necessary to provide our services or as required by law.
+              </p>
+            </div>
+          </LegalSection>
+
+          <!-- Section 5: Data Security -->
+          <LegalSection 
+            client:load
+            id="data-security"
+            title="5. Data Security and Retention"
+            icon="🔐"
+          >
+            <p>
+              We take appropriate technical and organizational measures to protect your personal information:
+            </p>
+
+            <div class="grid md:grid-cols-2 gap-6 my-6">
+              <div class="bg-purple-50 border border-purple-200 rounded-lg p-6">
+                <h4 class="text-purple-800 font-semibold mb-3">🛡️ Security Measures</h4>
+                <ul class="text-purple-700 space-y-2 text-sm">
+                  <li>• Encrypted data transmission (HTTPS)</li>
+                  <li>• Secure email communications</li>
+                  <li>• Regular security updates</li>
+                  <li>• Limited access to personal data</li>
+                  <li>• Secure backup procedures</li>
+                </ul>
+              </div>
+
+              <div class="bg-orange-50 border border-orange-200 rounded-lg p-6">
+                <h4 class="text-orange-800 font-semibold mb-3">⏰ Data Retention</h4>
+                <ul class="text-orange-700 space-y-2 text-sm">
+                  <li>• Contact inquiries: 2 years</li>
+                  <li>• Project communications: 5 years</li>
+                  <li>• Website analytics: 26 months</li>
+                  <li>• Marketing emails: Until unsubscribed</li>
+                  <li>• Legal requirements: As required by law</li>
+                </ul>
+              </div>
+            </div>
+
+            <p>
+              When the retention period expires, we securely delete or anonymize your personal information 
+              unless we are legally required to retain it for longer.
+            </p>
+          </LegalSection>
+
+          <!-- Section 6: Your Rights -->
+          <LegalSection 
+            client:load
+            id="your-rights"
+            title="6. Your Privacy Rights"
+            icon="⚖️"
+            highlight={true}
+          >
+            <p>Under UK data protection law, you have the following rights:</p>
+
+            <div class="grid md:grid-cols-2 gap-6 my-6">
+              <div class="bg-green-50 border border-green-200 rounded-lg p-6">
+                <h4 class="text-green-800 font-semibold mb-3">✅ Your Rights Include</h4>
+                <ul class="text-green-700 space-y-2 text-sm">
+                  <li>• <strong>Access:</strong> Request copies of your personal data</li>
+                  <li>• <strong>Rectification:</strong> Correct inaccurate information</li>
+                  <li>• <strong>Erasure:</strong> Request deletion of your data</li>
+                  <li>• <strong>Restriction:</strong> Limit how we process your data</li>
+                  <li>• <strong>Portability:</strong> Transfer your data to another service</li>
+                  <li>• <strong>Objection:</strong> Object to processing based on legitimate interests</li>
+                </ul>
+              </div>
+
+              <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
+                <h4 class="text-blue-800 font-semibold mb-3">📧 How to Exercise Your Rights</h4>
+                <ul class="text-blue-700 space-y-2 text-sm">
+                  <li>• Email us at {BUSINESS_INFO.contact.email}</li>
+                  <li>• Include your full name and request details</li>
+                  <li>• We'll respond within 30 days</li>
+                  <li>• Provide ID verification if needed</li>
+                  <li>• No charge for most requests</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="bg-gray-50 border border-gray-200 rounded-lg p-6">
+              <h4 class="font-semibold mb-3">📞 Contact Us About Privacy</h4>
+              <p class="text-gray-600 mb-3">
+                If you have any questions about this privacy policy or want to exercise your rights:
+              </p>
+              <div class="flex flex-wrap gap-4">
+                <a 
+                  href="mailto:{BUSINESS_INFO.contact.email}" 
+                  class="inline-flex items-center text-blue-600 hover:text-blue-800"
+                >
+                  <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                  </svg>
+                  {BUSINESS_INFO.contact.email}
+                </a>
+                <a 
+                  href="/contact" 
+                  class="inline-flex items-center text-blue-600 hover:text-blue-800"
+                >
+                  <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-3.582 8-8 8a8.959 8.959 0 01-2.4-.32l-3.6 1.2 1.2-3.6A8.959 8.959 0 013 12c0-4.418 3.582-8 8-8s8 3.582 8 8z"/>
+                  </svg>
+                  Contact Form
+                </a>
+              </div>
+            </div>
+          </LegalSection>
+
+          <!-- Section 7: Policy Updates -->
+          <LegalSection 
+            client:load
+            id="policy-updates"
+            title="7. Changes to This Policy"
+            icon="🔄"
+          >
+            <p>
+              We may update this privacy policy from time to time to reflect changes in our practices, 
+              technology, or legal requirements.
+            </p>
+
+            <div class="bg-indigo-50 border border-indigo-200 rounded-lg p-6 my-6">
+              <h4 class="text-indigo-800 font-semibold mb-3">📅 How We Handle Updates</h4>
+              <div class="text-indigo-700 space-y-2">
+                <p><strong>For minor changes:</strong> We'll update this page and note the revision date</p>
+                <p><strong>For significant changes:</strong> We'll email existing clients where appropriate</p>
+                <p><strong>Your continued use:</strong> Constitutes acceptance of any updates</p>
+              </div>
+            </div>
+
+            <p>
+              We recommend reviewing this policy periodically to stay informed about how we protect your information.
+            </p>
+          </LegalSection>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+</Layout>

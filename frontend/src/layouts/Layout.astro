@@ -47,6 +47,9 @@ const defaultStructuredData = SEO_CONFIG.structuredData
 const finalStructuredData = structuredData 
   ? { ...defaultStructuredData, ...structuredData }
   : defaultStructuredData
+
+// Get Google Analytics ID from environment variables
+const GA_MEASUREMENT_ID = import.meta.env.PUBLIC_GA_MEASUREMENT_ID || 'GA_MEASUREMENT_ID'
 ---
 
 <!DOCTYPE html>
@@ -227,9 +230,8 @@ const finalStructuredData = structuredData
     
     <!-- Cookie Consent Banner -->
     <div 
-      id="cookie-consent" 
-      class="fixed bottom-0 left-0 right-0 bg-gray-900 text-white p-4 transform translate-y-full transition-transform duration-300 z-50"
-      style="display: none;"
+      id="cookie-consent-banner" 
+      class="fixed bottom-0 left-0 right-0 bg-gray-900 text-white p-4 transform translate-y-full transition-transform duration-300 z-50 hidden"
     >
       <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
         <div class="flex-1">
@@ -240,17 +242,101 @@ const finalStructuredData = structuredData
         </div>
         <div class="flex gap-3">
           <button 
-            id="cookie-decline"
+            id="cookie-customize"
             class="px-4 py-2 text-sm border border-gray-600 rounded-lg hover:bg-gray-800 transition-colors"
           >
-            Decline
+            Customize
           </button>
           <button 
-            id="cookie-accept"
+            id="cookie-accept-all"
             class="px-4 py-2 text-sm bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
           >
             Accept All
           </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cookie Settings Modal (Global) -->
+    <div id="global-cookie-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+      <div class="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div class="p-6">
+          <div class="flex justify-between items-center mb-4">
+            <h3 class="text-xl font-bold text-gray-900">Cookie Settings</h3>
+            <button onclick="closeGlobalCookieModal()" class="text-gray-400 hover:text-gray-600">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+              </svg>
+            </button>
+          </div>
+          
+          <p class="text-gray-600 mb-6">
+            Manage your cookie preferences below. Some cookies are essential for the website to function.
+          </p>
+
+          <div class="space-y-4">
+            <!-- Essential Cookies -->
+            <div class="border border-gray-200 rounded-lg p-4">
+              <div class="flex justify-between items-center mb-2">
+                <h4 class="font-semibold text-gray-900">Essential Cookies</h4>
+                <div class="bg-gray-100 px-3 py-1 rounded-full text-sm text-gray-600">
+                  Always Active
+                </div>
+              </div>
+              <p class="text-sm text-gray-600">
+                These cookies are necessary for the website to function and cannot be switched off.
+              </p>
+            </div>
+
+            <!-- Analytics Cookies -->
+            <div class="border border-gray-200 rounded-lg p-4">
+              <div class="flex justify-between items-center mb-2">
+                <h4 class="font-semibold text-gray-900">Analytics Cookies</h4>
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" id="global-analytics-toggle" class="sr-only peer">
+                  <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                </label>
+              </div>
+              <p class="text-sm text-gray-600">
+                Help us understand how visitors use our website to improve user experience.
+              </p>
+            </div>
+
+            <!-- Performance Cookies -->
+            <div class="border border-gray-200 rounded-lg p-4">
+              <div class="flex justify-between items-center mb-2">
+                <h4 class="font-semibold text-gray-900">Performance Cookies</h4>
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" id="global-performance-toggle" class="sr-only peer">
+                  <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                </label>
+              </div>
+              <p class="text-sm text-gray-600">
+                Used to enhance the performance and functionality of our website.
+              </p>
+            </div>
+          </div>
+
+          <div class="flex flex-col sm:flex-row gap-3 mt-6 pt-6 border-t border-gray-200">
+            <button 
+              onclick="acceptAllGlobalCookies()" 
+              class="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium"
+            >
+              Accept All
+            </button>
+            <button 
+              onclick="saveGlobalPreferences()" 
+              class="flex-1 border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+            >
+              Save Preferences
+            </button>
+            <button 
+              onclick="rejectAllGlobalCookies()" 
+              class="flex-1 text-gray-600 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors"
+            >
+              Reject All
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -275,7 +361,7 @@ const finalStructuredData = structuredData
     </div>
     
     <!-- Scripts -->
-    <script>
+    <script define:vars={{ GA_MEASUREMENT_ID }}>
       // Enhanced Application Manager - Clean and Efficient
       class ApplicationManager {
         constructor() {
@@ -341,45 +427,188 @@ const finalStructuredData = structuredData
         }
         
         setupCookieConsent() {
-          const cookieConsent = document.getElementById('cookie-consent')
-          const cookieAccept = document.getElementById('cookie-accept')
-          const cookieDecline = document.getElementById('cookie-decline')
+          // Unified cookie management system
+          const banner = document.getElementById('cookie-consent-banner')
+          const modal = document.getElementById('global-cookie-modal')
+          const customizeBtn = document.getElementById('cookie-customize')
+          const acceptAllBtn = document.getElementById('cookie-accept-all')
+          const analyticsToggle = document.getElementById('global-analytics-toggle')
+          const performanceToggle = document.getElementById('global-performance-toggle')
           
-          // Check if user has already made a choice
-          if (!localStorage.getItem('cookieConsent') && cookieConsent) {
-            setTimeout(() => {
-              cookieConsent.style.display = 'block'
-              cookieConsent.classList.remove('translate-y-full')
-            }, 2000)
+          // Cookie utilities
+          const setCookie = (name, value, days) => {
+            const expires = new Date()
+            expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000))
+            document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/;SameSite=Lax`
           }
           
-          const hideCookieConsent = () => {
-            if (cookieConsent) {
-              cookieConsent.classList.add('translate-y-full')
-              setTimeout(() => {
-                cookieConsent.style.display = 'none'
-              }, 300)
+          const getCookie = (name) => {
+            const nameEQ = name + "="
+            const ca = document.cookie.split(';')
+            for(let i = 0; i < ca.length; i++) {
+              let c = ca[i]
+              while (c.charAt(0) === ' ') c = c.substring(1, c.length)
+              if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length)
             }
+            return null
           }
           
-          if (cookieAccept) {
-            cookieAccept.addEventListener('click', () => {
-              localStorage.setItem('cookieConsent', 'accepted')
-              hideCookieConsent()
-              
-              // Initialize analytics if accepted
-              if (typeof gtag !== 'undefined') {
-                gtag('consent', 'update', {
-                  'analytics_storage': 'granted'
-                })
+          const deleteCookie = (name) => {
+            document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`
+          }
+
+          // Clear all Google Analytics cookies
+          const clearAnalyticsCookies = () => {
+            const cookiesToDelete = ['_ga', '_ga_' + GA_MEASUREMENT_ID.replace('G-', ''), '_gid', '_gat']
+            cookiesToDelete.forEach(deleteCookie)
+            
+            // Also try to delete any _ga_* cookies by checking all cookies
+            document.cookie.split(';').forEach(cookie => {
+              const cookieName = cookie.split('=')[0].trim()
+              if (cookieName.startsWith('_ga')) {
+                deleteCookie(cookieName)
               }
             })
           }
           
-          if (cookieDecline) {
-            cookieDecline.addEventListener('click', () => {
-              localStorage.setItem('cookieConsent', 'declined')
-              hideCookieConsent()
+          // Default consent state
+          let cookieConsent = {
+            analytics: false,
+            performance: false
+          }
+          
+          // Load existing preferences
+          const existingConsent = getCookie('cookie-consent')
+          if (existingConsent) {
+            try {
+              cookieConsent = JSON.parse(existingConsent)
+              this.loadAnalytics()
+            } catch (e) {
+              console.error('Error parsing cookie consent:', e)
+            }
+          } else {
+            // Show banner if no consent recorded
+            this.showCookieBanner()
+          }
+          
+          // Update toggle states
+          if (analyticsToggle) analyticsToggle.checked = cookieConsent.analytics
+          if (performanceToggle) performanceToggle.checked = cookieConsent.performance
+          
+          // Banner event listeners
+          if (customizeBtn) {
+            customizeBtn.addEventListener('click', () => {
+              this.hideCookieBanner()
+              this.showCookieModal()
+            })
+          }
+          
+          if (acceptAllBtn) {
+            acceptAllBtn.addEventListener('click', () => {
+              cookieConsent = { analytics: true, performance: true }
+              this.saveConsentAndHide()
+            })
+          }
+          
+          // Make functions global for modal
+          window.closeGlobalCookieModal = () => this.hideCookieModal()
+          window.acceptAllGlobalCookies = () => {
+            cookieConsent = { analytics: true, performance: true }
+            if (analyticsToggle) analyticsToggle.checked = true
+            if (performanceToggle) performanceToggle.checked = true
+            this.saveConsentAndHide()
+          }
+          window.rejectAllGlobalCookies = () => {
+            cookieConsent = { analytics: false, performance: false }
+            if (analyticsToggle) analyticsToggle.checked = false
+            if (performanceToggle) performanceToggle.checked = false
+            clearAnalyticsCookies()
+            this.saveConsentAndHide()
+          }
+          window.saveGlobalPreferences = () => {
+            cookieConsent = {
+              analytics: analyticsToggle ? analyticsToggle.checked : false,
+              performance: performanceToggle ? performanceToggle.checked : false
+            }
+            if (!cookieConsent.analytics) {
+              clearAnalyticsCookies()
+            }
+            this.saveConsentAndHide()
+          }
+          
+          // Helper methods
+          this.saveConsentAndHide = () => {
+            setCookie('cookie-consent', JSON.stringify(cookieConsent), 365)
+            this.hideCookieBanner()
+            this.hideCookieModal()
+            this.loadAnalytics()
+            this.showNotification('Cookie preferences saved')
+          }
+          
+          this.showCookieBanner = () => {
+            if (banner) {
+              banner.classList.remove('hidden')
+              setTimeout(() => banner.classList.remove('translate-y-full'), 100)
+            }
+          }
+          
+          this.hideCookieBanner = () => {
+            if (banner) {
+              banner.classList.add('translate-y-full')
+              setTimeout(() => banner.classList.add('hidden'), 300)
+            }
+          }
+          
+          this.showCookieModal = () => {
+            if (modal) {
+              modal.classList.remove('hidden')
+              document.body.style.overflow = 'hidden'
+            }
+          }
+          
+          this.hideCookieModal = () => {
+            if (modal) {
+              modal.classList.add('hidden')
+              document.body.style.overflow = 'auto'
+            }
+          }
+          
+          this.loadAnalytics = () => {
+            if (cookieConsent.analytics && GA_MEASUREMENT_ID && GA_MEASUREMENT_ID !== 'GA_MEASUREMENT_ID') {
+              // Load Google Analytics
+              if (typeof gtag === 'undefined') {
+                const script = document.createElement('script')
+                script.async = true
+                script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`
+                document.head.appendChild(script)
+                
+                script.onload = function() {
+                  window.dataLayer = window.dataLayer || []
+                  function gtag(){dataLayer.push(arguments)}
+                  gtag('js', new Date())
+                  gtag('config', GA_MEASUREMENT_ID, {
+                    anonymize_ip: true,
+                    cookie_flags: 'SameSite=Lax;Secure'
+                  })
+                  window.gtag = gtag
+                }
+              }
+            }
+          }
+          
+          this.showNotification = (message) => {
+            const notification = document.createElement('div')
+            notification.className = 'fixed top-4 right-4 bg-green-600 text-white px-4 py-2 rounded-lg shadow-lg z-50 transition-all duration-300'
+            notification.textContent = message
+            document.body.appendChild(notification)
+            
+            setTimeout(() => notification.remove(), 3000)
+          }
+          
+          // Close modal when clicking outside
+          if (modal) {
+            modal.addEventListener('click', (e) => {
+              if (e.target === modal) this.hideCookieModal()
             })
           }
         }
@@ -458,15 +687,6 @@ const finalStructuredData = structuredData
           el.style.animationPlayState = playState
         })
       })
-    </script>
-    
-    <!-- Google Analytics (conditionally loaded) -->
-    <script is:inline>
-      // Only load analytics if cookies are accepted
-      if (localStorage.getItem('cookieConsent') === 'accepted') {
-        // Google Analytics script would go here
-        // Example: gtag configuration
-      }
     </script>
   </body>
 </html>

@@ -1,11 +1,11 @@
 ---
-// src/pages/services.astro
+// src/pages/services.astro - Updated to use ServiceCardsContainer
 /**
  * Detailed services page with comprehensive service packages and pricing
  */
 
- import Layout from '../layouts/Layout.astro'
-import { SERVICES, TECHNOLOGIES } from '../utils/constants'
+import Layout from '../layouts/Layout.astro'
+import ServiceCardsContainer from '../components/sections/ServiceCardsContainer.astro'
 import TechIcon from '../components/decor/TechIcon.astro'
 
 const pageTitle = 'Development Services - Python Web Development & Consulting'
@@ -52,47 +52,47 @@ const pageDescription = 'Professional Python development services including web 
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
       <div class="text-center animate-on-scroll">
-        <h1 class="text-5xl lg:text-6xl font-black mb-6 leading-tight">
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black mb-6 leading-tight">
           Development
           <span class="block bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
             Services
           </span>
         </h1>
         
-        <p class="text-xl text-blue-100 mb-12 max-w-4xl mx-auto leading-relaxed">
+        <p class="text-lg sm:text-xl text-blue-100 mb-12 max-w-4xl mx-auto leading-relaxed">
           Professional Python development services designed to scale your business. 
           From web applications to data processing systems, I deliver production-ready solutions.
         </p>
 
         <!-- Key Benefits -->
-        <div class="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 max-w-4xl mx-auto">
           <div class="text-center">
-            <div class="w-16 h-16 bg-blue-600/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <svg class="w-8 h-8 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="w-12 h-12 sm:w-16 sm:h-16 bg-blue-600/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <svg class="w-6 h-6 sm:w-8 sm:h-8 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
               </svg>
             </div>
-            <h3 class="text-lg font-semibold mb-2">Fast Development</h3>
+            <h3 class="text-base sm:text-lg font-semibold mb-2">Fast Development</h3>
             <p class="text-blue-200 text-sm">Rapid prototyping and deployment using proven frameworks</p>
           </div>
           
           <div class="text-center">
-            <div class="w-16 h-16 bg-green-600/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <svg class="w-8 h-8 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="w-12 h-12 sm:w-16 sm:h-16 bg-green-600/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <svg class="w-6 h-6 sm:w-8 sm:h-8 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
               </svg>
             </div>
-            <h3 class="text-lg font-semibold mb-2">Production Ready</h3>
+            <h3 class="text-base sm:text-lg font-semibold mb-2">Production Ready</h3>
             <p class="text-blue-200 text-sm">Tested, documented, and secure code ready for deployment</p>
           </div>
           
           <div class="text-center">
-            <div class="w-16 h-16 bg-purple-600/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <svg class="w-8 h-8 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="w-12 h-12 sm:w-16 sm:h-16 bg-purple-600/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <svg class="w-6 h-6 sm:w-8 sm:h-8 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
               </svg>
             </div>
-            <h3 class="text-lg font-semibold mb-2">Ongoing Support</h3>
+            <h3 class="text-base sm:text-lg font-semibold mb-2">Ongoing Support</h3>
             <p class="text-blue-200 text-sm">Post-deployment maintenance and feature updates</p>
           </div>
         </div>
@@ -100,143 +100,65 @@ const pageDescription = 'Professional Python development services including web 
     </div>
   </section>
 
-  <!-- Service Packages -->
-  <section class="py-20 bg-gray-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center mb-16 animate-on-scroll">
-        <h2 class="text-4xl font-bold text-gray-900 mb-6">
-          Service Packages
-        </h2>
-        <p class="text-xl text-gray-600 max-w-3xl mx-auto">
-          Comprehensive development services tailored to different project needs and budgets.
-        </p>
-      </div>
-
-      <!-- Services Grid -->
-      <div class="grid lg:grid-cols-2 gap-8 mb-16">
-        {Object.entries(SERVICES).map(([key, service], index) => (
-          <div 
-            class="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden hover:shadow-2xl transition-all duration-500 animate-on-scroll"
-            style={`animation-delay: ${index * 150}ms`}
-          >
-            <!-- Service Header -->
-            <div class="bg-gradient-to-r from-blue-600 to-purple-600 px-8 py-8 text-white">
-              <div class="flex items-center justify-between mb-4">
-                <div class="text-4xl">{service.icon}</div>
-                <div class="text-right">
-                  <div class="text-sm opacity-80">Starting at</div>
-                  <div class="text-2xl font-bold">{service.startingPrice}</div>
-                </div>
-              </div>
-              <h3 class="text-2xl font-bold mb-3">{service.title}</h3>
-              <p class="text-blue-100 leading-relaxed">{service.description}</p>
-            </div>
-
-            <!-- Service Content -->
-            <div class="p-8">
-              <!-- Technology Stack -->
-              <div class="mb-8">
-                <h4 class="font-semibold text-gray-900 mb-4 flex items-center">
-                  <svg class="w-5 h-5 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
-                  </svg>
-                  Technology Stack
-                </h4>
-                <div class="flex flex-wrap gap-2">
-                  {service.technologies.map((tech) => (
-                    <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              <!-- Features -->
-              <div class="mb-8">
-                <h4 class="font-semibold text-gray-900 mb-4 flex items-center">
-                  <svg class="w-5 h-5 text-green-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                  </svg>
-                  What's Included
-                </h4>
-                <ul class="space-y-3">
-                  {service.features.map((feature) => (
-                    <li class="flex items-start">
-                      <svg class="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
-                      </svg>
-                      <span class="text-gray-700">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <!-- CTA Button -->
-              <div class="pt-6 border-t border-gray-200">
-                <a
-                  href="/contact"
-                  class="block w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white text-center py-4 rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 transform hover:scale-105 transition-all duration-300"
-                >
-                  Get Quote for {service.title}
-                </a>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  </section>
+  <!-- Service Packages using ServiceCardsContainer -->
+  <ServiceCardsContainer
+    title="Service Packages"
+    description="Comprehensive development services tailored to different project needs and budgets."
+    variant="services"
+    showPricing={true}
+    className="bg-gray-50"
+  />
 
   <!-- Process Section -->
-  <section class="py-20 bg-white">
+  <section class="py-16 sm:py-20 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center mb-16 animate-on-scroll">
-        <h2 class="text-4xl font-bold text-gray-900 mb-6">
+      <div class="text-center mb-12 sm:mb-16 animate-on-scroll">
+        <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">
           Development Process
         </h2>
-        <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+        <p class="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto">
           A proven methodology that ensures quality delivery and client satisfaction from start to finish.
         </p>
       </div>
 
       <!-- Process Steps -->
-      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
         <div class="text-center animate-on-scroll">
-          <div class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <div class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg">1</div>
+          <div class="w-16 h-16 sm:w-20 sm:h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg">1</div>
           </div>
-          <h3 class="text-xl font-bold text-gray-900 mb-4">Discovery & Planning</h3>
-          <p class="text-gray-600">
+          <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-4">Discovery & Planning</h3>
+          <p class="text-gray-600 text-sm sm:text-base">
             Understanding your requirements, goals, and technical constraints through detailed consultation.
           </p>
         </div>
 
         <div class="text-center animate-on-scroll">
-          <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <div class="w-12 h-12 bg-green-600 rounded-full flex items-center justify-center text-white font-bold text-lg">2</div>
+          <div class="w-16 h-16 sm:w-20 sm:h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-green-600 rounded-full flex items-center justify-center text-white font-bold text-lg">2</div>
           </div>
-          <h3 class="text-xl font-bold text-gray-900 mb-4">Architecture Design</h3>
-          <p class="text-gray-600">
+          <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-4">Architecture Design</h3>
+          <p class="text-gray-600 text-sm sm:text-base">
             Creating scalable system architecture and technical specifications for optimal performance.
           </p>
         </div>
 
         <div class="text-center animate-on-scroll">
-          <div class="w-20 h-20 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <div class="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center text-white font-bold text-lg">3</div>
+          <div class="w-16 h-16 sm:w-20 sm:h-20 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-purple-600 rounded-full flex items-center justify-center text-white font-bold text-lg">3</div>
           </div>
-          <h3 class="text-xl font-bold text-gray-900 mb-4">Development & Testing</h3>
-          <p class="text-gray-600">
+          <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-4">Development & Testing</h3>
+          <p class="text-gray-600 text-sm sm:text-base">
             Writing clean, tested code with regular progress updates and milestone demonstrations.
           </p>
         </div>
 
         <div class="text-center animate-on-scroll">
-          <div class="w-20 h-20 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <div class="w-12 h-12 bg-orange-600 rounded-full flex items-center justify-center text-white font-bold text-lg">4</div>
+          <div class="w-16 h-16 sm:w-20 sm:h-20 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-orange-600 rounded-full flex items-center justify-center text-white font-bold text-lg">4</div>
           </div>
-          <h3 class="text-xl font-bold text-gray-900 mb-4">Deployment & Support</h3>
-          <p class="text-gray-600">
+          <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-4">Deployment & Support</h3>
+          <p class="text-gray-600 text-sm sm:text-base">
             Production deployment with comprehensive documentation and ongoing maintenance support.
           </p>
         </div>
@@ -245,74 +167,42 @@ const pageDescription = 'Professional Python development services including web 
   </section>
 
   <!-- Pricing Philosophy -->
-  <section class="py-20 bg-gray-50">
+  <section class="py-16 sm:py-20 bg-gray-50">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center animate-on-scroll">
-      <h2 class="text-4xl font-bold text-gray-900 mb-8">
+      <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-8">
         Transparent Pricing
       </h2>
       
-      <div class="bg-white rounded-2xl shadow-lg p-8 mb-12">
-        <div class="grid md:grid-cols-3 gap-8">
+      <div class="bg-white rounded-2xl shadow-lg p-6 sm:p-8 mb-8 sm:mb-12">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
           <div>
-            <div class="text-3xl font-bold text-blue-600 mb-2">Fixed Project</div>
+            <div class="text-2xl sm:text-3xl font-bold text-blue-600 mb-2">Fixed Project</div>
             <div class="text-sm text-gray-600 mb-4">Most Popular</div>
-            <p class="text-gray-700">Complete project delivery with defined scope, timeline, and deliverables.</p>
+            <p class="text-gray-700 text-sm sm:text-base">Complete project delivery with defined scope, timeline, and deliverables.</p>
           </div>
           
           <div>
-            <div class="text-3xl font-bold text-green-600 mb-2">£75/hour</div>
+            <div class="text-2xl sm:text-3xl font-bold text-green-600 mb-2">£75/hour</div>
             <div class="text-sm text-gray-600 mb-4">Consultation</div>
-            <p class="text-gray-700">Flexible hourly rate for consultation, code review, and ongoing support.</p>
+            <p class="text-gray-700 text-sm sm:text-base">Flexible hourly rate for consultation, code review, and ongoing support.</p>
           </div>
           
           <div>
-            <div class="text-3xl font-bold text-purple-600 mb-2">Retainer</div>
+            <div class="text-2xl sm:text-3xl font-bold text-purple-600 mb-2">Retainer</div>
             <div class="text-sm text-gray-600 mb-4">Long-term</div>
-            <p class="text-gray-700">Monthly retainer for ongoing development and maintenance needs.</p>
+            <p class="text-gray-700 text-sm sm:text-base">Monthly retainer for ongoing development and maintenance needs.</p>
           </div>
         </div>
       </div>
       
-      <div class="text-left bg-blue-50 rounded-xl p-6">
-        <h3 class="text-xl font-bold text-gray-900 mb-4">💡 What Affects Project Cost?</h3>
-        <ul class="space-y-2 text-gray-700">
+      <div class="text-left bg-blue-50 rounded-xl p-4 sm:p-6">
+        <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-4">💡 What Affects Project Cost?</h3>
+        <ul class="space-y-2 text-gray-700 text-sm sm:text-base">
           <li><strong>Project Complexity:</strong> Number of features, integrations, and technical requirements</li>
           <li><strong>Technology Stack:</strong> Choice of frameworks, databases, and deployment platforms</li>
           <li><strong>Timeline Requirements:</strong> Rush projects may require additional resources</li>
           <li><strong>Ongoing Support:</strong> Maintenance, updates, and feature additions</li>
         </ul>
-      </div>
-    </div>
-  </section>
-
-  <!-- Call to Action -->
-  <section class="py-20 bg-gradient-to-br from-blue-600 to-purple-600 text-white">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center animate-on-scroll">
-      <h2 class="text-4xl font-bold mb-6">Ready to Start Your Project?</h2>
-      <p class="text-xl text-blue-100 mb-8 leading-relaxed">
-        Get a detailed quote and timeline for your specific requirements. 
-        Free 30-minute consultation included.
-      </p>
-      <div class="flex flex-col sm:flex-row gap-4 justify-center">
-        <a
-          href="/contact"
-          class="inline-flex items-center px-8 py-4 bg-white text-blue-600 rounded-xl font-semibold hover:bg-blue-50 transition-colors duration-300"
-        >
-          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-3.582 8-8 8a8.959 8.959 0 01-2.4-.32l-3.6 1.2 1.2-3.6A8.959 8.959 0 013 12c0-4.418 3.582-8 8-8s8 3.582 8 8z"/>
-          </svg>
-          Get Free Quote
-        </a>
-        
-        <a
-          href="/portfolio"
-          class="inline-flex items-center px-8 py-4 border-2 border-white text-white rounded-xl font-semibold hover:bg-white hover:text-blue-600 transition-all duration-300"
-        >
-          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
-          </svg>
-          View Case Studies
-        </a>
       </div>
     </div>
   </section>
@@ -329,24 +219,11 @@ const pageDescription = 'Professional Python development services including web 
     opacity: 1;
     transform: translateY(0);
   }
-</style>
 
-<script>
-  // Animation observer
-  document.addEventListener('DOMContentLoaded', () => {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('animate-in')
-        }
-      })
-    }, {
-      threshold: 0.1,
-      rootMargin: '0px 0px -50px 0px'
-    })
-    
-    document.querySelectorAll('.animate-on-scroll').forEach((el) => {
-      observer.observe(el)
-    })
-  })
-</script>
+  /* Responsive adjustments */
+  @media (max-width: 640px) {
+    .grid-cols-1 {
+      gap: 1.5rem;
+    }
+  }
+</style>

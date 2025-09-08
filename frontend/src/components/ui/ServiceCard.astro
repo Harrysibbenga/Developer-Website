@@ -1,0 +1,221 @@
+---
+// src/components/ui/ServiceCard.astro
+/**
+ * Reusable Service Card Component
+ * Used on homepage and services page with responsive design
+ */
+
+export interface Props {
+  title: string
+  description: string
+  icon: string
+  startingPrice?: string
+  technologies: string[]
+  features: string[]
+  ctaText?: string
+  ctaLink?: string
+  variant?: 'default' | 'compact' | 'featured'
+  index?: number
+}
+
+const {
+  title,
+  description,
+  icon,
+  startingPrice,
+  technologies,
+  features,
+  ctaText = 'Learn More',
+  ctaLink = '/contact',
+  variant = 'default',
+  index = 0
+} = Astro.props
+
+const isCompact = variant === 'compact'
+const isFeatured = variant === 'featured'
+---
+
+<article 
+  class={`service-card group relative bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden hover:shadow-2xl transition-all duration-500 animate-on-scroll ${
+    isFeatured ? 'ring-2 ring-blue-500 ring-opacity-50' : ''
+  } ${isCompact ? 'compact-card' : ''}`}
+  style={`animation-delay: ${index * 150}ms`}
+>
+  <!-- Service Header -->
+  <div class={`bg-gradient-to-r from-blue-600 to-purple-600 px-6 sm:px-8 text-white ${
+    isCompact ? 'py-6' : 'py-8'
+  }`}>
+    <div class="flex items-center justify-between mb-4">
+      <div class={`${isCompact ? 'text-3xl' : 'text-4xl'}`}>{icon}</div>
+      {startingPrice && (
+        <div class="text-right">
+          <div class="text-xs sm:text-sm opacity-80">Starting at</div>
+          <div class={`font-bold ${isCompact ? 'text-lg sm:text-xl' : 'text-xl sm:text-2xl'}`}>
+            {startingPrice}
+          </div>
+        </div>
+      )}
+      {isFeatured && (
+        <div class="absolute top-4 right-4">
+          <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-yellow-500 text-yellow-900">
+            ⭐ Popular
+          </span>
+        </div>
+      )}
+    </div>
+    
+    <h3 class={`font-bold mb-3 ${
+      isCompact ? 'text-lg sm:text-xl' : 'text-xl sm:text-2xl'
+    }`}>
+      {title}
+    </h3>
+    
+    <p class={`text-blue-100 leading-relaxed ${
+      isCompact ? 'text-sm sm:text-base' : 'text-base sm:text-lg'
+    }`}>
+      {description}
+    </p>
+  </div>
+
+  <!-- Service Content -->
+  <div class={`p-6 sm:p-8 ${isCompact ? 'sm:p-6' : ''}`}>
+    <!-- Technology Stack -->
+    {technologies.length > 0 && (
+      <div class="mb-6 sm:mb-8">
+        <h4 class="font-semibold text-gray-900 mb-3 sm:mb-4 flex items-center text-sm sm:text-base">
+          <svg class="w-4 h-4 sm:w-5 sm:h-5 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
+          </svg>
+          Technology Stack
+        </h4>
+        <div class="flex flex-wrap gap-2">
+          {technologies.slice(0, isCompact ? 4 : technologies.length).map((tech) => (
+            <span class="px-2 sm:px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs sm:text-sm font-medium hover:bg-blue-200 transition-colors">
+              {tech}
+            </span>
+          ))}
+          {isCompact && technologies.length > 4 && (
+            <span class="px-2 sm:px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-xs sm:text-sm">
+              +{technologies.length - 4} more
+            </span>
+          )}
+        </div>
+      </div>
+    )}
+
+    <!-- Features -->
+    {features.length > 0 && (
+      <div class="mb-6 sm:mb-8">
+        <h4 class="font-semibold text-gray-900 mb-3 sm:mb-4 flex items-center text-sm sm:text-base">
+          <svg class="w-4 h-4 sm:w-5 sm:h-5 text-green-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          What's Included
+        </h4>
+        <ul class="space-y-2 sm:space-y-3">
+          {features.slice(0, isCompact ? 3 : features.length).map((feature) => (
+            <li class="flex items-start">
+              <svg class="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mr-2 sm:mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+              </svg>
+              <span class="text-gray-700 text-sm sm:text-base">{feature}</span>
+            </li>
+          ))}
+          {isCompact && features.length > 3 && (
+            <li class="text-gray-500 text-xs sm:text-sm ml-6 sm:ml-8">
+              +{features.length - 3} more features
+            </li>
+          )}
+        </ul>
+      </div>
+    )}
+
+    <!-- CTA Button -->
+    <div class={`${isCompact ? 'pt-4' : 'pt-6'} border-t border-gray-200`}>
+      <a
+        href={ctaLink}
+        class={`block w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white text-center rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 transform hover:scale-105 transition-all duration-300 ${
+          isCompact ? 'py-3 text-sm' : 'py-3 sm:py-4 text-sm sm:text-base'
+        }`}
+      >
+        {ctaText}
+      </a>
+    </div>
+  </div>
+
+  <!-- Hover Effect Overlay -->
+  <div class="absolute inset-0 bg-gradient-to-br from-blue-600/5 to-purple-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-2xl"></div>
+</article>
+
+<style>
+  .service-card {
+    transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  
+  .service-card:hover {
+    transform: translateY(-8px);
+  }
+  
+  .service-card.compact-card:hover {
+    transform: translateY(-4px);
+  }
+  
+  /* Animation for scroll reveal */
+  .animate-on-scroll {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  
+  .animate-on-scroll.animate-in {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  /* Enhanced hover effects for interactive elements */
+  .service-card .bg-blue-100:hover {
+    background-color: rgb(147 197 253);
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 640px) {
+    .service-card {
+      margin-bottom: 1rem;
+    }
+    
+    .compact-card {
+      transform: none;
+    }
+    
+    .compact-card:hover {
+      transform: translateY(-2px);
+    }
+  }
+  
+  /* Ensure proper spacing on very small screens */
+  @media (max-width: 380px) {
+    .service-card {
+      margin: 0 -0.5rem 1rem -0.5rem;
+      border-radius: 1rem;
+    }
+  }
+  
+  /* Accessibility improvements */
+  @media (prefers-reduced-motion: reduce) {
+    .service-card,
+    .animate-on-scroll {
+      animation: none !important;
+      transition: none !important;
+    }
+    
+    .service-card:hover {
+      transform: none;
+    }
+  }
+  
+  /* Focus styles for accessibility */
+  .service-card a:focus {
+    outline: 2px solid #2563eb;
+    outline-offset: 2px;
+  }
+</style>

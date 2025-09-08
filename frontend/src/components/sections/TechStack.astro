@@ -2,10 +2,10 @@
 // src/components/sections/TechStack.astro
 /**
  * Technology stack section showcasing skills and expertise levels
- * Features interactive skill bars and technology categories
+ * Updated to work with Enhanced Components Manager
  */
 
-import { TECHNOLOGIES } from '../../utils/constants'
+ import { TECHNOLOGIES } from '../../utils/constants'
 import TechIcon from '../decor/TechIcon.astro'
 ---
 
@@ -81,7 +81,7 @@ import TechIcon from '../decor/TechIcon.astro'
     <!-- Technology Categories -->
     <div class="grid lg:grid-cols-3 gap-8 mb-16">
       <!-- Backend Technologies -->
-      <div class="tech-category bg-gray-800/50 backdrop-blur-sm rounded-2xl p-8 border border-gray-700/50 animate-on-scroll stagger-animation">
+      <div class="tech-category bg-gray-800/50 backdrop-blur-sm rounded-2xl p-8 border border-gray-700/50 animate-on-scroll stagger-animation" data-animate="skills">
         <div class="flex items-center mb-6">
           <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center mr-4">
             <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -117,7 +117,7 @@ import TechIcon from '../decor/TechIcon.astro'
       </div>
 
       <!-- Frontend Technologies -->
-      <div class="tech-category bg-gray-800/50 backdrop-blur-sm rounded-2xl p-8 border border-gray-700/50 animate-on-scroll stagger-animation">
+      <div class="tech-category bg-gray-800/50 backdrop-blur-sm rounded-2xl p-8 border border-gray-700/50 animate-on-scroll stagger-animation" data-animate="skills">
         <div class="flex items-center mb-6">
           <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center mr-4">
             <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -153,7 +153,7 @@ import TechIcon from '../decor/TechIcon.astro'
       </div>
 
       <!-- Tools & DevOps -->
-      <div class="tech-category bg-gray-800/50 backdrop-blur-sm rounded-2xl p-8 border border-gray-700/50 animate-on-scroll stagger-animation">
+      <div class="tech-category bg-gray-800/50 backdrop-blur-sm rounded-2xl p-8 border border-gray-700/50 animate-on-scroll stagger-animation" data-animate="skills">
         <div class="flex items-center mb-6">
           <div class="w-12 h-12 bg-gradient-to-br from-orange-500 to-red-600 rounded-xl flex items-center justify-center mr-4">
             <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -200,7 +200,7 @@ import TechIcon from '../decor/TechIcon.astro'
         {TECHNOLOGIES.specialties.map((specialty, index) => (
           <div 
             class="specialty-card text-center group animate-on-scroll stagger-animation"
-            style={`animation-delay: ${index * 100}ms`}
+            style={`--animation-delay: ${index * 100}ms`}
           >
             <div class="w-20 h-20 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4 text-3xl group-hover:scale-110 transition-transform duration-300">
               {specialty.icon}
@@ -270,36 +270,49 @@ import TechIcon from '../decor/TechIcon.astro'
   .stagger-animation {
     transition-delay: var(--animation-delay, 0ms);
   }
-</style>
-
-<script>
-  // Animate skill bars when they come into view
-  document.addEventListener('DOMContentLoaded', () => {
-    const observerOptions = {
-      threshold: 0.3,
-      rootMargin: '0px 0px -50px 0px'
+  
+  /* Skill bar animations */
+  .skill-progress {
+    will-change: width;
+  }
+  
+  .skill-progress.animated {
+    box-shadow: 0 0 10px currentColor;
+  }
+  
+  /* Grid for background pattern */
+  .grid-cols-20 {
+    grid-template-columns: repeat(20, minmax(0, 1fr));
+  }
+  
+  /* Enhanced hover effects */
+  .tech-category:hover .skill-progress {
+    filter: brightness(1.1);
+  }
+  
+  /* Smooth transitions for all interactive elements */
+  .specialty-card,
+  .tech-skill-item,
+  .skill-progress {
+    transition: all 0.3s ease;
+  }
+  
+  /* Accessibility improvements */
+  @media (prefers-reduced-motion: reduce) {
+    .animate-on-scroll,
+    .stagger-animation,
+    .skill-progress,
+    .specialty-card,
+    .tech-category {
+      animation: none !important;
+      transition: none !important;
     }
-    
-    const skillObserver = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const skillBars = entry.target.querySelectorAll('.skill-progress')
-          
-          skillBars.forEach((bar, index) => {
-            setTimeout(() => {
-              const width = bar.getAttribute('data-width')
-              bar.style.width = `${width}%`
-            }, index * 100)
-          })
-          
-          skillObserver.unobserve(entry.target)
-        }
-      })
-    }, observerOptions)
-    
-    // Observe tech category sections
-    document.querySelectorAll('.tech-category').forEach((section) => {
-      skillObserver.observe(section)
-    })
-  })
-</script>
+  }
+  
+  /* Performance optimizations */
+  .tech-category,
+  .specialty-card {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
+</style>

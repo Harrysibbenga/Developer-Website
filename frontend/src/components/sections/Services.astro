@@ -7,6 +7,7 @@
 
 import { SERVICES } from '../../utils/constants'
 import TechIcon from '../decor/TechIcon.astro'
+import ServiceCardsContainer from './ServiceCardsContainer.astro'
 ---
 
 <section id="services" class="py-20 bg-gradient-to-br from-gray-50 to-blue-50 relative overflow-hidden">
@@ -54,77 +55,13 @@ import TechIcon from '../decor/TechIcon.astro'
     </div>
 
     <!-- Services Grid -->
-    <div class="grid md:grid-cols-2 lg:grid-cols-2 gap-8 mb-16">
-      {Object.entries(SERVICES).map(([key, service], index) => (
-        <div 
-          class="service-card group relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden animate-on-scroll stagger-animation"
-          style={`animation-delay: ${index * 150}ms`}
-        >
-          <!-- Card Header -->
-          <div class="relative p-8 pb-6">
-            <!-- Service Icon -->
-            <div class="flex items-center mb-6">
-              <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center text-2xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                {service.icon}
-              </div>
-              <div class="ml-4">
-                <h3 class="text-2xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
-                  {service.title}
-                </h3>
-                <div class="text-xl font-semibold text-blue-600 mt-1">
-                  {service.startingPrice}
-                </div>
-              </div>
-            </div>
-
-            <!-- Description -->
-            <p class="text-gray-600 text-lg leading-relaxed mb-6">
-              {service.description}
-            </p>
-
-            <!-- Technology Stack -->
-            <div class="mb-6">
-              <h4 class="font-semibold text-gray-900 mb-3">Technologies:</h4>
-              <div class="flex flex-wrap gap-2">
-                {service.technologies.map((tech) => (
-                  <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium hover:bg-blue-200 transition-colors">
-                    {tech}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            <!-- Features List -->
-            <div class="mb-8">
-              <h4 class="font-semibold text-gray-900 mb-4">What's Included:</h4>
-              <ul class="space-y-2">
-                {service.features.map((feature) => (
-                  <li class="flex items-start">
-                    <svg class="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                      <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
-                    </svg>
-                    <span class="text-gray-700">{feature}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <!-- CTA Button -->
-            <div class="absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-white via-white to-transparent">
-              <a
-                href="/contact"
-                class="block w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white text-center py-4 rounded-xl font-semibold hover:shadow-lg transform hover:scale-105 transition-all duration-300 group-hover:from-blue-700 group-hover:to-purple-700"
-              >
-                Get Quote for {service.title}
-              </a>
-            </div>
-          </div>
-
-          <!-- Hover Effect Overlay -->
-          <div class="absolute inset-0 bg-gradient-to-br from-blue-600/5 to-purple-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
-        </div>
-      ))}
-    </div>
+    <ServiceCardsContainer
+      title=""
+      description=""
+      variant="homepage"
+      maxCards={3}
+      className="bg-white"
+    />
 
     <!-- Additional Services Info -->
     <div class="bg-white rounded-2xl shadow-lg p-8 lg:p-12 animate-on-scroll">

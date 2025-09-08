@@ -7,7 +7,7 @@
 export const BUSINESS_INFO = {
   name: "Harry Sibbenga",
   fullBusinessName: "Harry Sibbenga Web Development Services", 
-  tagline: "Python Developer & Full-Stack Solutions",
+  tagline: "Full-Stack Solutions",
   description: "Experienced Python developer specializing in scalable web applications, data processing, and real-time systems. 5+ years building robust solutions for humanitarian, corporate, and IoT domains.",
   
   // Contact Information
