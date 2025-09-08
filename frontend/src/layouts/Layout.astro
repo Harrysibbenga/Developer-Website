@@ -366,359 +366,568 @@ const GA_MEASUREMENT_ID = import.meta.env.PUBLIC_GA_MEASUREMENT_ID || 'GA_MEASUR
     </div>
     
     <!-- Scripts -->
+    <script type="module" src="/scripts/main.js"></script>
+
     <script define:vars={{ GA_MEASUREMENT_ID }}>
-      // Enhanced Application Manager - Clean and Efficient
-      class ApplicationManager {
+      // Unified Site Manager - Single Source of Truth
+      class UnifiedSiteManager {
         constructor() {
           this.initialized = false
-          // Wait for DOM to be ready
-          if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => this.init())
-          } else {
-            this.init()
+          this.eventListeners = []
+          this.observers = []
+          
+          // Prevent multiple instances
+          if (window.unifiedManager) {
+            return window.unifiedManager
           }
+          window.unifiedManager = this
+          
+          this.init()
         }
         
         async init() {
-          console.log('🚀 Application Manager: Starting initialization...')
+          if (this.initialized) return
           
-          // Initialize core features directly instead of relying on imports
-          this.setupApplicationFeatures()
-          this.initializeNavigationDirect() // Add this method
+          console.log('🚀 Unified Manager: Starting...')
+          
+          // Wait for DOM
+          await this.waitForDOM()
+          
+          // Clean slate
+          this.cleanup()
+          
+          // Initialize everything in order
+          this.initializeNavigation()
+          this.initializeScrollFeatures()
+          this.initializeAnimations()
+          this.initializePortfolioFilters()
+          this.initializeCookieConsent()
+          this.initializePageTransitions()
           
           this.initialized = true
-          console.log('✅ Application Manager: Fully initialized')
+          console.log('✅ Unified Manager: Complete')
         }
         
-        initializeNavigationDirect() {
-          const mobileMenuButton = document.getElementById('mobile-menu-button')
-          const mobileMenu = document.getElementById('mobile-menu')
+        waitForDOM() {
+          return new Promise(resolve => {
+            if (document.readyState === 'loading') {
+              document.addEventListener('DOMContentLoaded', resolve)
+            } else {
+              setTimeout(resolve, 50)
+            }
+          })
+        }
+        
+        // === NAVIGATION ===
+        initializeNavigation() {
+          const button = document.getElementById('mobile-menu-button')
+          const menu = document.getElementById('mobile-menu')
           
-          if (mobileMenuButton && mobileMenu) {
-            mobileMenuButton.addEventListener('click', () => {
-              const isExpanded = mobileMenuButton.getAttribute('aria-expanded') === 'true'
-              mobileMenuButton.setAttribute('aria-expanded', (!isExpanded).toString())
-              
-              if (!isExpanded) {
-                mobileMenu.classList.remove('hidden')
-                // Update icon to X
-                const svg = mobileMenuButton.querySelector('svg path')
-                if (svg) svg.setAttribute('d', 'M6 18L18 6M6 6l12 12')
-              } else {
-                mobileMenu.classList.add('hidden')
-                // Update icon to hamburger
-                const svg = mobileMenuButton.querySelector('svg path')
-                if (svg) svg.setAttribute('d', 'M4 6h16M4 12h16M4 18h16')
-              }
-            })
-            
-            console.log('✅ Navigation initialized successfully')
-          } else {
-            console.warn('❌ Navigation elements not found')
-          }
-        }
-        
-        setupApplicationFeatures() {
-          this.setupBackToTop()
-          this.setupCookieConsent()
-          this.setupPageTransitions()
-          this.setupPerformanceMonitoring()
-        }
-        
-        setupBackToTop() {
-          const backToTopButton = document.getElementById('back-to-top')
-          if (!backToTopButton) return
+          if (!button || !menu) return
           
-          const toggleVisibility = () => {
-            const threshold = 300
-            const isVisible = window.pageYOffset > threshold
+          const toggle = (e) => {
+            e.preventDefault()
+            const expanded = button.getAttribute('aria-expanded') === 'true'
             
-            backToTopButton.classList.toggle('opacity-0', !isVisible)
-            backToTopButton.classList.toggle('invisible', !isVisible)
-            backToTopButton.classList.toggle('opacity-100', isVisible)
-            backToTopButton.classList.toggle('visible', isVisible)
+            button.setAttribute('aria-expanded', !expanded)
+            menu.classList.toggle('hidden', expanded)
+            
+            // Update icon
+            const path = button.querySelector('svg path')
+            if (path) {
+              path.setAttribute('d', expanded 
+                ? 'M4 6h16M4 12h16M4 18h16'  // hamburger
+                : 'M6 18L18 6M6 6l12 12'     // X
+              )
+            }
           }
           
-          // Throttled scroll handler for better performance
-          let ticking = false
-          const handleScroll = () => {
-            if (!ticking) {
+          const closeMenu = () => {
+            menu.classList.add('hidden')
+            button.setAttribute('aria-expanded', 'false')
+            const path = button.querySelector('svg path')
+            if (path) path.setAttribute('d', 'M4 6h16M4 12h16M4 18h16')
+          }
+          
+          const outsideClick = (e) => {
+            if (!button.contains(e.target) && !menu.contains(e.target)) {
+              closeMenu()
+            }
+          }
+          
+          this.addListener(button, 'click', toggle)
+          this.addListener(document, 'click', outsideClick)
+          this.addListener(document, 'keydown', (e) => {
+            if (e.key === 'Escape') closeMenu()
+          })
+          
+          // Close menu on navigation
+          menu.querySelectorAll('a').forEach(link => {
+            this.addListener(link, 'click', closeMenu)
+          })
+          
+          console.log('📱 Navigation ready')
+        }
+        
+        // === SCROLL FEATURES ===
+        initializeScrollFeatures() {
+          // Back to top button
+          const backToTop = document.getElementById('back-to-top')
+          if (backToTop) {
+            let ticking = false
+            const updateButton = () => {
+              if (ticking) return
+              ticking = true
               requestAnimationFrame(() => {
-                toggleVisibility()
+                const show = window.pageYOffset > 300
+                backToTop.classList.toggle('opacity-0', !show)
+                backToTop.classList.toggle('invisible', !show)
                 ticking = false
               })
+            }
+            
+            this.addListener(window, 'scroll', updateButton, { passive: true })
+            this.addListener(backToTop, 'click', () => {
+              window.scrollTo({ top: 0, behavior: 'smooth' })
+            })
+          }
+          
+          // Scroll progress bar
+          const progress = document.getElementById('scroll-progress')
+          if (progress) {
+            let ticking = false
+            const updateProgress = () => {
+              if (ticking) return
               ticking = true
+              requestAnimationFrame(() => {
+                const scrolled = window.pageYOffset
+                const height = document.documentElement.scrollHeight - window.innerHeight
+                const percent = height > 0 ? (scrolled / height) : 0
+                progress.style.transform = `scaleX(${percent})`
+                ticking = false
+              })
             }
+            
+            this.addListener(window, 'scroll', updateProgress, { passive: true })
           }
           
-          window.addEventListener('scroll', handleScroll, { passive: true })
-          
-          backToTopButton.addEventListener('click', () => {
-            window.scrollTo({ top: 0, behavior: 'smooth' })
-          })
+          console.log('📜 Scroll features ready')
         }
         
-        setupCookieConsent() {
-          // Unified cookie management system
-          const banner = document.getElementById('cookie-consent-banner')
-          const modal = document.getElementById('global-cookie-modal')
-          const customizeBtn = document.getElementById('cookie-customize')
-          const acceptAllBtn = document.getElementById('cookie-accept-all')
-          const analyticsToggle = document.getElementById('global-analytics-toggle')
-          const performanceToggle = document.getElementById('global-performance-toggle')
+        // === ANIMATIONS ===
+        initializeAnimations() {
+          const elements = document.querySelectorAll('.animate-on-scroll, [data-animate]')
+          if (elements.length === 0) return
           
-          // Cookie utilities
-          const setCookie = (name, value, days) => {
-            const expires = new Date()
-            expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000))
-            document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/;SameSite=Lax`
-          }
-          
-          const getCookie = (name) => {
-            const nameEQ = name + "="
-            const ca = document.cookie.split(';')
-            for(let i = 0; i < ca.length; i++) {
-              let c = ca[i]
-              while (c.charAt(0) === ' ') c = c.substring(1, c.length)
-              if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length)
-            }
-            return null
-          }
-          
-          const deleteCookie = (name) => {
-            document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`
-          }
-
-          // Clear all Google Analytics cookies
-          const clearAnalyticsCookies = () => {
-            const cookiesToDelete = ['_ga', '_ga_' + GA_MEASUREMENT_ID.replace('G-', ''), '_gid', '_gat']
-            cookiesToDelete.forEach(deleteCookie)
-            
-            // Also try to delete any _ga_* cookies by checking all cookies
-            document.cookie.split(';').forEach(cookie => {
-              const cookieName = cookie.split('=')[0].trim()
-              if (cookieName.startsWith('_ga')) {
-                deleteCookie(cookieName)
-              }
-            })
-          }
-          
-          // Default consent state
-          let cookieConsent = {
-            analytics: false,
-            performance: false
-          }
-          
-          // Load existing preferences
-          const existingConsent = getCookie('cookie-consent')
-          if (existingConsent) {
-            try {
-              cookieConsent = JSON.parse(existingConsent)
-              this.loadAnalytics()
-            } catch (e) {
-              console.error('Error parsing cookie consent:', e)
-            }
-          } else {
-            // Show banner if no consent recorded
-            this.showCookieBanner()
-          }
-          
-          // Update toggle states
-          if (analyticsToggle) analyticsToggle.checked = cookieConsent.analytics
-          if (performanceToggle) performanceToggle.checked = cookieConsent.performance
-          
-          // Banner event listeners
-          if (customizeBtn) {
-            customizeBtn.addEventListener('click', () => {
-              this.hideCookieBanner()
-              this.showCookieModal()
-            })
-          }
-          
-          if (acceptAllBtn) {
-            acceptAllBtn.addEventListener('click', () => {
-              cookieConsent = { analytics: true, performance: true }
-              this.saveConsentAndHide()
-            })
-          }
-          
-          // Make functions global for modal
-          window.closeGlobalCookieModal = () => this.hideCookieModal()
-          window.acceptAllGlobalCookies = () => {
-            cookieConsent = { analytics: true, performance: true }
-            if (analyticsToggle) analyticsToggle.checked = true
-            if (performanceToggle) performanceToggle.checked = true
-            this.saveConsentAndHide()
-          }
-          window.rejectAllGlobalCookies = () => {
-            cookieConsent = { analytics: false, performance: false }
-            if (analyticsToggle) analyticsToggle.checked = false
-            if (performanceToggle) performanceToggle.checked = false
-            clearAnalyticsCookies()
-            this.saveConsentAndHide()
-          }
-          window.saveGlobalPreferences = () => {
-            cookieConsent = {
-              analytics: analyticsToggle ? analyticsToggle.checked : false,
-              performance: performanceToggle ? performanceToggle.checked : false
-            }
-            if (!cookieConsent.analytics) {
-              clearAnalyticsCookies()
-            }
-            this.saveConsentAndHide()
-          }
-          
-          // Helper methods
-          this.saveConsentAndHide = () => {
-            setCookie('cookie-consent', JSON.stringify(cookieConsent), 365)
-            this.hideCookieBanner()
-            this.hideCookieModal()
-            this.loadAnalytics()
-            this.showNotification('Cookie preferences saved')
-          }
-          
-          this.showCookieBanner = () => {
-            if (banner) {
-              banner.classList.remove('hidden')
-              setTimeout(() => banner.classList.remove('translate-y-full'), 100)
-            }
-          }
-          
-          this.hideCookieBanner = () => {
-            if (banner) {
-              banner.classList.add('translate-y-full')
-              setTimeout(() => banner.classList.add('hidden'), 300)
-            }
-          }
-          
-          this.showCookieModal = () => {
-            if (modal) {
-              modal.classList.remove('hidden')
-              document.body.style.overflow = 'hidden'
-            }
-          }
-          
-          this.hideCookieModal = () => {
-            if (modal) {
-              modal.classList.add('hidden')
-              document.body.style.overflow = 'auto'
-            }
-          }
-          
-          this.loadAnalytics = () => {
-            if (cookieConsent.analytics && GA_MEASUREMENT_ID && GA_MEASUREMENT_ID !== 'GA_MEASUREMENT_ID') {
-              // Load Google Analytics
-              if (typeof gtag === 'undefined') {
-                const script = document.createElement('script')
-                script.async = true
-                script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`
-                document.head.appendChild(script)
+          const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('animate-in')
                 
-                script.onload = function() {
-                  window.dataLayer = window.dataLayer || []
-                  function gtag(){dataLayer.push(arguments)}
-                  gtag('js', new Date())
-                  gtag('config', GA_MEASUREMENT_ID, {
-                    anonymize_ip: true,
-                    cookie_flags: 'SameSite=Lax;Secure'
+                // Staggered animations
+                const staggered = entry.target.querySelectorAll('.stagger-animation')
+                staggered.forEach((el, i) => {
+                  setTimeout(() => el.classList.add('animate-in'), i * 100)
+                })
+                
+                // Skill bars
+                if (entry.target.dataset.animate === 'skills') {
+                  const bars = entry.target.querySelectorAll('.skill-progress')
+                  bars.forEach((bar, i) => {
+                    setTimeout(() => {
+                      const width = bar.getAttribute('data-width')
+                      if (width) {
+                        bar.style.width = `${width}%`
+                        setTimeout(() => bar.classList.add('animated'), 500)
+                      }
+                    }, i * 150)
                   })
-                  window.gtag = gtag
                 }
+                
+                observer.unobserve(entry.target)
               }
-            }
-          }
-          
-          this.showNotification = (message) => {
-            const notification = document.createElement('div')
-            notification.className = 'fixed top-4 right-4 bg-green-600 text-white px-4 py-2 rounded-lg shadow-lg z-50 transition-all duration-300'
-            notification.textContent = message
-            document.body.appendChild(notification)
-            
-            setTimeout(() => notification.remove(), 3000)
-          }
-          
-          // Close modal when clicking outside
-          if (modal) {
-            modal.addEventListener('click', (e) => {
-              if (e.target === modal) this.hideCookieModal()
             })
-          }
+          }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' })
+          
+          elements.forEach(el => {
+            el.classList.remove('animate-in')
+            observer.observe(el)
+          })
+          
+          this.observers.push(observer)
+          console.log(`🎭 Animations ready (${elements.length} elements)`)
         }
         
-        setupPageTransitions() {
-          const pageLoading = document.getElementById('page-loading')
+        // === PORTFOLIO FILTERS ===
+        initializePortfolioFilters() {
+          const section = document.getElementById('all-projects-section')
+          if (!section) return
           
-          // Show loading indicator on navigation
-          document.addEventListener('astro:before-preparation', () => {
-            if (pageLoading) {
-              pageLoading.style.display = 'block'
-              pageLoading.classList.remove('-translate-x-full')
+          const searchInput = section.querySelector('#portfolio-search')
+          const categoryFilters = section.querySelectorAll('.portfolio-category-filter')
+          const techFilters = section.querySelectorAll('.portfolio-tech-filter')
+          const clearBtn = section.querySelector('#portfolio-clear-filters')
+          const selectedFiltersBar = section.querySelector('#selected-filters-bar')
+          
+          let filters = {
+            category: 'All',
+            technologies: [],
+            search: ''
+          }
+          
+          const updateSelectedFiltersBar = () => {
+            if (!selectedFiltersBar) return
+            
+            // Clear existing content
+            selectedFiltersBar.innerHTML = ''
+            
+            // Hide if no active technologies
+            if (filters.technologies.length === 0) {
+              selectedFiltersBar.classList.add('hidden')
+              return
+            }
+            
+            // Show and style the bar
+            selectedFiltersBar.classList.remove('hidden')
+            selectedFiltersBar.className = 'mb-8 flex flex-wrap items-center gap-3 bg-gray-100 border border-gray-200 rounded-xl p-4 shadow-sm'
+            
+            // Create pills for each active technology
+            filters.technologies.forEach(tech => {
+              const pill = document.createElement('div')
+              pill.className = 'flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold text-white bg-gradient-to-r from-blue-500 to-indigo-500 shadow-md hover:shadow-lg transition'
+              
+              pill.innerHTML = `
+                <span>${tech}</span>
+                <button class="text-white text-lg leading-none hover:text-gray-200 transition" title="Remove filter">&times;</button>
+              `
+              
+              // Add remove functionality
+              const removeButton = pill.querySelector('button')
+              if (removeButton) {
+                this.addListener(removeButton, 'click', () => {
+                  filters.technologies = filters.technologies.filter(t => t !== tech)
+                  
+                  // Update corresponding tech filter button
+                  const techFilterBtn = section.querySelector(`.portfolio-tech-filter[data-tech="${tech}"]`)
+                  if (techFilterBtn) {
+                    techFilterBtn.classList.remove('active')
+                    this.removeActiveStyles(techFilterBtn)
+                    this.addInactiveStyles(techFilterBtn)
+                  }
+                  
+                  updateSelectedFiltersBar()
+                  applyFilters()
+                })
+              }
+              
+              selectedFiltersBar.appendChild(pill)
+            })
+          }
+          
+          const applyFilters = () => {
+            const cards = section.querySelectorAll('.project-card')
+            let visible = 0
+            
+            cards.forEach(card => {
+              const category = card.dataset.category
+              const techs = card.dataset.technologies?.split(',') || []
+              const title = card.dataset.title?.toLowerCase() || ''
+              const desc = card.querySelector('p')?.textContent?.toLowerCase() || ''
+              
+              let show = true
+              
+              // Category filter
+              if (filters.category !== 'All' && category !== filters.category) {
+                show = false
+              }
+              
+              // Technology filter
+              if (filters.technologies.length > 0) {
+                const hasTech = filters.technologies.some(tech =>
+                  techs.some(cardTech => cardTech.trim().toLowerCase() === tech.toLowerCase())
+                )
+                if (!hasTech) show = false
+              }
+              
+              // Search filter
+              if (filters.search) {
+                const matches = title.includes(filters.search) || 
+                              desc.includes(filters.search) ||
+                              techs.some(tech => tech.toLowerCase().includes(filters.search))
+                if (!matches) show = false
+              }
+              
+              card.classList.toggle('hidden', !show)
+              if (show) visible++
+            })
+            
+            // Update count
+            const count = section.querySelector('#portfolio-results-count')
+            if (count) count.textContent = visible
+            
+            // Show/hide no results message
+            const noResults = section.querySelector('#portfolio-no-results')
+            if (noResults) {
+              noResults.classList.toggle('hidden', visible > 0)
+            }
+            
+            // Update clear button
+            if (clearBtn) {
+              const hasFilters = filters.category !== 'All' || 
+                              filters.technologies.length > 0 || 
+                              filters.search !== ''
+              clearBtn.classList.toggle('hidden', !hasFilters)
+            }
+            
+            // Update selected filters bar
+            updateSelectedFiltersBar()
+          }
+          
+          // Search functionality
+          if (searchInput) {
+            const search = this.debounce((e) => {
+              filters.search = e.target.value.toLowerCase()
+              applyFilters()
+            }, 300)
+            this.addListener(searchInput, 'input', search)
+          }
+          
+          // Category filters
+          categoryFilters.forEach(filter => {
+            this.addListener(filter, 'click', () => {
+              filters.category = filter.dataset.category || 'All'
+              
+              // Update UI for all category filters
+              categoryFilters.forEach(f => {
+                f.classList.remove('active')
+                this.removeActiveStyles(f)
+                this.addInactiveStyles(f)
+              })
+              
+              // Style active filter
+              filter.classList.add('active')
+              this.removeInactiveStyles(filter)
+              this.addActiveStyles(filter)
+              
+              applyFilters()
+            })
+          })
+          
+          // Technology filters
+          techFilters.forEach(filter => {
+            this.addListener(filter, 'click', () => {
+              const tech = filter.dataset.tech || ''
+              const index = filters.technologies.indexOf(tech)
+              
+              if (index > -1) {
+                // Remove technology
+                filters.technologies.splice(index, 1)
+                filter.classList.remove('active')
+                this.removeActiveStyles(filter)
+                this.addInactiveStyles(filter)
+              } else {
+                // Add technology
+                filters.technologies.push(tech)
+                filter.classList.add('active')
+                this.removeInactiveStyles(filter)
+                this.addActiveStyles(filter)
+              }
+              
+              applyFilters()
+            })
+          })
+          
+          // Clear filters
+          if (clearBtn) {
+            this.addListener(clearBtn, 'click', () => {
+              filters = { category: 'All', technologies: [], search: '' }
+              
+              // Reset search input
+              if (searchInput) searchInput.value = ''
+              
+              // Reset category filters
+              categoryFilters.forEach((f, i) => {
+                f.classList.remove('active')
+                this.removeActiveStyles(f)
+                this.addInactiveStyles(f)
+                
+                // Make first filter (All) active
+                if (i === 0) {
+                  f.classList.add('active')
+                  this.removeInactiveStyles(f)
+                  this.addActiveStyles(f)
+                }
+              })
+              
+              // Reset technology filters
+              techFilters.forEach(f => {
+                f.classList.remove('active')
+                this.removeActiveStyles(f)
+                this.addInactiveStyles(f)
+              })
+              
+              applyFilters()
+            })
+          }
+          
+          // Set initial state for category filters
+          categoryFilters.forEach((filter, i) => {
+            if (i === 0) {
+              // First filter (All) should be active by default
+              filter.classList.add('active')
+              this.addActiveStyles(filter)
+            } else {
+              this.addInactiveStyles(filter)
             }
           })
           
-          // Hide loading indicator when page loads
-          document.addEventListener('astro:after-swap', () => {
-            if (pageLoading) {
-              pageLoading.classList.add('-translate-x-full')
-              setTimeout(() => {
-                pageLoading.style.display = 'none'
-              }, 300)
-            }
+          // Set initial state for technology filters
+          techFilters.forEach(filter => {
+            this.addInactiveStyles(filter)
           })
+          
+          // Initial application
+          applyFilters()
+          console.log('🎨 Portfolio filters ready')
         }
         
-        setupPerformanceMonitoring() {
-          // Performance monitoring
-          if ('PerformanceObserver' in window) {
-            const perfObserver = new PerformanceObserver((list) => {
-              for (const entry of list.getEntries()) {
-                if (entry.entryType === 'largest-contentful-paint') {
-                  console.log('LCP:', entry.startTime)
-                }
-                if (entry.entryType === 'first-input') {
-                  console.log('FID:', entry.processingStart - entry.startTime)
-                }
-              }
-            })
+        // === FILTER STYLING HELPERS ===
+        addActiveStyles(element) {
+          element.classList.add('bg-gradient-to-r', 'from-blue-500', 'to-indigo-500', 'text-white', 'shadow-lg', 'border-transparent')
+          element.classList.remove('bg-white', 'text-gray-700', 'border-gray-300', 'hover:border-blue-500', 'hover:text-blue-600')
+        }
+        
+        removeActiveStyles(element) {
+          element.classList.remove('bg-gradient-to-r', 'from-blue-500', 'to-indigo-500', 'text-white', 'shadow-lg', 'border-transparent')
+        }
+        
+        addInactiveStyles(element) {
+          element.classList.add('bg-white', 'text-gray-700', 'border', 'border-gray-300', 'hover:border-blue-500', 'hover:text-blue-600', 'shadow-sm')
+        }
+        
+        removeInactiveStyles(element) {
+          element.classList.remove('bg-white', 'text-gray-700', 'border', 'border-gray-300', 'hover:border-blue-500', 'hover:text-blue-600', 'shadow-sm')
+        }
+        
+        // === COOKIE CONSENT ===
+        initializeCookieConsent() {
+          const banner = document.getElementById('cookie-consent-banner')
+          const acceptBtn = document.getElementById('cookie-accept-all')
+          
+          if (!banner || !acceptBtn) return
+          
+          // Check if already consented
+          const consent = this.getCookie('cookie-consent')
+          if (!consent) {
+            banner.classList.remove('hidden')
+            setTimeout(() => banner.classList.remove('translate-y-full'), 100)
+          }
+          
+          this.addListener(acceptBtn, 'click', () => {
+            this.setCookie('cookie-consent', '{"analytics":true,"performance":true}', 365)
+            banner.classList.add('translate-y-full')
+            setTimeout(() => banner.classList.add('hidden'), 300)
+          })
+          
+          console.log('🍪 Cookie consent ready')
+        }
+        
+        // === PAGE TRANSITIONS ===
+        initializePageTransitions() {
+          const loading = document.getElementById('page-loading')
+          
+          this.addListener(document, 'astro:before-preparation', () => {
+            if (loading) {
+              loading.style.display = 'block'
+              loading.classList.remove('-translate-x-full')
+            }
+          })
+          
+          this.addListener(document, 'astro:after-swap', () => {
+            if (loading) {
+              loading.classList.add('-translate-x-full')
+              setTimeout(() => loading.style.display = 'none', 300)
+            }
             
+            // Reinitialize after page change
+            setTimeout(() => {
+              this.initialized = false
+              this.init()
+            }, 200)
+          })
+          
+          console.log('🔄 Page transitions ready')
+        }
+        
+        // === UTILITIES ===
+        addListener(element, event, handler, options = {}) {
+          element.addEventListener(event, handler, options)
+          this.eventListeners.push({ element, event, handler })
+        }
+        
+        debounce(func, wait) {
+          let timeout
+          return (...args) => {
+            clearTimeout(timeout)
+            timeout = setTimeout(() => func.apply(this, args), wait)
+          }
+        }
+        
+        getCookie(name) {
+          const value = `; ${document.cookie}`
+          const parts = value.split(`; ${name}=`)
+          if (parts.length === 2) return parts.pop().split(';').shift()
+          return null
+        }
+        
+        setCookie(name, value, days) {
+          const expires = new Date()
+          expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000))
+          document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/;SameSite=Lax`
+        }
+        
+        cleanup() {
+          // Remove old listeners
+          this.eventListeners.forEach(({ element, event, handler }) => {
             try {
-              perfObserver.observe({ entryTypes: ['largest-contentful-paint', 'first-input'] })
-            } catch (e) {
-              console.log('Performance monitoring not fully supported')
-            }
-          }
+              element.removeEventListener(event, handler)
+            } catch (e) {}
+          })
+          this.eventListeners = []
           
-          // Service Worker registration
-          if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-              navigator.serviceWorker.register('/sw.js')
-                .then(() => console.log('ServiceWorker registered'))
-                .catch(() => console.log('ServiceWorker registration failed'))
-            })
-          }
+          // Disconnect observers
+          this.observers.forEach(observer => {
+            try {
+              observer.disconnect()
+            } catch (e) {}
+          })
+          this.observers = []
         }
       }
       
-      // Initialize the application
-      new ApplicationManager()
+      // Initialize the unified manager
+      try {
+        new UnifiedSiteManager()
+      } catch (error) {
+        console.error('Unified Manager failed:', error)
+        
+        // Emergency navigation fallback
+        setTimeout(() => {
+          const btn = document.getElementById('mobile-menu-button')
+          const menu = document.getElementById('mobile-menu')
+          if (btn && menu) {
+            btn.addEventListener('click', () => menu.classList.toggle('hidden'))
+          }
+        }, 1000)
+      }
       
-      // Global error handling
+      // Image error handling
       window.addEventListener('error', (e) => {
-        if (e.target && e.target.tagName === 'IMG') {
-          console.error('Image failed to load:', e.target.src)
+        if (e.target?.tagName === 'IMG') {
+          console.log('Image failed:', e.target.src)
           e.target.style.display = 'none'
         }
       }, true)
-      
-      // Visibility change optimization
-      document.addEventListener('visibilitychange', () => {
-        const animatedElements = document.querySelectorAll('.animate-float, .animate-pulse-glow')
-        const playState = document.hidden ? 'paused' : 'running'
-        
-        animatedElements.forEach(el => {
-          el.style.animationPlayState = playState
-        })
-      })
     </script>
   </body>
 </html>
