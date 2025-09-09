@@ -15,12 +15,12 @@ export const BUSINESS_INFO = {
   legalEntity: {
     name: "CodeForge Solutions Ltd",
     type: "Limited Company",
-    companyNumber: "123456789", // Update when you receive it
+    companyNumber: "16703742", // Update when you receive it
     registeredOffice: {
-      street: "118 Vellan Ave",
-      area: "Fishermead", 
-      city: "Milton Keynes",
-      postcode: "MK6 2SW",
+      street: "86-90, Paul Street",
+      area: "Shoreditch", 
+      city: "London",
+      postcode: "EC2A 4NE",
       country: "United Kingdom"
     }
   },
@@ -30,10 +30,10 @@ export const BUSINESS_INFO = {
     email: "sibbengaharry@gmail.com",
     phone: "07802738966",
     address: {
-      street: "118 Vellan Ave",
-      area: "Fishermead", 
+      street: "",
+      area: "Bukinghanshire", 
       city: "Milton Keynes",
-      postcode: "MK6 2SW",
+      postcode: "",
       country: "United Kingdom"
     }
   },
