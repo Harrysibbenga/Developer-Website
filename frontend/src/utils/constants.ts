@@ -1,21 +1,21 @@
 // src/utils/constants.ts
 /**
- * Centralized business configuration for Harry Sibbenga Web Development Services
- * Personal brand with CodeForge Solutions Ltd as the legal entity
+ * Business-value-focused configuration for Harry Sibbenga Full-Stack Business Solutions
+ * Updated positioning: Business solutions first, technical expertise second
  */
 
 export const BUSINESS_INFO = {
-  // Personal branding (for website content)
+  // Business-focused branding
   name: "Harry Sibbenga",
-  fullBusinessName: "Harry Sibbenga Software Solution Services",
-  tagline: "Full-Stack Solutions",
-  description: "Experienced Python developer specializing in scalable web applications, data processing, and real-time systems. 5+ years building robust solutions for humanitarian, corporate, and IoT domains.",
-  
+  fullBusinessName: "Harry Sibbenga - Full-Stack Business Solutions Developer",
+  tagline: "Transforming Business Ideas Into Digital Solutions",
+  description: "I help growing businesses streamline operations, increase efficiency, and scale revenue through custom web applications, automation, and digital transformation solutions.",
+    
   // Legal entity information
   legalEntity: {
     name: "CodeForge Solutions Ltd",
     type: "Limited Company",
-    companyNumber: "16703742", // Update when you receive it
+    companyNumber: "16703742",
     registeredOffice: {
       street: "86-90, Paul Street",
       area: "Shoreditch", 
@@ -29,9 +29,10 @@ export const BUSINESS_INFO = {
   contact: {
     email: "sibbengaharry@gmail.com",
     phone: "07802738966",
+    whatsapp: "https://wa.me/447802738966",
     address: {
       street: "",
-      area: "Bukinghanshire", 
+      area: "Buckinghamshire", 
       city: "Milton Keynes",
       postcode: "",
       country: "United Kingdom"
@@ -59,151 +60,156 @@ export const BUSINESS_INFO = {
   }
 } as const
 
-// Development Services Configuration
+// Business-focused services configuration
 export const SERVICES = {
-  websiteDevelopment: {
-    title: "Website Development",
-    description: "Professional business websites that convert visitors into customers. Mobile-responsive, fast-loading, and SEO optimized.",
+  businessWebsites: {
+    title: "Professional Business Websites",
+    description: "Convert more visitors into customers with high-performance websites that showcase your expertise and drive growth.",
     icon: "🌐",
-    technologies: ["Python", "Django", "Vue.js", "HTML5", "CSS3", "JavaScript"],
+    businessValue: "Increase online presence and customer acquisition",
+    technologies: ["Modern Web Technologies", "Mobile-Responsive Design", "SEO Optimization"],
     startingPrice: "From £1,500",
     hourlyRate: "£65-75/hour",
     features: [
-      "Custom website design and development",
-      "Mobile-responsive layouts",
-      "SEO optimization",
-      "Content management systems",
-      "Contact forms and integrations",
-      "Fast loading performance"
-    ]
+      "Custom website design that reflects your brand",
+      "Mobile-responsive for all devices",
+      "SEO-optimized to attract more customers",
+      "Fast loading speeds for better user experience",
+      "Contact forms and lead capture systems",
+      "Easy content management for updates"
+    ],
   },
 
-  webDevelopment: {
-    title: "Web Application Development",
-    description: "Custom web applications using Python frameworks like Django and Flask, with modern frontend technologies",
+  webApplications: {
+    title: "Custom Business Applications",
+    description: "Streamline operations and boost productivity with custom web applications tailored to your specific business processes.",
     icon: "⚙️",
-    technologies: ["Python", "Django", "Flask", "Vue.js", "JavaScript", "PostgreSQL"],
+    businessValue: "Automate workflows and increase operational efficiency",
+    technologies: ["Full-Stack Development", "Database Integration", "API Development"],
     startingPrice: "From £3,000",
     hourlyRate: "£85-100/hour",
     features: [
-      "Custom web application development",
-      "RESTful API development", 
-      "Database design and optimization",
-      "User authentication systems",
-      "Responsive frontend design",
-      "Cross-browser compatibility"
-    ]
+      "Custom application development for your needs",
+      "User-friendly interfaces your team will love",
+      "Secure user authentication and permissions",
+      "Real-time data synchronization",
+      "Integration with existing business tools",
+      "Scalable architecture that grows with you"
+    ],
   },
   
-  dataProcessing: {
-    title: "Data Analysis & Processing",
-    description: "Automated data pipelines, analysis workflows, and insights extraction using Python data science tools",
+  dataAutomation: {
+    title: "Business Process Automation",
+    description: "Eliminate repetitive tasks and reduce errors with intelligent automation solutions that save time and money.",
     icon: "📊", 
-    technologies: ["Python", "Pandas", "NumPy", "PostgreSQL", "MongoDB", "Jupyter"],
+    businessValue: "Save time and reduce costs through automation",
+    technologies: ["Data Processing", "Workflow Automation", "Integration Solutions"],
     startingPrice: "From £2,500",
     hourlyRate: "£90-110/hour",
     features: [
-      "Data pipeline development",
-      "Automated workflow creation", 
-      "Data analysis and visualization",
-      "Database optimization",
-      "Real-time data processing",
-      "Custom reporting solutions"
-    ]
+      "Automated data processing and analysis",
+      "Custom reporting and dashboards", 
+      "Integration with existing systems",
+      "Real-time monitoring and alerts",
+      "Scheduled task automation",
+      "Data backup and security protocols"
+    ],
   },
   
-  realtimeSystems: {
-    title: "Real-time Applications", 
-    description: "WebSocket servers, real-time communication systems, and IoT device integration",
-    icon: "⚡",
-    technologies: ["Python", "Django Channels", "WebSockets", "Redis", "Docker"],
+  digitalTransformation: {
+    title: "Digital Transformation Consulting", 
+    description: "Guide your business through digital transformation with strategic technology solutions that create competitive advantages.",
+    icon: "🚀",
+    businessValue: "Future-proof your business with digital innovation",
+    technologies: ["Strategic Planning", "System Integration", "Modern Architecture"],
     startingPrice: "From £5,000",
     hourlyRate: "£120-140/hour",
     features: [
-      "Real-time communication systems",
-      "WebSocket server development",
-      "IoT device integration", 
-      "State management systems",
-      "Message queue implementation",
-      "Scalable architecture design"
+      "Digital strategy and roadmap development",
+      "Legacy system modernization",
+      "Cloud migration and optimization", 
+      "Team training and knowledge transfer",
+      "Ongoing support and maintenance",
+      "Performance monitoring and optimization"
     ]
   },
 
-  consultation: {
-    title: "Technical Consultation",
-    description: "Architecture review, code optimization, and technical guidance for existing projects",
+  technicalConsulting: {
+    title: "Technical Strategy Consultation",
+    description: "Get expert guidance on technology decisions, code reviews, and strategic planning to make informed choices for your business.",
     icon: "💡",
-    technologies: ["Python", "System Architecture", "Code Review", "Performance"],
+    businessValue: "Make informed technology decisions with expert guidance",
+    technologies: ["Strategic Analysis", "Code Review", "Architecture Planning"],
     startingPrice: "£120-150/hour",
     hourlyRate: "£120-150/hour",
     features: [
-      "Code review and optimization",
-      "Architecture consultation",
-      "Performance improvement",
-      "Technical documentation",
-      "Team training and mentoring", 
+      "Technology strategy and planning",
+      "Code review and optimization recommendations",
+      "Architecture consultation and design",
+      "Technical documentation and guidelines",
+      "Team mentoring and best practices training", 
       "Technology stack recommendations"
     ]
   }
 } as const
 
-// Technology Stack
+// Business-focused technology presentation
 export const TECHNOLOGIES = {
   backend: [
-    { name: "Python", level: 95, years: 5, icon: "🐍", color: "#3776ab" },
-    { name: "Django", level: 90, years: 4, icon: "🎯", color: "#092e20" },
-    { name: "Flask", level: 85, years: 3, icon: "🌶️", color: "#000000" },
-    { name: "FastAPI", level: 80, years: 2, icon: "⚡", color: "#009688" },
-    { name: "PostgreSQL", level: 85, years: 4, icon: "🐘", color: "#336791" },
-    { name: "MongoDB", level: 75, years: 3, icon: "🍃", color: "#47a248" }
+    { name: "Python", level: 95, years: 5, icon: "🐍", color: "#3776ab", businessUse: "Rapid development and data processing" },
+    { name: "Django", level: 90, years: 4, icon: "🎯", color: "#092e20", businessUse: "Secure, scalable web applications" },
+    { name: "Flask", level: 85, years: 3, icon: "🌶️", color: "#000000", businessUse: "Lightweight, flexible solutions" },
+    { name: "FastAPI", level: 80, years: 2, icon: "⚡", color: "#009688", businessUse: "High-performance API development" },
+    { name: "PostgreSQL", level: 85, years: 4, icon: "🐘", color: "#336791", businessUse: "Reliable business data storage" },
+    { name: "MongoDB", level: 75, years: 3, icon: "🍃", color: "#47a248", businessUse: "Flexible document storage" }
   ],
   
   frontend: [
-    { name: "JavaScript", level: 85, years: 4, icon: "📜", color: "#f7df1e" },
-    { name: "Vue.js", level: 80, years: 3, icon: "💚", color: "#4fc08d" }, 
-    { name: "HTML5", level: 90, years: 5, icon: "📄", color: "#e34f26" },
-    { name: "CSS3", level: 85, years: 5, icon: "🎨", color: "#1572b6" },
-    { name: "Tailwind CSS", level: 75, years: 2, icon: "💨", color: "#06b6d4" }
+    { name: "JavaScript", level: 85, years: 4, icon: "📜", color: "#f7df1e", businessUse: "Interactive user experiences" },
+    { name: "Vue.js", level: 80, years: 3, icon: "💚", color: "#4fc08d", businessUse: "Dynamic web applications" }, 
+    { name: "HTML5", level: 90, years: 5, icon: "📄", color: "#e34f26", businessUse: "Modern web standards" },
+    { name: "CSS3", level: 85, years: 5, icon: "🎨", color: "#1572b6", businessUse: "Professional design and styling" },
+    { name: "Tailwind CSS", level: 75, years: 2, icon: "💨", color: "#06b6d4", businessUse: "Rapid UI development" }
   ],
   
   tools: [
-    { name: "Docker", level: 80, years: 3, icon: "🐳", color: "#2496ed" },
-    { name: "Git/GitHub", level: 90, years: 5, icon: "📚", color: "#181717" },
-    { name: "AWS", level: 75, years: 3, icon: "☁️", color: "#ff9900" },
-    { name: "Jenkins", level: 70, years: 2, icon: "🔧", color: "#d33833" },
-    { name: "pytest", level: 85, years: 4, icon: "🧪", color: "#0a9edc" }
+    { name: "Docker", level: 80, years: 3, icon: "🐳", color: "#2496ed", businessUse: "Reliable deployment" },
+    { name: "Git/GitHub", level: 90, years: 5, icon: "📚", color: "#181717", businessUse: "Version control and collaboration" },
+    { name: "AWS", level: 75, years: 3, icon: "☁️", color: "#ff9900", businessUse: "Scalable cloud hosting" },
+    { name: "Jenkins", level: 70, years: 2, icon: "🔧", color: "#d33833", businessUse: "Automated testing and deployment" },
+    { name: "pytest", level: 85, years: 4, icon: "🧪", color: "#0a9edc", businessUse: "Quality assurance and testing" }
   ],
   
   specialties: [
-    { name: "Data Science", technologies: ["Pandas", "NumPy", "Scikit-learn"], icon: "📈" },
-    { name: "Real-time Systems", technologies: ["WebSockets", "Django Channels"], icon: "⚡" },
-    { name: "IoT Integration", technologies: ["MQTT", "Raspberry Pi", "C#"], icon: "🔌" },
-    { name: "API Development", technologies: ["REST", "GraphQL", "OpenAPI"], icon: "🔗" }
+    { name: "Process Automation", technologies: ["Python", "APIs", "Webhooks"], icon: "🤖", businessValue: "Reduce manual work by up to 60%" },
+    { name: "Data Analytics", technologies: ["Python", "SQL", "Dashboards"], icon: "📈", businessValue: "Make data-driven decisions faster" },
+    { name: "System Integration", technologies: ["APIs", "Webhooks", "Database"], icon: "🔗", businessValue: "Connect your business tools seamlessly" },
+    { name: "E-commerce Solutions", technologies: ["Payment APIs", "Inventory", "CRM"], icon: "🛒", businessValue: "Increase online sales and efficiency" }
   ]
 } as const
 
-// SEO Configuration
+// SEO Configuration - Business-focused
 export const SEO_CONFIG = {
   siteUrl: "https://harrysibbenga.dev",
-  defaultTitle: "Harry Sibbenga - Python Developer & Web Development Services",
-  defaultDescription: "Professional Python developer with 5+ years experience building scalable web applications, data processing systems, and real-time solutions. Based in Milton Keynes, serving UK businesses.",
+  defaultTitle: "Harry Sibbenga - Full-Stack Business Solutions Developer",
+  defaultDescription: "Transform your business with custom web applications, automation, and digital solutions. Helping UK businesses increase efficiency, reduce costs, and drive growth through technology.",
   author: "Harry Sibbenga",
   image: "/logo-512.png",
   
   keywords: [
-    "Python developer", "Django development", "Flask development", "web development Milton Keynes",
-    "data processing", "real-time applications", "IoT development", "API development",
-    "full-stack developer", "Vue.js developer", "PostgreSQL", "web applications UK"
+    "business web applications", "custom software development", "business automation", "digital transformation",
+    "web development Milton Keynes", "business process automation", "custom websites", "startup technology solutions",
+    "e-commerce development", "data automation", "business efficiency solutions", "UK web developer"
   ],
   
-  twitterHandle: "@harrysibbenga", // Add if you have Twitter
+  twitterHandle: "@harrysibbenga",
   
   structuredData: {
     "@context": "https://schema.org",
     "@type": "Person",
     "name": "Harry Sibbenga",
-    "jobTitle": "Python Developer",
-    "description": "Professional Python developer specializing in web applications and data processing",
+    "jobTitle": "Full-Stack Business Solutions Developer",
+    "description": "Helping businesses transform operations through custom web applications and automation solutions",
     "url": "https://harrysibbenga.dev",
     "worksFor": {
       "@type": "Organization",
@@ -222,7 +228,21 @@ export const SEO_CONFIG = {
       "@type": "PostalAddress", 
       "addressLocality": "Milton Keynes",
       "addressCountry": "GB"
-    }
+    },
+    "offers": [
+      {
+        "@type": "Service",
+        "name": "Professional Business Websites",
+        "description": "Custom websites that convert visitors into customers",
+        "priceRange": "£1500-£10000"
+      },
+      {
+        "@type": "Service", 
+        "name": "Custom Business Applications",
+        "description": "Streamline operations with tailored web applications",
+        "priceRange": "£3000-£25000"
+      }
+    ]
   }
 } as const
 
@@ -283,30 +303,40 @@ export const TESTIMONIALS = [
 // Contact Form Configuration
 export const CONTACT_CONFIG = {
   subjects: [
-    "Website Development",
-    "Web Application Development",
-    "Data Processing Solution", 
-    "Real-time System Development",
-    "Technical Consultation",
-    "API Development",
-    "General Inquiry"
+    "Professional Website Development",
+    "Custom Business Application",
+    "Business Process Automation", 
+    "Digital Transformation Consulting",
+    "Technical Strategy Consultation",
+    "E-commerce Development",
+    "General Business Inquiry"
   ],
   
   budgetRanges: [
-    "Under £1,500",
-    "£1,500 - £3,000", 
-    "£3,000 - £5,000",
+    "Under £2,500",
+    "£2,500 - £5,000", 
     "£5,000 - £10,000",
-    "£10,000+",
-    "Hourly Rate Discussion"
+    "£10,000 - £25,000",
+    "£25,000+",
+    "Ongoing Partnership"
   ],
   
   timelines: [
-    "ASAP (Rush job)",
-    "Within 2 weeks",
-    "Within 1 month", 
-    "Within 3 months",
-    "3+ months",
+    "ASAP (Rush project)",
+    "Within 4 weeks",
+    "Within 2 months", 
+    "Within 6 months",
+    "Long-term project",
     "Flexible timeline"
+  ],
+  
+  businessGoals: [
+    "Increase online sales",
+    "Improve operational efficiency", 
+    "Reduce manual work",
+    "Better customer experience",
+    "Scale business operations",
+    "Digital transformation",
+    "Other"
   ]
 } as const
