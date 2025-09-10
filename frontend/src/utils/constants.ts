@@ -41,8 +41,9 @@ export const BUSINESS_INFO = {
 
   // Social Media & Professional Links
   social: {
-    github: "https://github.com/Harrysibbenga",
     linkedin: "https://www.linkedin.com/in/harry-m-sibbenga-9b8584119/",
+    instagram: "https://www.instagram.com/harrysibbengadev",
+    ticktock: "https://www.tiktok.com/@harrysibbengadev",
     email: "mailto:sibbengaharry@gmail.com"
   },
 
@@ -275,7 +276,7 @@ export const STATS = {
 // Testimonials
 export const TESTIMONIALS = [
   {
-    name: "MapAction Team",
+    name: "MapAction",
     role: "Humanitarian Organization",
     company: "MapAction",
     testimonial: "Harry's work on our geospatial data pipeline was exceptional. His Python expertise helped us reduce data processing time by 20%, enabling faster humanitarian response.",
