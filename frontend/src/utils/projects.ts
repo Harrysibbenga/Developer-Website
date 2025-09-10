@@ -24,19 +24,25 @@ export interface Project {
   featured: boolean
 }
 
+import PortfolioWebsite from "../assets/projects/portfolio-website.png"
+import RomanEvents from "../assets/projects/roman-events.png"
+import DataProcessing from "../assets/projects/data-processing.png"
+import WebDevelopment from "../assets/projects/web-development.png"
+import IoTIntegration from "../assets/projects/iot-integration.png"
+import RealTimeSystems from "../assets/projects/real-time-systems.png"
+
 // Portfolio Projects with Live Links (these you can show and link to)
 export const LIVE_PROJECTS: Project[] = [
   {
     id: "portfolio-website",
     title: "Personal Portfolio & Development Services",
-    description: "Modern web development portfolio built with Astro, Vue.js, and Tailwind CSS",
+    description: "Modern web development portfolio built with Astro.js, Vue.js, Tailwind CSS and FastAPI",
     longDescription: "A comprehensive portfolio website showcasing development services with interactive project galleries, service booking system, and responsive design. Built using modern web technologies with performance optimization and SEO best practices.",
     category: "Web Applications",
-    technologies: ["Astro", "Vue.js", "TypeScript", "Tailwind CSS", "Python", "FastAPI"],
+    technologies: ["Astro.js", "Vue.js", "TypeScript", "Tailwind CSS", "Python", "FastAPI"],
     status: "live",
-    image: "/images/projects/portfolio-website.jpg",
-    liveUrl: "https://harrysibbenga-dev.vercel.app",
-    githubUrl: "https://github.com/Harrysibbenga/portfolio-2024",
+    image: PortfolioWebsite.src,
+    liveUrl: "https://harrysibbenga.dev",
     features: [
       "Responsive design optimized for all devices",
       "Interactive project gallery with filtering",
@@ -56,144 +62,42 @@ export const LIVE_PROJECTS: Project[] = [
       "Professional online presence for client acquisition"
     ],
     duration: "2 weeks",
-    year: 2024,
+    year: 2025,
     featured: true
   },
   {
-    id: "task-management-app",
-    title: "Django Task Management System",
-    description: "Full-stack task management application with real-time updates and team collaboration",
-    longDescription: "A comprehensive task management system built with Django and Vue.js, featuring real-time notifications, team collaboration tools, and advanced project tracking capabilities. Includes user authentication, role-based permissions, and dashboard analytics.",
+    id: "roman-events-mk",
+    title: "Roman Events MK Website",
+    description: "Event booking website with LED numbers & letters for weddings, birthdays, Halloween, and more.",
+    longDescription: "A modern full-stack event booking website built with Astro.js, Vue.js, and FastAPI. The platform showcases Roman Events' LED numbers and letters, offering an interactive booking system with a contact form, cookie manager, and legal pages for terms and privacy. The responsive design ensures a smooth user experience across devices while promoting a wide range of event services for weddings, birthdays, corporate parties, Halloween, and special occasions.",
     category: "Web Applications",
-    technologies: ["Django", "Vue.js", "PostgreSQL", "Redis", "WebSockets", "Docker"],
+    technologies: ["Astro.js", "Vue.js", "TypeScript", "Tailwind CSS", "Python", "FastAPI"],
     status: "live",
-    image: "/images/projects/task-management.jpg",
-    liveUrl: "https://taskmanager-demo.vercel.app",
-    githubUrl: "https://github.com/Harrysibbenga/django-task-manager",
+    image: RomanEvents.src,
+    liveUrl: "https://romaneventsmk.co.uk",
     features: [
-      "Real-time task updates and notifications",
-      "Team collaboration and assignment system",
-      "Advanced filtering and search capabilities",
-      "Dashboard with analytics and reporting",
-      "File attachment and commenting system",
-      "Mobile-responsive design"
+      "Interactive booking form with validation",
+      "Event package showcase with LED numbers & letters",
+      "Contact form integration",
+      "Cookie manager with preferences",
+      "Terms & Privacy policy pages",
+      "Mobile-first responsive design"
     ],
     challenges: [
-      "Implementing real-time updates without performance issues",
-      "Designing an intuitive user interface for complex workflows",
-      "Optimizing database queries for large datasets"
+      "Designing a booking flow that is simple yet detailed enough for event customization",
+      "Balancing visual design with fast performance for image-heavy galleries",
+      "Implementing clear cookie & privacy compliance features"
     ],
     results: [
-      "Improved team productivity by 40%",
-      "Reduced project management overhead",
-      "Successfully deployed for multiple client teams"
+      "Enabled customers to easily book event packages online",
+      "Increased lead conversion through responsive design",
+      "Improved brand visibility with a professional web presence"
     ],
-    client: "TechStartup Solutions",
-    duration: "6 weeks",
-    year: 2024,
+    client: "Roman Events MK",
+    duration: "2 weeks",
+    year: 2025,
     featured: true
-  },
-  {
-    id: "ecommerce-platform",
-    title: "E-commerce Platform with Stripe Integration",
-    description: "Modern e-commerce solution with advanced payment processing and inventory management",
-    longDescription: "A full-featured e-commerce platform built with React and Node.js, featuring Stripe payment integration, inventory management, order tracking, and admin dashboard. Includes advanced features like discount codes, customer analytics, and automated email notifications.",
-    category: "E-commerce",
-    technologies: ["React", "Node.js", "Express", "MongoDB", "Stripe", "JWT", "SendGrid"],
-    status: "live",
-    image: "/images/projects/ecommerce-platform.jpg",
-    liveUrl: "https://shop-demo.herokuapp.com",
-    githubUrl: "https://github.com/Harrysibbenga/ecommerce-platform",
-    features: [
-      "Secure payment processing with Stripe",
-      "Advanced product catalog with search and filtering",
-      "Real-time inventory management",
-      "Order tracking and customer notifications",
-      "Admin dashboard with sales analytics",
-      "Responsive design for mobile shopping"
-    ],
-    challenges: [
-      "Implementing secure payment processing",
-      "Managing complex state across multiple components",
-      "Optimizing for mobile shopping experience"
-    ],
-    results: [
-      "Processed over £50,000 in transactions",
-      "98% customer satisfaction rating",
-      "40% increase in mobile conversion rates"
-    ],
-    client: "Local Retail Business",
-    duration: "8 weeks",
-    year: 2023,
-    featured: true
-  },
-  {
-    id: "weather-dashboard",
-    title: "Interactive Weather Dashboard",
-    description: "Real-time weather application with data visualization and location services",
-    longDescription: "A responsive weather dashboard built with React and Chart.js, featuring real-time weather data, interactive maps, weather forecasts, and customizable location tracking. Integrates with multiple weather APIs for accurate and comprehensive data.",
-    category: "Web Applications",
-    technologies: ["React", "Chart.js", "OpenWeather API", "Mapbox", "CSS Modules"],
-    status: "live",
-    image: "/images/projects/weather-dashboard.jpg",
-    liveUrl: "https://weather-dashboard-hs.netlify.app",
-    githubUrl: "https://github.com/Harrysibbenga/weather-dashboard",
-    features: [
-      "Real-time weather data and forecasts",
-      "Interactive weather maps and visualizations",
-      "Location-based weather tracking",
-      "Customizable dashboard widgets",
-      "Historical weather data charts",
-      "Mobile-optimized interface"
-    ],
-    challenges: [
-      "Handling multiple API integrations efficiently",
-      "Creating responsive data visualizations",
-      "Optimizing performance with frequent data updates"
-    ],
-    results: [
-      "1,000+ daily active users",
-      "99.9% API uptime maintained",
-      "Featured in local weather service recommendations"
-    ],
-    duration: "3 weeks",
-    year: 2023,
-    featured: false
-  },
-  {
-    id: "blog-cms",
-    title: "Content Management System",
-    description: "Custom CMS built with Next.js and Headless CMS for content creators",
-    longDescription: "A modern content management system built with Next.js and Strapi, featuring a user-friendly editor, SEO optimization, media management, and multi-user collaboration. Designed for content creators who need flexibility and performance.",
-    category: "Content Management",
-    technologies: ["Next.js", "Strapi", "React", "PostgreSQL", "Cloudinary", "Vercel"],
-    status: "live",
-    image: "/images/projects/blog-cms.jpg",
-    liveUrl: "https://blog-cms-demo.vercel.app",
-    githubUrl: "https://github.com/Harrysibbenga/blog-cms",
-    features: [
-      "Rich text editor with media support",
-      "SEO optimization tools and meta management",
-      "Multi-user collaboration and roles",
-      "Advanced content scheduling",
-      "Analytics and performance tracking",
-      "Responsive admin interface"
-    ],
-    challenges: [
-      "Building a user-friendly content editor",
-      "Implementing efficient media management",
-      "Optimizing SEO and page performance"
-    ],
-    results: [
-      "Reduced content publishing time by 60%",
-      "Improved SEO rankings for client sites",
-      "Successfully managing 500+ blog posts"
-    ],
-    client: "Digital Marketing Agency",
-    duration: "5 weeks",
-    year: 2023,
-    featured: false
-  }
+  },  
 ]
 
 // CV Projects (for consultation and case studies)
@@ -204,9 +108,9 @@ export const CV_PROJECTS: Project[] = [
     description: "Python-based data pipeline enabling 1-hour geospatial data access for humanitarian crises response",
     longDescription: "Designed and developed a comprehensive Python data pipeline system for MapAction's geospatial team, dramatically reducing data processing time from hours to under 60 minutes. The system enables rapid humanitarian response by providing instant access to critical mapping data.",
     category: "Data Processing", 
-    technologies: ["Python", "Docker", "Jenkins", "pytest", "GitHub", "Geospatial Libraries"],
+    technologies: ["Python", "Docker", "Jenkins", "GitHub", "Geospatial Libraries", "CI/CD", "Airflow", "pytest"],
     status: "consultation",
-    image: "/images/projects/mapaction-pipeline.jpg",
+    image: DataProcessing.src,
     client: "MapAction (Humanitarian Organization)",
     features: [
       "Automated geospatial data processing workflows",
@@ -228,7 +132,7 @@ export const CV_PROJECTS: Project[] = [
       "Streamlined volunteer contribution process",
       "Production-ready CI/CD implementation"
     ],
-    duration: "Ongoing (Jan 2024 - Present)",
+    duration: "Ongoing (Jan 2024 - Dec 2024)",
     year: 2024,
     featured: true
   },
@@ -240,7 +144,7 @@ export const CV_PROJECTS: Project[] = [
     category: "Real-time Systems",
     technologies: ["Django", "Django Channels", "WebSockets", "Python", "C#", "pytest"],
     status: "consultation", 
-    image: "/images/projects/tensator-queue.jpg",
+    image: RealTimeSystems.src,
     client: "Tensator Group",
     features: [
       "Real-time WebSocket communication",
@@ -274,7 +178,7 @@ export const CV_PROJECTS: Project[] = [
     category: "Web Applications",
     technologies: ["Flask", "Django", "Vue.js", "Python", "JavaScript", "RESTful APIs"],
     status: "consultation",
-    image: "/images/projects/motorsport-web.jpg", 
+    image: WebDevelopment.src, 
     client: "Torque Motorsport",
     features: [
       "Custom motorsport-focused web applications",
@@ -306,9 +210,10 @@ export const CV_PROJECTS: Project[] = [
     description: "Python-based system for managing and communicating with various IoT devices and sensors",
     longDescription: "Built a comprehensive IoT device management platform that handles communication with multiple device types, processes sensor data, and provides real-time monitoring capabilities. Implemented secure networking and data processing pipelines.",
     category: "IoT Projects",
-    technologies: ["Python", "Raspberry Pi", "MQTT", "WebSockets", "Network Security", "Real-time Processing"],
+    technologies: ["Python", "Raspberry Pi", "OpenCV", "YoloV5", "MQTT", "WebSockets", "Network Security", "Real-time Processing"],
     status: "consultation",
-    image: "/images/projects/iot-integration.jpg",
+    image: IoTIntegration.src,
+    client: "Tensator Group",
     features: [
       "Multi-device communication protocols",
       "Real-time sensor data processing",
@@ -332,39 +237,7 @@ export const CV_PROJECTS: Project[] = [
     ],
     duration: "Integrated into queue management project",
     year: 2022,
-    featured: false
-  },
-  {
-    id: "appointment-scheduler",
-    title: "Medical Appointment Scheduling System",
-    description: "Comprehensive appointment management system for healthcare practice",
-    longDescription: "A sophisticated appointment scheduling system developed for a multi-practice healthcare group, featuring patient management, staff scheduling, automated reminders, and integration with existing medical records systems. Designed to improve efficiency and patient experience.",
-    category: "Healthcare Technology",
-    technologies: ["React", "Node.js", "MongoDB", "Express", "Twilio", "Calendar APIs"],
-    status: "case-study",
-    image: "/images/projects/appointment-scheduler.jpg",
-    features: [
-      "Online appointment booking and management",
-      "Staff schedule coordination and availability tracking",
-      "Automated SMS and email appointment reminders",
-      "Patient history and medical records integration",
-      "Waiting list management and automatic rebooking",
-      "Comprehensive reporting and analytics dashboard"
-    ],
-    challenges: [
-      "Integrating with existing medical records systems",
-      "Managing complex scheduling rules and constraints",
-      "Ensuring HIPAA compliance and data security"
-    ],
-    results: [
-      "Reduced no-show rates by 30%",
-      "Improved appointment scheduling efficiency by 50%",
-      "Enhanced patient satisfaction scores"
-    ],
-    client: "Healthcare Practice Group",
-    duration: "8 weeks",
-    year: 2021,
-    featured: false
+    featured: true
   }
 ]
 
