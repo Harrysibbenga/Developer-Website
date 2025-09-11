@@ -11,7 +11,8 @@ from models.contact import InquiryType, InquiryStatus
 
 class ContactCreate(BaseModel):
     """Schema for creating a contact inquiry"""
-    name: str
+    first_name: str
+    last_name: str
     email: EmailStr
     phone: Optional[str] = None
     company: Optional[str] = None
@@ -19,7 +20,7 @@ class ContactCreate(BaseModel):
     message: str
     inquiry_type: InquiryType = InquiryType.GENERAL
     
-    @validator('name')
+    @validator('first_name', 'last_name')
     def validate_name(cls, v):
         if len(v.strip()) < 2:
             raise ValueError('Name must be at least 2 characters')
@@ -40,7 +41,8 @@ class ContactCreate(BaseModel):
 class ContactResponse(BaseModel):
     """Schema for contact inquiry responses"""
     id: int
-    name: str
+    first_name: str
+    last_name: str
     email: str
     phone: Optional[str]
     company: Optional[str]

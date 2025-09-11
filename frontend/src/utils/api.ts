@@ -218,27 +218,27 @@ import type {
     contacts = {
       // List contact inquiries
       list: async (params?: PaginationParams & FilterParams): Promise<ContactList> => {
-        return this.http.get<ContactList>('/api/contacts/', params);
+        return this.http.get<ContactList>('/api/contact/', params);
       },
   
       // Create contact inquiry
       create: async (data: ContactCreate): Promise<ContactResponse> => {
-        return this.http.post<ContactResponse>('/api/contacts/', data);
+        return this.http.post<ContactResponse>('/api/contact/', data);
       },
   
       // Get contact by ID
       getById: async (id: string): Promise<ContactResponse> => {
-        return this.http.get<ContactResponse>(`/api/contacts/${id}`);
+        return this.http.get<ContactResponse>(`/api/contact/${id}`);
       },
   
       // Update contact status
       updateStatus: async (id: string, status: string): Promise<ContactResponse> => {
-        return this.http.patch<ContactResponse>(`/api/contacts/${id}/status`, { status });
+        return this.http.patch<ContactResponse>(`/api/contact/${id}/status`, { status });
       },
   
       // Delete contact
       delete: async (id: string): Promise<void> => {
-        return this.http.delete<void>(`/api/contacts/${id}`);
+        return this.http.delete<void>(`/api/contact/${id}`);
       }
     };
   

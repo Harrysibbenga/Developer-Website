@@ -54,6 +54,9 @@ class Settings(BaseSettings):
     SMTP_PASSWORD: str = ""
     SMTP_FROM_EMAIL: EmailStr = "sibbengaharry@gmail.com"
     SMTP_FROM_NAME: str = "Harry Sibbenga Web Services"
+
+    # Site URL
+    SITE_URL: str = "https://harrysibbenga.dev"
     
     # Business Configuration
     BUSINESS_EMAIL: EmailStr = "sibbengaharry@gmail.com"

@@ -3,10 +3,11 @@
 Pydantic schemas for service bookings
 """
 
-from pydantic import BaseModel, EmailStr, validator
+from pydantic import BaseModel, EmailStr, validator, field_validator
 from typing import List, Optional
 from datetime import datetime
 from enum import Enum
+from uuid import UUID
 
 from models.booking import ServiceType, ProjectStatus, ProjectComplexity
 
@@ -93,6 +94,13 @@ class BookingResponse(BaseModel):
     created_at: datetime
     updated_at: datetime
     is_active: bool
+    
+    @field_validator('booking_id', mode='before')
+    @classmethod
+    def convert_uuid_to_string(cls, v):
+        if isinstance(v, UUID):
+            return str(v)
+        return v
     
     class Config:
         from_attributes = True

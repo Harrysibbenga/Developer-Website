@@ -7,10 +7,11 @@
 // ===== ENUMS =====
 
 export enum ServiceType {
-    WEB_DEVELOPMENT = "webDevelopment",
-    DATA_PROCESSING = "dataProcessing", 
-    REALTIME_SYSTEMS = "realtimeSystems",
-    CONSULTATION = "consultation"
+    BUSINESS_WEBSITES = "businessWebsites",
+    WEB_APPLICATIONS = "webApplications",
+    DATA_AUTOMATION = "dataAutomation", 
+    DIGITAL_TRANSFROMATION = "digitalTransformation",
+    CONSULTATION = "technicalConsulting"
   }
   
   export enum ProjectStatus {
@@ -32,8 +33,10 @@ export enum ServiceType {
   export enum InquiryType {
     GENERAL = "general",
     TECHNICAL = "technical",
+    PARTNERSHIP = "partnership",
     COLLABORATION = "collaboration",
-    SUPPORT = "support"
+    SUPPORT = "support",
+    MEDIA = "media"
   }
   
   export enum InquiryStatus {

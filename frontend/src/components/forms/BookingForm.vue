@@ -14,6 +14,16 @@
       </div>
     </div>
 
+    <!-- Error Message -->
+    <div v-if="formHandler.hasFieldError('general')" class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+      <div class="flex items-center">
+        <svg class="w-5 h-5 text-red-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+        </svg>
+        <span class="text-red-800 font-medium">{{ formHandler.getFieldErrors('general')[0] }}</span>
+      </div>
+    </div>
+
     <!-- Form Steps -->
     <form @submit.prevent="handleSubmit" class="space-y-8">
       
@@ -37,17 +47,19 @@
                 v-for="(service, key) in SERVICES" 
                 :key="key"
                 class="service-option relative cursor-pointer"
-                :class="{ 'selected': formData.serviceType === key }"
-                @click="formData.serviceType = key"
+                :class="{ 'selected': formData.service_type === key }"
+                @click="updateField('service_type', key)"
               >
                 <input 
                   type="radio" 
                   :value="key" 
-                  v-model="formData.serviceType"
+                  :checked="formData.service_type === key"
+                  @change="updateField('service_type', key)"
                   class="sr-only"
                   required
                 />
-                <div class="p-6 rounded-xl border-2 transition-all duration-300 hover:shadow-md">
+                <div class="p-6 rounded-xl border-2 transition-all duration-300 hover:shadow-md"
+                     :class="formHandler.hasFieldError('service_type') ? 'border-red-300' : ''">
                   <div class="flex items-start space-x-4">
                     <div class="text-3xl">{{ service.icon }}</div>
                     <div class="flex-1">
@@ -65,32 +77,42 @@
                 </div>
               </div>
             </div>
+            <p v-if="formHandler.hasFieldError('service_type')" class="mt-2 text-sm text-red-600">
+              {{ formHandler.getFieldErrors('service_type')[0] }}
+            </p>
           </div>
 
           <!-- Basic Project Info -->
           <div class="grid md:grid-cols-2 gap-6">
             <div>
               <label for="projectName" class="block text-sm font-medium text-gray-700 mb-2">
-                Project Name
+                Project Name *
               </label>
               <input
                 type="text"
                 id="projectName"
-                v-model="formData.projectName"
+                :value="formData.project_name"
+                @input="updateField('project_name', $event.target.value)"
                 class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                :class="formHandler.hasFieldError('project_name') ? 'border-red-300' : ''"
                 placeholder="e.g., Company Website Redesign"
                 required
               />
+              <p v-if="formHandler.hasFieldError('project_name')" class="mt-1 text-sm text-red-600">
+                {{ formHandler.getFieldErrors('project_name')[0] }}
+              </p>
             </div>
             
             <div>
               <label for="timeline" class="block text-sm font-medium text-gray-700 mb-2">
-                Preferred Timeline
+                Preferred Timeline *
               </label>
               <select
                 id="timeline"
-                v-model="formData.timeline"
+                :value="formData.timeline"
+                @change="updateField('timeline', $event.target.value)"
                 class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                :class="formHandler.hasFieldError('timeline') ? 'border-red-300' : ''"
                 required
               >
                 <option value="">Select timeline</option>
@@ -98,6 +120,9 @@
                   {{ timeline }}
                 </option>
               </select>
+              <p v-if="formHandler.hasFieldError('timeline')" class="mt-1 text-sm text-red-600">
+                {{ formHandler.getFieldErrors('timeline')[0] }}
+              </p>
             </div>
           </div>
         </div>
@@ -161,16 +186,24 @@
           <!-- Project Description -->
           <div>
             <label for="projectDescription" class="block text-lg font-semibold text-gray-900 mb-4">
-              Project Description
+              Project Description *
             </label>
             <textarea
               id="projectDescription"
-              v-model="formData.description"
+              :value="formData.description"
+              @input="updateField('description', $event.target.value)"
               rows="6"
               class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              :class="formHandler.hasFieldError('description') ? 'border-red-300' : ''"
               placeholder="Please describe your project requirements, goals, and any specific functionality you need..."
               required
             ></textarea>
+            <p v-if="formHandler.hasFieldError('description')" class="mt-1 text-sm text-red-600">
+              {{ formHandler.getFieldErrors('description')[0] }}
+            </p>
+            <div class="mt-1 text-right">
+              <span class="text-sm text-gray-500">{{ formData.description.length }}/2000</span>
+            </div>
           </div>
         </div>
       </div>
@@ -189,42 +222,57 @@
               <div class="grid md:grid-cols-2 gap-4">
                 <div>
                   <label for="firstName" class="block text-sm font-medium text-gray-700 mb-2">
-                    First Name
+                    First Name *
                   </label>
                   <input
                     type="text"
                     id="firstName"
-                    v-model="formData.firstName"
+                    :value="formData.first_name"
+                    @input="updateField('first_name', $event.target.value)"
                     class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    :class="formHandler.hasFieldError('first_name') ? 'border-red-300' : ''"
                     required
                   />
+                  <p v-if="formHandler.hasFieldError('first_name')" class="mt-1 text-sm text-red-600">
+                    {{ formHandler.getFieldErrors('first_name')[0] }}
+                  </p>
                 </div>
                 
                 <div>
                   <label for="lastName" class="block text-sm font-medium text-gray-700 mb-2">
-                    Last Name
+                    Last Name *
                   </label>
                   <input
                     type="text"
                     id="lastName"
-                    v-model="formData.lastName"
+                    :value="formData.last_name"
+                    @input="updateField('last_name', $event.target.value)"
                     class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    :class="formHandler.hasFieldError('last_name') ? 'border-red-300' : ''"
                     required
                   />
+                  <p v-if="formHandler.hasFieldError('last_name')" class="mt-1 text-sm text-red-600">
+                    {{ formHandler.getFieldErrors('last_name')[0] }}
+                  </p>
                 </div>
               </div>
 
               <div>
                 <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
-                  Email Address
+                  Email Address *
                 </label>
                 <input
                   type="email"
                   id="email"
-                  v-model="formData.email"
+                  :value="formData.email"
+                  @input="updateField('email', $event.target.value)"
                   class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  :class="formHandler.hasFieldError('email') ? 'border-red-300' : ''"
                   required
                 />
+                <p v-if="formHandler.hasFieldError('email')" class="mt-1 text-sm text-red-600">
+                  {{ formHandler.getFieldErrors('email')[0] }}
+                </p>
               </div>
 
               <div>
@@ -234,9 +282,14 @@
                 <input
                   type="tel"
                   id="phone"
-                  v-model="formData.phone"
+                  :value="formData.phone"
+                  @input="updateField('phone', $event.target.value)"
                   class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  :class="formHandler.hasFieldError('phone') ? 'border-red-300' : ''"
                 />
+                <p v-if="formHandler.hasFieldError('phone')" class="mt-1 text-sm text-red-600">
+                  {{ formHandler.getFieldErrors('phone')[0] }}
+                </p>
               </div>
 
               <div>
@@ -246,19 +299,40 @@
                 <input
                   type="text"
                   id="company"
-                  v-model="formData.company"
+                  :value="formData.company"
+                  @input="updateField('company', $event.target.value)"
                   class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
 
               <div>
+                <label for="website" class="block text-sm font-medium text-gray-700 mb-2">
+                  Website (Optional)
+                </label>
+                <input
+                  type="url"
+                  id="website"
+                  :value="formData.website"
+                  @input="updateField('website', $event.target.value)"
+                  class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  :class="formHandler.hasFieldError('website') ? 'border-red-300' : ''"
+                  placeholder="https://example.com"
+                />
+                <p v-if="formHandler.hasFieldError('website')" class="mt-1 text-sm text-red-600">
+                  {{ formHandler.getFieldErrors('website')[0] }}
+                </p>
+              </div>
+
+              <div>
                 <label for="budget" class="block text-sm font-medium text-gray-700 mb-2">
-                  Budget Range
+                  Budget Range *
                 </label>
                 <select
                   id="budget"
-                  v-model="formData.budget"
+                  :value="formData.budget_range"
+                  @change="updateField('budget_range', $event.target.value)"
                   class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  :class="formHandler.hasFieldError('budget_range') ? 'border-red-300' : ''"
                   required
                 >
                   <option value="">Select budget range</option>
@@ -266,6 +340,9 @@
                     {{ budget }}
                   </option>
                 </select>
+                <p v-if="formHandler.hasFieldError('budget_range')" class="mt-1 text-sm text-red-600">
+                  {{ formHandler.getFieldErrors('budget_range')[0] }}
+                </p>
               </div>
             </div>
           </div>
@@ -281,7 +358,7 @@
               <div class="flex justify-between items-center py-3 border-b border-blue-200">
                 <span class="font-medium text-gray-700">Service Type</span>
                 <span class="font-semibold text-gray-900">
-                  {{ formData.serviceType ? SERVICES[formData.serviceType]?.title : 'Not selected' }}
+                  {{ formData.service_type ? SERVICES[formData.service_type]?.title : 'Not selected' }}
                 </span>
               </div>
 
@@ -289,7 +366,7 @@
               <div class="flex justify-between items-center py-3 border-b border-blue-200">
                 <span class="font-medium text-gray-700">Base Price</span>
                 <span class="font-semibold text-gray-900">
-                  {{ formData.serviceType ? SERVICES[formData.serviceType]?.startingPrice : '—' }}
+                  {{ formData.service_type ? SERVICES[formData.service_type]?.startingPrice : '—' }}
                 </span>
               </div>
 
@@ -353,7 +430,8 @@
           v-if="currentStep > 1"
           type="button"
           @click="previousStep"
-          class="inline-flex items-center px-6 py-3 border border-gray-300 text-gray-700 rounded-xl font-medium hover:bg-gray-50 transition-all duration-300"
+          :disabled="formHandler.getState().loading"
+          class="inline-flex items-center px-6 py-3 border border-gray-300 text-gray-700 rounded-xl font-medium hover:bg-gray-50 transition-all duration-300 disabled:opacity-50"
         >
           <ChevronLeft class="w-5 h-5 mr-2" />
           Previous
@@ -364,7 +442,7 @@
           v-if="currentStep < totalSteps"
           type="button"
           @click="nextStep"
-          :disabled="!canProceed"
+          :disabled="!canProceed || formHandler.getState().loading"
           class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-medium hover:from-blue-700 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
         >
           Next
@@ -374,10 +452,10 @@
         <button
           v-else
           type="submit"
-          :disabled="isSubmitting || !canProceed"
+          :disabled="formHandler.getState().loading || !canProceed"
           class="inline-flex items-center px-8 py-3 bg-gradient-to-r from-green-600 to-blue-600 text-white rounded-xl font-medium hover:from-green-700 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
         >
-          <span v-if="!isSubmitting">Submit Project Request</span>
+          <span v-if="!formHandler.getState().loading">Submit Project Request</span>
           <span v-else class="flex items-center">
             <svg class="animate-spin w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24">
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -417,31 +495,38 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, reactive } from 'vue'
 import { ChevronLeft, ChevronRight } from 'lucide-vue-next'
 import { SERVICES, TECHNOLOGIES, CONTACT_CONFIG } from '../../utils/constants'
+import { api, createFormHandler, validators } from '../../utils/api'
+import type { BookingCreate, ServiceType } from '../../types/api'
 
 // Form state
 const currentStep = ref(1)
 const totalSteps = ref(3)
-const isSubmitting = ref(false)
 const isSubmitted = ref(false)
 
-// Form data
-const formData = ref({
-  serviceType: '',
-  projectName: '',
-  timeline: '',
-  technologies: [] as string[],
-  features: [] as string[],
+// Initial form data matching API types
+const initialFormData: BookingCreate = {
+  service_type: '' as ServiceType,
+  project_name: '',
   description: '',
-  firstName: '',
-  lastName: '',
+  timeline: '',
+  budget_range: '',
+  technologies: [],
+  features: [],
+  additional_info: '',
+  first_name: '',
+  last_name: '',
   email: '',
   phone: '',
   company: '',
-  budget: ''
-})
+  website: ''
+}
+
+// Form handler for API integration
+const formHandler = createFormHandler(initialFormData)
+const formData = reactive({ ...initialFormData })
 
 // Available technologies for selection
 const availableTechnologies = [
@@ -466,24 +551,103 @@ const projectFeatures = [
   'Third-party Integrations'
 ]
 
+// Update field helper
+const updateField = (field: keyof BookingCreate, value: any) => {
+  formData[field] = value
+  formHandler.setField(field, value)
+}
+
+// Client-side validation
+const validateStep = (step: number): boolean => {
+  formHandler.clearErrors()
+  const errors: Array<{ field: string; message: string }> = []
+
+  switch (step) {
+    case 1:
+      if (!formData.service_type) {
+        errors.push({ field: 'service_type', message: 'Please select a service type' })
+      }
+      if (!formData.project_name.trim()) {
+        errors.push({ field: 'project_name', message: 'Project name is required' })
+      } else if (formData.project_name.length < 3) {
+        errors.push({ field: 'project_name', message: 'Project name must be at least 3 characters' })
+      }
+      if (!formData.timeline) {
+        errors.push({ field: 'timeline', message: 'Please select a timeline' })
+      }
+      break
+
+    case 2:
+      if (!formData.description.trim()) {
+        errors.push({ field: 'description', message: 'Project description is required' })
+      } else if (formData.description.length < 20) {
+        errors.push({ field: 'description', message: 'Please provide a more detailed description (at least 20 characters)' })
+      } else if (formData.description.length > 2000) {
+        errors.push({ field: 'description', message: 'Description must be less than 2000 characters' })
+      }
+      break
+
+    case 3:
+      if (!formData.first_name.trim()) {
+        errors.push({ field: 'first_name', message: 'First name is required' })
+      }
+      if (!formData.last_name.trim()) {
+        errors.push({ field: 'last_name', message: 'Last name is required' })
+      }
+      
+      const emailError = validators.email(formData.email)
+      if (!formData.email.trim()) {
+        errors.push({ field: 'email', message: 'Email address is required' })
+      } else if (emailError) {
+        errors.push({ field: 'email', message: emailError })
+      }
+
+      if (formData.phone && formData.phone.trim()) {
+        const phoneError = validators.phone(formData.phone)
+        if (phoneError) {
+          errors.push({ field: 'phone', message: phoneError })
+        }
+      }
+
+      if (formData.website && formData.website.trim()) {
+        const urlError = validators.url(formData.website)
+        if (urlError) {
+          errors.push({ field: 'website', message: urlError })
+        }
+      }
+
+      if (!formData.budget_range) {
+        errors.push({ field: 'budget_range', message: 'Please select a budget range' })
+      }
+      break
+  }
+
+  if (errors.length > 0) {
+    formHandler.setErrors(errors)
+    return false
+  }
+
+  return true
+}
+
 // Computed properties
 const canProceed = computed(() => {
   switch (currentStep.value) {
     case 1:
-      return formData.value.serviceType && formData.value.projectName && formData.value.timeline
+      return formData.service_type && formData.project_name && formData.timeline
     case 2:
-      return formData.value.description.length > 20
+      return formData.description.length > 20
     case 3:
-      return formData.value.firstName && formData.value.lastName && formData.value.email && formData.value.budget
+      return formData.first_name && formData.last_name && formData.email && formData.budget_range
     default:
       return false
   }
 })
 
 const projectComplexity = computed(() => {
-  const featureCount = formData.value.features.length
-  const techCount = formData.value.technologies.length
-  const descriptionLength = formData.value.description.length
+  const featureCount = formData.features.length
+  const techCount = formData.technologies.length
+  const descriptionLength = formData.description.length
   
   const score = featureCount * 10 + techCount * 5 + Math.min(descriptionLength / 10, 20)
   
@@ -493,8 +657,8 @@ const projectComplexity = computed(() => {
 })
 
 const complexityPercentage = computed(() => {
-  const featureCount = formData.value.features.length
-  const techCount = formData.value.technologies.length
+  const featureCount = formData.features.length
+  const techCount = formData.technologies.length
   return Math.min(((featureCount + techCount) / 16) * 100, 100)
 })
 
@@ -518,7 +682,7 @@ const complexityBarColor = computed(() => {
 
 const estimatedTimeline = computed(() => {
   const complexity = projectComplexity.value
-  const serviceType = formData.value.serviceType
+  const serviceType = formData.service_type
   
   if (!serviceType) return 'Select a service to see timeline'
   
@@ -534,7 +698,7 @@ const estimatedTimeline = computed(() => {
 
 // Methods
 const nextStep = () => {
-  if (canProceed.value && currentStep.value < totalSteps.value) {
+  if (validateStep(currentStep.value) && canProceed.value && currentStep.value < totalSteps.value) {
     currentStep.value++
   }
 }
@@ -542,45 +706,80 @@ const nextStep = () => {
 const previousStep = () => {
   if (currentStep.value > 1) {
     currentStep.value--
+    formHandler.clearErrors()
   }
 }
 
 const toggleTechnology = (tech: string) => {
-  const index = formData.value.technologies.indexOf(tech)
+  const index = formData.technologies.indexOf(tech)
   if (index > -1) {
-    formData.value.technologies.splice(index, 1)
+    formData.technologies.splice(index, 1)
   } else {
-    formData.value.technologies.push(tech)
+    formData.technologies.push(tech)
   }
+  formHandler.setField('technologies', formData.technologies)
 }
 
 const toggleFeature = (feature: string) => {
-  const index = formData.value.features.indexOf(feature)
+  const index = formData.features.indexOf(feature)
   if (index > -1) {
-    formData.value.features.splice(index, 1)
+    formData.features.splice(index, 1)
   } else {
-    formData.value.features.push(feature)
+    formData.features.push(feature)
   }
+  formHandler.setField('features', formData.features)
 }
 
 const handleSubmit = async () => {
-  if (!canProceed.value) return
+  if (!validateStep(3) || !canProceed.value) return
   
-  isSubmitting.value = true
-  
+  // Prepare data for API submission
+  const submissionData: BookingCreate = {
+    service_type: formData.service_type,
+    project_name: formData.project_name,
+    description: formData.description,
+    timeline: formData.timeline,
+    budget_range: formData.budget_range,
+    technologies: formData.technologies,
+    features: formData.features,
+    additional_info: '', // Can be populated from additional fields if needed
+    first_name: formData.first_name,
+    last_name: formData.last_name,
+    email: formData.email,
+    phone: formData.phone || undefined,
+    company: formData.company || undefined,
+    website: formData.website || undefined
+  }
+
   try {
-    // Here you would send the data to your backend
-    console.log('Submitting form data:', formData.value)
-    
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 2000))
-    
-    isSubmitted.value = true
+    const result = await formHandler.submit(async (data) => {
+      console.log('Submitting booking data:', data)
+      return await api.bookings.create(submissionData)
+    })
+
+    if (result) {
+      console.log('Booking created successfully:', result)
+      isSubmitted.value = true
+      
+      // Track successful submission
+      if (typeof gtag !== 'undefined') {
+        gtag('event', 'booking_submit', {
+          event_category: 'Booking',
+          event_label: 'Booking Form Success',
+          service_type: formData.service_type
+        })
+      }
+    }
   } catch (error) {
-    console.error('Form submission error:', error)
-    alert('There was an error submitting your request. Please try again.')
-  } finally {
-    isSubmitting.value = false
+    console.error('Booking submission error:', error)
+    
+    // Track failed submission
+    if (typeof gtag !== 'undefined') {
+      gtag('event', 'booking_error', {
+        event_category: 'Booking',
+        event_label: 'Booking Form Error'
+      })
+    }
   }
 }
 
@@ -588,20 +787,8 @@ const closeSuccessModal = () => {
   isSubmitted.value = false
   // Reset form
   currentStep.value = 1
-  formData.value = {
-    serviceType: '',
-    projectName: '',
-    timeline: '',
-    technologies: [],
-    features: [],
-    description: '',
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: '',
-    company: '',
-    budget: ''
-  }
+  Object.assign(formData, initialFormData)
+  formHandler.reset(initialFormData)
 }
 </script>
 

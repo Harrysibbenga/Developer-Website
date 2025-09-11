@@ -14,36 +14,54 @@
             color: #334155;
             line-height: 1.6;
         }
-        
+
         .container {
             max-width: 600px;
             margin: 0 auto;
             background-color: #ffffff;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
-        
+
         .header {
             background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
             padding: 40px 30px;
             text-align: center;
             color: white;
         }
-        
+
         .header h1 {
             margin: 0;
             font-size: 28px;
             font-weight: bold;
         }
-        
+
+        .header p {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+            font-size: 16px;
+        }
+
         .content {
             padding: 40px 30px;
         }
-        
+
+        .greeting {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #1e293b;
+        }
+
+        .intro-text {
+            margin-bottom: 25px;
+            color: #374151;
+            line-height: 1.6;
+        }
+
         .confirm-button {
             text-align: center;
             margin: 30px 0;
         }
-        
+
         .btn {
             display: inline-block;
             background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
@@ -53,8 +71,15 @@
             border-radius: 8px;
             font-weight: 600;
             font-size: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
         }
-        
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+        }
+
         .benefits {
             background-color: #f0f9ff;
             border-radius: 12px;
@@ -62,63 +87,167 @@
             margin: 25px 0;
             border-left: 4px solid #0ea5e9;
         }
-        
+
         .benefits h3 {
             margin: 0 0 15px 0;
             color: #0c4a6e;
+            font-size: 18px;
         }
-        
+
         .benefits ul {
             margin: 0;
             padding-left: 20px;
             color: #0369a1;
         }
-        
+
+        .benefits li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        .benefits strong {
+            color: #0c4a6e;
+        }
+
+        .disclaimer {
+            background-color: #f8fafc;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 25px 0;
+            border: 1px solid #e2e8f0;
+            font-size: 14px;
+            color: #64748b;
+            text-align: center;
+        }
+
+        .signature {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+        }
+
         .footer {
             background-color: #1e293b;
             padding: 30px;
             text-align: center;
             color: #94a3b8;
         }
+
+        .footer h3 {
+            margin: 0 0 15px 0;
+            color: #ffffff;
+            font-size: 20px;
+        }
+
+        .footer p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+
+        .footer-links {
+            margin: 20px 0;
+        }
+
+        .footer-links a {
+            color: #60a5fa;
+            text-decoration: none;
+            margin: 0 15px;
+        }
+
+        /* Mobile responsive styles */
+        @media only screen and (max-width: 600px) {
+            .container {
+                width: 100% !important;
+                margin: 0;
+            }
+            
+            .header, .content, .footer {
+                padding: 20px !important;
+            }
+            
+            .header h1 {
+                font-size: 24px;
+            }
+            
+            .btn {
+                padding: 12px 24px;
+                font-size: 14px;
+            }
+            
+            .benefits {
+                padding: 20px;
+                margin: 20px 0;
+            }
+            
+            .benefits ul {
+                padding-left: 15px;
+            }
+            
+            .footer-links a {
+                display: block;
+                margin: 10px 0;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="content">
         <div class="header">
             <h1>📧 Confirm Your Subscription</h1>
         </div>
+
+        <div class="greeting">
+            <strong>Hello{% if subscriber.first_name %} {{ subscriber.first_name }}{% endif %},</strong>
+        </div>
         
-        <div class="content">
-            <p><strong>Hello,</strong></p>
-            
+        <div class="intro-text">
             <p>Thank you for subscribing to {{ business_name }} newsletter! To complete your subscription and start receiving updates, please confirm your email address by clicking the button below.</p>
-            
-            <div class="confirm-button">
-                <a href="{{ confirmation_url }}" class="btn">Confirm Subscription</a>
-            </div>
-            
-            <div class="benefits">
-                <h3>📚 What You'll Receive:</h3>
-                <ul>
-                    <li><strong>Development Insights:</strong> Technical articles and coding tutorials</li>
-                    <li><strong>Project Updates:</strong> Behind-the-scenes looks at new projects</li>
-                    <li><strong>Industry News:</strong> Python and web development trends</li>
-                    <li><strong>Exclusive Content:</strong> Early access to new tools and resources</li>
-                </ul>
-            </div>
-            
-            <p>If you didn't subscribe to this newsletter, you can safely ignore this email.</p>
-            
+        </div>
+        
+        <div class="confirm-button">
+            <a href="{{ confirmation_url }}" class="btn">Confirm Subscription</a>
+        </div>
+        
+        <div class="benefits">
+            <h3>What You'll Receive:</h3>
+            <ul>
+                <li><strong>Development Insights:</strong> Technical articles and coding tutorials</li>
+                <li><strong>Project Updates:</strong> Behind-the-scenes looks at new projects</li>
+                <li><strong>Industry News:</strong> Python and web development trends</li>
+                <li><strong>Exclusive Content:</strong> Early access to new tools and resources</li>
+                <li><strong>No Spam:</strong> Quality content delivered monthly, unsubscribe anytime</li>
+            </ul>
+        </div>
+        
+        <div class="disclaimer">
+            <p>If you didn't subscribe to this newsletter, you can safely ignore this email. No further emails will be sent without confirmation.</p>
+        </div>
+        
+        <div class="signature">
             <p>
                 <strong>Best regards,</strong><br>
-                Harry Sibbenga
+                Harry Sibbenga<br>
+                <em>Full Stack Developer & Technical Consultant</em>
             </p>
         </div>
+    </div>
+    
+    <div class="footer">
+        <h3>{{ business_name }}</h3>
+        <p>Professional Development Services</p>
+        <p>Milton Keynes, UK</p>
         
-        <div class="footer">
-            <h3>{{ business_name }}</h3>
-            <p>Professional Python Development Services</p>
+        <div class="footer-links">
+            <a href="https://www.instagram.com/harrysibbengadev">Instagram</a>
+            <a href="https://www.tiktok.com/@harrysibbengadev">TicTok</a>
+            <a href="https://www.linkedin.com/in/harry-m-sibbenga-9b8584119/">LinkedIn</a>
+            <a href="https://harrysibbenga.dev">Portfolio</a>
         </div>
+        
+        <p style="font-size: 12px; margin-top: 20px;">
+            You're receiving this because you subscribed to our newsletter. 
+            <a href="{{ unsubscribe_url }}" style="color: #60a5fa;">Unsubscribe</a>
+        </p>
     </div>
 </body>
 </html>

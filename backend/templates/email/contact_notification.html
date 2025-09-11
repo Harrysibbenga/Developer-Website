@@ -1,0 +1,339 @@
+<!-- backend/templates/email/contact_notification.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Contact Inquiry - {{ contact.subject }}</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8fafc;
+            color: #334155;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 700px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+            padding: 30px;
+            text-align: center;
+            color: white;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .inquiry-badge {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-top: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .contact-info {
+            background-color: #f8fafc;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 4px solid #7c3aed;
+        }
+        
+        .contact-info h3 {
+            margin: 0 0 15px 0;
+            color: #1e293b;
+            font-size: 18px;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            align-items: start;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            min-height: 50px;
+        }
+
+        .info-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            font-weight: 600;
+            color: #64748b;
+            margin-bottom: 4px;
+            flex-shrink: 0;
+        }
+
+        .info-value {
+            font-size: 16px;
+            color: #1e293b;
+            font-weight: 500;
+            word-wrap: break-word;
+        }
+        
+        .message-details {
+            background-color: #fef3c7;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 4px solid #f59e0b;
+        }
+        
+        .message-details h3 {
+            margin: 0 0 15px 0;
+            color: #92400e;
+            font-size: 18px;
+        }
+        
+        .message-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 1px solid #e5e7eb;
+            font-style: italic;
+            color: #374151;
+            line-height: 1.6;
+        }
+        
+        .priority-high {
+            background-color: #fef2f2;
+            border-left: 4px solid #dc2626;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .priority-high .priority-label {
+            color: #dc2626;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .action-buttons {
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            margin: 5px 10px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background-color: #7c3aed;
+            color: white;
+        }
+        
+        .btn-secondary {
+            background-color: #059669;
+            color: white;
+        }
+        
+        .btn-tertiary {
+            background-color: #6b7280;
+            color: white;
+        }
+        
+        .response-time {
+            background-color: #dbeafe;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid #3b82f6;
+        }
+        
+        .response-time h4 {
+            margin: 0 0 10px 0;
+            color: #1e40af;
+        }
+        
+        .response-time p {
+            margin: 5px 0;
+            color: #1e40af;
+        }
+        
+        .footer-info {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+            color: #6b7280;
+        }
+        
+        /* Mobile responsive styles */
+        @media only screen and (max-width: 600px) {
+            .container {
+                margin: 10px;
+                border-radius: 8px;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .info-item {
+                min-height: auto;
+            }
+            
+            .btn {
+                display: block;
+                margin: 10px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>📨 New Contact Inquiry</h1>
+            <div class="inquiry-badge">
+                {{ contact.inquiry_type|title }} Inquiry
+            </div>
+        </div>
+        
+        <!-- Content -->
+        <div class="content">
+            <!-- Contact Information -->
+            <div class="contact-info">
+                <h3>👤 Contact Information</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">Name</span>
+                        <span class="info-value">{{ contact.first_name }} {{ contact.last_name }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Email</span>
+                        <span class="info-value">{{ contact.email }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Phone</span>
+                        <span class="info-value">{{ contact.phone or 'Not provided' }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Company</span>
+                        <span class="info-value">{{ contact.company or 'Individual' }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Preferred Contact</span>
+                        <span class="info-value">
+                            {% if contact.preferred_contact_method == 'email' %}Email
+                            {% elif contact.preferred_contact_method == 'phone' %}Phone
+                            {% elif contact.preferred_contact_method == 'video_call' %}Video Call
+                            {% else %}No preference
+                            {% endif %}
+                        </span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Inquiry Type</span>
+                        <span class="info-value">
+                            {% if contact.inquiry_type == 'general' %} General Inquiry
+                            {% elif contact.inquiry_type == 'technical' %} Technical Question
+                            {% elif contact.inquiry_type == 'partnership' %} Partnership Proposal
+                            {% elif contact.inquiry_type == 'collaboration' %} Collaboration Opportunity
+                            {% elif contact.inquiry_type == 'support' %} Support Request
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Message Details -->
+            <div class="message-details">
+                <h3>📋 Message Details</h3>
+                
+                <div class="info-item" style="margin-bottom: 15px;">
+                    <span class="info-label">Subject</span>
+                    <span class="info-value">{{ contact.subject }}</span>
+                </div>
+                
+                <div>
+                    <span class="info-label">Message Content</span>
+                    <div class="message-content">
+                        "{{ contact.message }}"
+                    </div>
+                </div>
+            </div>
+            
+            {% if contact.inquiry_type == 'technical' %}
+            <div class="priority-high">
+                <div class="priority-label">🔧 Technical Inquiry</div>
+                <div>This is a technical question that may require priority attention and detailed response.</div>
+            </div>
+            {% endif %}
+            
+            <!-- Response Time Reminder -->
+            <div class="response-time">
+                <h4>⏱️ Response Guidelines</h4>
+                <p><strong>Standard Response Time:</strong> Within 24 hours (business days)</p>
+                {% if contact.inquiry_type == 'technical' %}
+                <p><strong>Technical Priority:</strong> Aim for 4-6 hour response</p>
+                {% endif %}
+                {% if contact.preferred_contact_method %}
+                <p><strong>Preferred Method:</strong> Contact via {{ contact.preferred_contact_method }}</p>
+                {% endif %}
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <a href="mailto:{{ contact.email }}?subject=Re: {{ contact.subject }}&body=Hello {{ contact.first_name }},%0D%0A%0D%0AThank you for your inquiry regarding '{{ contact.subject }}'. " class="btn btn-primary">
+                    Reply via Email
+                </a>
+                {% if contact.phone %}
+                <a href="tel:{{ contact.phone }}" class="btn btn-secondary">
+                    Call Contact
+                </a>
+                {% endif %}
+                {% if admin_url %}
+                <a href="{{ admin_url }}/contacts/{{ contact.id }}" class="btn btn-tertiary">
+                    View in Admin
+                </a>
+                {% endif %}
+            </div>
+            
+            <div class="footer-info">
+                <p><strong>Contact ID:</strong> {{ contact.id }}</p>
+                <p><strong>Submitted:</strong> {{ contact.created_at.strftime('%B %d, %Y at %I:%M %p') }}</p>
+                {% if contact.user_agent %}
+                <p><strong>Source:</strong> Web Form</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -38,7 +38,7 @@ def client():
 def test_create_booking(client):
     """Test creating a booking"""
     booking_data = {
-        "service_type": "webDevelopment",
+        "service_type": "businessWebsites",
         "project_name": "Test Website",
         "description": "A test website for unit testing purposes with detailed requirements",
         "timeline": "Within 1 month",
