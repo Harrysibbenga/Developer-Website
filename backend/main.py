@@ -4,7 +4,7 @@ FastAPI backend for Harry Sibbenga Web Development Services
 Handles service bookings, contact forms, and business inquiries
 """
 
-from fastapi import FastAPI, HTTPException, Depends, BackgroundTasks
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.responses import JSONResponse

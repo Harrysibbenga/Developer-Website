@@ -3,7 +3,7 @@
 Service booking model for project inquiries
 """
 
-from sqlalchemy import Column, String, Text, Float, JSON, Enum
+from sqlalchemy import Column, String, Text, Float, JSON, Enum, DateTime
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.types import TypeDecorator, CHAR
 import uuid

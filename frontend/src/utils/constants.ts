@@ -27,7 +27,7 @@ export const BUSINESS_INFO = {
   
   // Contact Information
   contact: {
-    email: "sibbengaharry@gmail.com",
+    email: "harrysibbengadev@gmail.com",
     phone: "07802738966",
     whatsapp: "https://wa.me/447802738966",
     address: {
@@ -44,7 +44,7 @@ export const BUSINESS_INFO = {
     linkedin: "https://www.linkedin.com/in/harry-m-sibbenga-9b8584119/",
     instagram: "https://www.instagram.com/harrysibbengadev",
     ticktock: "https://www.tiktok.com/@harrysibbengadev",
-    email: "mailto:sibbengaharry@gmail.com"
+    email: "mailto:harrysibbengadev@gmail.com"
   },
 
   // Service Areas
@@ -203,8 +203,6 @@ export const SEO_CONFIG = {
     "e-commerce development", "data automation", "business efficiency solutions", "UK web developer"
   ],
   
-  twitterHandle: "@harrysibbenga",
-  
   structuredData: {
     "@context": "https://schema.org",
     "@type": "Person",
@@ -222,7 +220,9 @@ export const SEO_CONFIG = {
       }
     },
     "sameAs": [
-      "https://github.com/Harrysibbenga",
+      "https://www.linkedin.com/in/harry-m-sibbenga-9b8584119/",
+      "https://www.instagram.com/harrysibbengadev",
+      "https://www.tiktok.com/@harrysibbengadev",
       "https://www.linkedin.com/in/harry-m-sibbenga-9b8584119/"
     ],
     "address": {
