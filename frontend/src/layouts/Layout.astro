@@ -364,8 +364,6 @@ const GA_MEASUREMENT_ID = import.meta.env.PUBLIC_GA_MEASUREMENT_ID || 'GA_MEASUR
     </div>
     
     <!-- Scripts -->
-    <script type="module" src="/scripts/main.js"></script>
-
     <script define:vars={{ GA_MEASUREMENT_ID }}>
       // Unified Site Manager - Single Source of Truth
       class UnifiedSiteManager {
@@ -395,6 +393,7 @@ const GA_MEASUREMENT_ID = import.meta.env.PUBLIC_GA_MEASUREMENT_ID || 'GA_MEASUR
           this.cleanup()
           
           // Initialize everything in order
+          this.initializeGoogleAnalytics()
           this.initializeNavigation()
           this.initializeScrollFeatures()
           this.initializeAnimations()
@@ -416,6 +415,52 @@ const GA_MEASUREMENT_ID = import.meta.env.PUBLIC_GA_MEASUREMENT_ID || 'GA_MEASUR
               setTimeout(resolve, 50)
             }
           })
+        }
+
+        // === Google Analytics ===
+        initializeGoogleAnalytics() {
+          if (!GA_MEASUREMENT_ID) return;
+          
+          // Check cookie consent
+          const consent = this.getCookie('cookie-consent');
+          let consentData = null;
+          
+          if (consent) {
+            try {
+              consentData = JSON.parse(consent);
+            } catch (e) {
+              console.warn('Failed to parse cookie consent');
+              return;
+            }
+          }
+          
+          if (consentData?.analytics) {
+            // Check if already loaded
+            if (window.gtag) {
+              console.log('📊 Google Analytics already initialized');
+              return;
+            }
+            
+            // Load gtag
+            const script = document.createElement('script');
+            script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`;
+            script.async = true;
+            document.head.appendChild(script);
+            
+            // Initialize gtag
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', GA_MEASUREMENT_ID, {
+              anonymize_ip: true,
+              cookie_flags: 'SameSite=Lax;Secure'
+            });
+            
+            // Make gtag globally available
+            window.gtag = gtag;
+            
+            console.log('📊 Google Analytics initialized');
+          }
         }
         
         // === NAVIGATION ===
@@ -911,25 +956,40 @@ const GA_MEASUREMENT_ID = import.meta.env.PUBLIC_GA_MEASUREMENT_ID || 'GA_MEASUR
         
         // === COOKIE CONSENT ===
         initializeCookieConsent() {
-          const banner = document.getElementById('cookie-consent-banner')
-          const acceptBtn = document.getElementById('cookie-accept-all')
+          const banner = document.getElementById('cookie-consent-banner');
+          const acceptBtn = document.getElementById('cookie-accept-all');
+          const settingsBtn = document.getElementById('cookie-settings');
           
-          if (!banner || !acceptBtn) return
+          if (!banner) return;
           
-          // Check if already consented
-          const consent = this.getCookie('cookie-consent')
+          // Check if user has already made a choice
+          const consent = this.getCookie('cookie-consent');
           if (!consent) {
-            banner.classList.remove('hidden')
-            setTimeout(() => banner.classList.remove('translate-y-full'), 100)
+            // Show banner if no previous consent
+            banner.classList.remove('hidden');
+            setTimeout(() => banner.classList.remove('translate-y-full'), 100);
           }
           
-          this.addListener(acceptBtn, 'click', () => {
-            this.setCookie('cookie-consent', '{"analytics":true,"performance":true}', 365)
-            banner.classList.add('translate-y-full')
-            setTimeout(() => banner.classList.add('hidden'), 300)
-          })
+          // Accept all button on banner
+          if (acceptBtn) {
+            this.addListener(acceptBtn, 'click', () => {
+              window.acceptAllGlobalCookies();
+              banner.classList.add('translate-y-full');
+              setTimeout(() => banner.classList.add('hidden'), 300);
+            });
+          }
           
-          console.log('🍪 Cookie consent ready')
+          // Cookie settings button (if exists)
+          if (settingsBtn) {
+            this.addListener(settingsBtn, 'click', () => {
+              window.showGlobalCookieModal();
+              // Hide banner when opening settings
+              banner.classList.add('translate-y-full');
+              setTimeout(() => banner.classList.add('hidden'), 300);
+            });
+          }
+          
+          console.log('🍪 Cookie consent ready');
         }
         
         // === PAGE TRANSITIONS ===
@@ -1004,6 +1064,160 @@ const GA_MEASUREMENT_ID = import.meta.env.PUBLIC_GA_MEASUREMENT_ID || 'GA_MEASUR
           this.observers = []
         }
       }
+
+      // === GLOBAL COOKIE MODAL FUNCTIONS ===
+      // These must be global to work with onclick handlers
+
+      // Show the global cookie modal
+      function showGlobalCookieModal() {
+        const modal = document.getElementById('global-cookie-modal');
+        if (modal) {
+          modal.classList.remove('hidden');
+          document.body.style.overflow = 'hidden';
+          
+          // Load current preferences
+          const consent = getCookieValue('cookie-consent');
+          if (consent) {
+            try {
+              const preferences = JSON.parse(consent);
+              const analyticsToggle = document.getElementById('global-analytics-toggle');
+              const performanceToggle = document.getElementById('global-performance-toggle');
+              
+              if (analyticsToggle) analyticsToggle.checked = preferences.analytics || false;
+              if (performanceToggle) performanceToggle.checked = preferences.performance || false;
+            } catch (e) {
+              console.warn('Failed to parse cookie preferences');
+            }
+          }
+        }
+      }
+
+      // Close the global cookie modal
+      function closeGlobalCookieModal() {
+        const modal = document.getElementById('global-cookie-modal');
+        if (modal) {
+          modal.classList.add('hidden');
+          document.body.style.overflow = '';
+        }
+      }
+
+      // Accept all cookies
+      function acceptAllGlobalCookies() {
+        const preferences = {
+          analytics: true,
+          performance: true,
+          timestamp: new Date().toISOString()
+        };
+        
+        setCookieValue('cookie-consent', JSON.stringify(preferences), 365);
+        
+        // Update toggles
+        const analyticsToggle = document.getElementById('global-analytics-toggle');
+        const performanceToggle = document.getElementById('global-performance-toggle');
+        if (analyticsToggle) analyticsToggle.checked = true;
+        if (performanceToggle) performanceToggle.checked = true;
+        
+        // Initialize analytics
+        if (window.unifiedManager) {
+          window.unifiedManager.initializeGoogleAnalytics();
+        }
+        
+        closeGlobalCookieModal();
+        console.log('✅ All cookies accepted');
+      }
+
+      // Save user preferences
+      function saveGlobalPreferences() {
+        const analyticsToggle = document.getElementById('global-analytics-toggle');
+        const performanceToggle = document.getElementById('global-performance-toggle');
+        
+        const preferences = {
+          analytics: analyticsToggle ? analyticsToggle.checked : false,
+          performance: performanceToggle ? performanceToggle.checked : false,
+          timestamp: new Date().toISOString()
+        };
+        
+        setCookieValue('cookie-consent', JSON.stringify(preferences), 365);
+        
+        // Initialize analytics if enabled
+        if (preferences.analytics && window.unifiedManager) {
+          window.unifiedManager.initializeGoogleAnalytics();
+        }
+        
+        closeGlobalCookieModal();
+        console.log('💾 Cookie preferences saved:', preferences);
+      }
+
+      // Reject all non-essential cookies
+      function rejectAllGlobalCookies() {
+        const preferences = {
+          analytics: false,
+          performance: false,
+          timestamp: new Date().toISOString()
+        };
+        
+        setCookieValue('cookie-consent', JSON.stringify(preferences), 365);
+        
+        // Update toggles
+        const analyticsToggle = document.getElementById('global-analytics-toggle');
+        const performanceToggle = document.getElementById('global-performance-toggle');
+        if (analyticsToggle) analyticsToggle.checked = false;
+        if (performanceToggle) performanceToggle.checked = false;
+        
+        // Remove any existing analytics cookies
+        deleteCookie('_ga');
+        deleteCookie('_ga_' + (GA_MEASUREMENT_ID ? GA_MEASUREMENT_ID.replace('G-', '') : ''));
+        deleteCookie('_gid');
+        
+        closeGlobalCookieModal();
+        console.log('❌ All cookies rejected');
+      }
+
+      // Helper functions for cookie management
+      function getCookieValue(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
+        return null;
+      }
+
+      function setCookieValue(name, value, days) {
+        const expires = new Date();
+        expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
+        document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/;SameSite=Lax`;
+      }
+
+      function deleteCookie(name) {
+        document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
+      }
+
+      // Optional: Add a way to reopen the modal
+      function openCookieSettings() {
+        showGlobalCookieModal();
+      }
+
+      // Make functions globally available
+      window.showGlobalCookieModal = showGlobalCookieModal;
+      window.closeGlobalCookieModal = closeGlobalCookieModal;
+      window.acceptAllGlobalCookies = acceptAllGlobalCookies;
+      window.saveGlobalPreferences = saveGlobalPreferences;
+      window.rejectAllGlobalCookies = rejectAllGlobalCookies;
+      window.openCookieSettings = openCookieSettings;
+      
+      // Close modal when clicking outside
+      document.addEventListener('click', (e) => {
+        const modal = document.getElementById('global-cookie-modal');
+        if (modal && e.target === modal) {
+          closeGlobalCookieModal();
+        }
+      });
+
+      // Close modal with Escape key
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          closeGlobalCookieModal();
+        }
+      });
       
       // Initialize the unified manager
       try {

@@ -422,19 +422,6 @@ const structuredData = {
   }
   
   function initializePerformanceOptimizations() {
-    // Preload critical resources
-    const criticalImages = [
-      '/images/hero-bg.jpg',
-      '/images/profile-photo.jpg'
-    ];
-    
-    criticalImages.forEach(src => {
-      const link = document.createElement('link');
-      link.rel = 'preload';
-      link.as = 'image';
-      link.href = src;
-      document.head.appendChild(link);
-    });
     
     // Prefetch important pages
     const importantPages = ['/services', '/portfolio', '/contact'];
