@@ -14,6 +14,7 @@ class InquiryType(str, enum.Enum):
     GENERAL = "general"
     TECHNICAL = "technical"
     PARTNERSHIP = "partnership"
+    COLLABORATION = "collaboration"
     SUPPORT = "support"
     MEDIA = "media"
 
@@ -29,7 +30,8 @@ class ContactInquiry(BaseModel):
     __tablename__ = "contact_inquiries"
     
     # Contact details
-    name = Column(String(200), nullable=False)
+    first_name = Column(String(100), nullable=False)
+    last_name = Column(String(100), nullable=False)
     email = Column(String(255), nullable=False, index=True)
     phone = Column(String(20), nullable=True)
     company = Column(String(200), nullable=True)

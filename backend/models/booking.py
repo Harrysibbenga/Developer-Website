@@ -13,10 +13,11 @@ from datetime import datetime
 from .base import BaseModel
 
 class ServiceType(str, enum.Enum):
-    WEB_DEVELOPMENT = "webDevelopment"
-    DATA_PROCESSING = "dataProcessing"
-    REALTIME_SYSTEMS = "realtimeSystems"
-    CONSULTATION = "consultation"
+    BUSINESS_WEBSITES = "businessWebsites",
+    WEB_APPLICATIONS = "webApplications",
+    DATA_AUTOMATION = "dataAutomation", 
+    DIGITAL_TRANSFROMATION = "digitalTransformation",
+    CONSULTATION = "technicalConsulting"
 
 class ProjectStatus(str, enum.Enum):
     PENDING = "pending"

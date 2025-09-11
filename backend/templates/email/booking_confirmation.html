@@ -68,41 +68,48 @@
         .detail-row {
             display: flex;
             justify-content: space-between;
+            align-items: flex-start;
             margin-bottom: 10px;
             padding-bottom: 8px;
             border-bottom: 1px solid #e2e8f0;
         }
-        
+
         .detail-row:last-child {
             border-bottom: none;
             margin-bottom: 0;
         }
-        
+
         .detail-label {
             font-weight: 600;
             color: #475569;
+            flex-shrink: 0;
+            min-width: 120px; /* Add consistent label width */
         }
-        
+
         .detail-value {
             color: #1e293b;
             text-align: right;
             max-width: 60%;
+            word-wrap: break-word;
+            flex: 1; /* Add this to take remaining space */
         }
-        
+
         .tech-tags {
             display: flex;
             flex-wrap: wrap;
-            gap: 6px;
-            margin-top: 8px;
+            gap: 8px; /* Increase gap slightly */
+            margin-top: 0; /* Remove top margin */
+            justify-content: flex-end; /* Align tags to the right */
         }
-        
+
         .tech-tag {
             background-color: #dbeafe;
             color: #1e40af;
-            padding: 4px 8px;
+            padding: 6px 10px; /* Increase padding slightly */
             border-radius: 6px;
             font-size: 12px;
             font-weight: 500;
+            white-space: nowrap; /* Prevent tags from breaking */
         }
         
         .next-steps {
@@ -176,6 +183,7 @@
             font-size: 14px;
         }
         
+        /* Mobile styles */
         @media only screen and (max-width: 600px) {
             .container {
                 width: 100% !important;
@@ -187,16 +195,31 @@
             
             .detail-row {
                 flex-direction: column;
+                align-items: stretch; /* Change to stretch for full width */
+                gap: 8px; /* Add consistent spacing */
+            }
+            
+            .detail-label {
+                min-width: auto;
+                text-align: left;
             }
             
             .detail-value {
                 text-align: left;
                 max-width: 100%;
-                margin-top: 5px;
+                margin-top: 0;
+                margin-left: 0;
             }
             
             .tech-tags {
-                justify-content: flex-start;
+                justify-content: flex-start; /* Left align on mobile */
+                margin-top: 0;
+                gap: 6px; /* Smaller gap on mobile */
+            }
+            
+            .tech-tag {
+                padding: 4px 8px; /* Smaller padding on mobile */
+                font-size: 11px;
             }
         }
     </style>
@@ -229,9 +252,10 @@
                 <div class="detail-row">
                     <span class="detail-label">Service Type:</span>
                     <span class="detail-value">
-                        {% if booking.service_type == 'webDevelopment' %}Web Development
-                        {% elif booking.service_type == 'dataProcessing' %}Data Processing
-                        {% elif booking.service_type == 'realtimeSystems' %}Real-time Systems
+                        {% if booking.service_type == 'businessWebsites' %} Business Websites
+                        {% elif booking.service_type == 'webApplications' %} Web Applications
+                        {% elif booking.service_type == 'dataAutomation' %} Data Automation
+                        {% elif booking.service_type == 'digitalTransformation' %} Digital Transformation
                         {% elif booking.service_type == 'consultation' %}Technical Consultation
                         {% endif %}
                     </span>
@@ -292,20 +316,21 @@
             <p>
                 <strong>Best regards,</strong><br>
                 Harry Sibbenga<br>
-                <em>Python Developer & Technical Consultant</em>
+                <em>Full Stack Developer & Technical Consultant</em>
             </p>
         </div>
         
         <!-- Footer -->
         <div class="footer">
             <h3>{{ business_name }}</h3>
-            <p>Professional Python Development Services</p>
+            <p>Professional Development Services</p>
             <p>📍 Milton Keynes, UK | 📧 {{ business_email }} | 📱 {{ business_phone }}</p>
             
             <div class="footer-links">
-                <a href="https://github.com/Harrysibbenga">GitHub</a>
+                <a href="https://www.instagram.com/harrysibbengadev">Instagram</a>
+                <a href="https://www.tiktok.com/@harrysibbengadev">TicTok</a>
                 <a href="https://www.linkedin.com/in/harry-m-sibbenga-9b8584119/">LinkedIn</a>
-                <a href="https://harrysibbenga-dev.vercel.app">Portfolio</a>
+                <a href="https://harrysibbenga.dev">Portfolio</a>
             </div>
             
             <p style="font-size: 12px; margin-top: 20px;">

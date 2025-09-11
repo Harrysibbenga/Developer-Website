@@ -113,7 +113,7 @@ class EmailService:
             
             html_content = template.render(
                 booking=booking,
-                admin_url=f"https://admin.{settings.BUSINESS_EMAIL.split('@')[1]}"
+                admin_url=f"{settings.SITE_URL}/admin/bookings/{booking.id}"
             )
             
             subject = f"New Booking: {booking.project_name} - {booking.service_type}"
@@ -132,7 +132,8 @@ class EmailService:
             html_content = template.render(
                 contact=contact,
                 business_name=settings.BUSINESS_NAME,
-                business_email=settings.BUSINESS_EMAIL
+                business_email=settings.BUSINESS_EMAIL,
+                business_phone=settings.BUSINESS_PHONE
             )
             
             subject = f"Thank you for contacting {settings.BUSINESS_NAME}"
@@ -150,7 +151,7 @@ class EmailService:
             
             html_content = template.render(
                 contact=contact,
-                admin_url=f"https://admin.{settings.BUSINESS_EMAIL.split('@')[1]}"
+                admin_url=f"{settings.SITE_URL}/admin/contacts/{contact.id}"
             )
             
             subject = f"New Contact: {contact.subject}"

@@ -67,6 +67,18 @@ async def startup_event():
     logger.info(f"Environment: {settings.ENVIRONMENT}")
     logger.info(f"Database URL: {settings.DATABASE_URL[:20]}...")
 
+    # Initialize database tables
+    try:
+        from core.database import init_db
+        # Import all models to ensure they're registered
+        from models import booking, contact  # Import your model modules
+        
+        init_db()
+        logger.info("Database tables initialized successfully")
+    except Exception as e:
+        logger.error(f"Failed to initialize database: {str(e)}")
+        raise
+
 @app.on_event("shutdown")
 async def shutdown_event():
     """Cleanup on shutdown"""

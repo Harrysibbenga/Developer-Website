@@ -6,7 +6,7 @@ Business logic for contact inquiries
 from sqlalchemy.orm import Session
 from sqlalchemy import and_, func, desc
 from typing import List, Optional, Tuple
-from datetime import datetime
+from datetime import datetime, timedelta
 import logging
 
 from models.contact import ContactInquiry, InquiryType, InquiryStatus
@@ -36,7 +36,8 @@ class ContactService:
             status = InquiryStatus.SPAM if spam_score > 0.8 else InquiryStatus.NEW
             
             inquiry = ContactInquiry(
-                name=contact_data.name,
+                first_name=contact_data.first_name,
+                last_name=contact_data.last_name,
                 email=contact_data.email,
                 phone=contact_data.phone,
                 company=contact_data.company,
@@ -148,7 +149,7 @@ class ContactService:
         if contact_data.message.count('http') > 2:
             score += 0.4
         
-        if len(contact_data.name.split()) < 2:
+        if len(contact_data.first_name.split()) or len(contact_data.last_name.split()) < 2:
             score += 0.1
         
         # Check recent submissions from same IP

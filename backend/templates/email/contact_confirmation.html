@@ -14,37 +14,43 @@
             color: #334155;
             line-height: 1.6;
         }
-        
+
         .container {
             max-width: 600px;
             margin: 0 auto;
             background-color: #ffffff;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
-        
+
         .header {
             background: linear-gradient(135deg, #16a34a 0%, #059669 100%);
             padding: 40px 30px;
             text-align: center;
             color: white;
         }
-        
+
         .header h1 {
             margin: 0;
             font-size: 28px;
             font-weight: bold;
         }
-        
+
         .header p {
             margin: 10px 0 0 0;
             opacity: 0.9;
             font-size: 16px;
         }
-        
+
         .content {
             padding: 40px 30px;
         }
-        
+
+        .greeting {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #1e293b;
+        }
+
         .message-summary {
             background-color: #f0fdf4;
             border-radius: 12px;
@@ -52,37 +58,42 @@
             margin: 25px 0;
             border-left: 4px solid #16a34a;
         }
-        
+
         .message-summary h3 {
             margin: 0 0 15px 0;
             color: #166534;
             font-size: 18px;
         }
-        
+
         .detail-row {
             display: flex;
             justify-content: space-between;
+            align-items: flex-start;
             margin-bottom: 10px;
             padding-bottom: 8px;
             border-bottom: 1px solid #dcfce7;
         }
-        
+
         .detail-row:last-child {
             border-bottom: none;
             margin-bottom: 0;
         }
-        
+
         .detail-label {
             font-weight: 600;
             color: #047857;
+            flex-shrink: 0;
+            min-width: 120px;
         }
-        
+
         .detail-value {
             color: #166534;
             text-align: right;
             max-width: 60%;
+            word-wrap: break-word;
+            flex: 1;
         }
-        
+
         .response-time {
             background-color: #dbeafe;
             border-radius: 12px;
@@ -90,52 +101,134 @@
             margin: 25px 0;
             text-align: center;
         }
-        
+
         .response-time h4 {
             margin: 0 0 10px 0;
             color: #1e40af;
+            font-size: 18px;
         }
-        
+
+        .response-time p {
+            margin: 8px 0;
+            color: #1e40af;
+        }
+
+        .contact-info {
+            background-color: #fef3c7;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 25px 0;
+        }
+
+        .contact-info h4 {
+            margin: 0 0 15px 0;
+            color: #92400e;
+        }
+
+        .contact-info ul {
+            margin: 0;
+            padding-left: 20px;
+            color: #a16207;
+        }
+
+        .contact-info li {
+            margin-bottom: 8px;
+        }
+
+        .contact-info a {
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .portfolio-link {
+            background-color: #f8fafc;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+            text-align: center;
+            border: 1px solid #e2e8f0;
+        }
+
+        .portfolio-link a {
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .signature {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+        }
+
         .footer {
             background-color: #1e293b;
             padding: 30px;
             text-align: center;
             color: #94a3b8;
         }
-        
+
         .footer h3 {
             margin: 0 0 15px 0;
             color: #ffffff;
             font-size: 20px;
         }
-        
+
+        .footer p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+
         .footer-links {
             margin: 20px 0;
         }
-        
+
         .footer-links a {
             color: #60a5fa;
             text-decoration: none;
             margin: 0 15px;
         }
-        
+
+        /* Mobile responsive styles */
         @media only screen and (max-width: 600px) {
             .container {
                 width: 100% !important;
+                margin: 0;
             }
             
             .header, .content, .footer {
                 padding: 20px !important;
             }
             
+            .header h1 {
+                font-size: 24px;
+            }
+            
             .detail-row {
                 flex-direction: column;
+                align-items: stretch;
+                gap: 8px;
+            }
+            
+            .detail-label {
+                min-width: auto;
+                text-align: left;
             }
             
             .detail-value {
                 text-align: left;
                 max-width: 100%;
-                margin-top: 5px;
+                margin-top: 0;
+            }
+            
+            .contact-info ul {
+                padding-left: 15px;
+            }
+            
+            .footer-links a {
+                display: inline-block;
+                margin: 5px 10px;
             }
         }
     </style>
@@ -150,15 +243,15 @@
         
         <!-- Content -->
         <div class="content">
-            <div style="font-size: 18px; margin-bottom: 20px;">
-                <strong>Hello {{ contact.name }},</strong>
+            <div class="greeting">
+                <strong>Hello {{ contact.first_name }} {{ contact.last_name }},</strong>
             </div>
             
             <p>Thank you for contacting {{ business_name }}! Your message has been received and I appreciate you taking the time to reach out.</p>
             
             <!-- Message Summary -->
             <div class="message-summary">
-                <h3>📨 Your Message</h3>
+                <h3>Your Message Details</h3>
                 
                 <div class="detail-row">
                     <span class="detail-label">Subject:</span>
@@ -168,11 +261,11 @@
                 <div class="detail-row">
                     <span class="detail-label">Inquiry Type:</span>
                     <span class="detail-value">
-                        {% if contact.inquiry_type == 'general' %}General Inquiry
-                        {% elif contact.inquiry_type == 'technical' %}Technical Question
-                        {% elif contact.inquiry_type == 'partnership' %}Partnership Opportunity
-                        {% elif contact.inquiry_type == 'support' %}Support Request
-                        {% elif contact.inquiry_type == 'media' %}Media Inquiry
+                        {% if contact.inquiry_type == 'general' %} General Inquiry
+                        {% elif contact.inquiry_type == 'technical' %} Technical Question
+                        {% elif contact.inquiry_type == 'partnership' %} Partnership Proposal
+                        {% elif contact.inquiry_type == 'collaboration' %} Collaboration Opportunity
+                        {% elif contact.inquiry_type == 'support' %} Support Request
                         {% endif %}
                     </span>
                 </div>
@@ -192,40 +285,51 @@
             
             <!-- Response Time -->
             <div class="response-time">
-                <h4>⏱️ Expected Response Time</h4>
+                <h4>Expected Response Time</h4>
                 <p>I typically respond to inquiries within <strong>24 hours</strong> during business days (Monday-Friday, 9:00 AM - 6:00 PM GMT).</p>
-                {% if contact.inquiry_type == 'technical' or contact.priority == 'high' %}
-                <p><strong>Priority inquiry detected</strong> - I'll aim to respond within 4-6 hours.</p>
+                {% if contact.inquiry_type == 'technical' %}
+                <p><strong>Technical inquiry detected</strong> - I'll prioritize your message and aim to respond within 4-6 hours.</p>
                 {% endif %}
             </div>
             
-            <p>In the meantime, feel free to explore my portfolio and recent projects at <a href="https://harrysibbenga-dev.vercel.app" style="color: #2563eb;">harrysibbenga-dev.vercel.app</a></p>
+            <div class="portfolio-link">
+                <p>While you wait, feel free to explore my portfolio and recent projects:</p>
+                <a href="https://harrysibbenga.dev/portfolio">Portfolio</a>
+            </div>
             
-            <p>If your inquiry is urgent, you can reach me directly:</p>
-            <ul>
-                <li><strong>Email:</strong> <a href="mailto:{{ business_email }}" style="color: #2563eb;">{{ business_email }}</a></li>
-                <li><strong>Phone:</strong> <a href="tel:{{ business_phone }}" style="color: #2563eb;">{{ business_phone }}</a></li>
-            </ul>
+            <!-- Contact Information -->
+            <div class="contact-info">
+                <h4>Need to reach me urgently?</h4>
+                <ul>
+                    <li><strong>Email:</strong> <a href="mailto:{{ business_email }}">{{ business_email }}</a></li>
+                    <li><strong>Phone:</strong> <a href="tel:{{ business_phone }}">{{ business_phone }}</a></li>
+                </ul>
+            </div>
             
-            <p>
-                <strong>Best regards,</strong><br>
-                Harry Sibbenga<br>
-                <em>Python Developer & Technical Consultant</em>
-            </p>
-        </div>
-        
-        <!-- Footer -->
-        <div class="footer">
-            <h3>{{ business_name }}</h3>
-            <p>Professional Python Development Services</p>
-            <p>📍 Milton Keynes, UK | 📧 {{ business_email }}</p>
-            
-            <div class="footer-links">
-                <a href="https://github.com/Harrysibbenga">GitHub</a>
-                <a href="https://www.linkedin.com/in/harry-m-sibbenga-9b8584119/">LinkedIn</a>
-                <a href="https://harrysibbenga-dev.vercel.app">Portfolio</a>
+            <div class="signature">
+                <p>
+                    <strong>Best regards,</strong><br>
+                    Harry Sibbenga<br>
+                    <em>Full Stack Developer & Technical Consultant</em>
+                </p>
             </div>
         </div>
+        
+        <div class="footer">
+            <h3>{{ business_name }}</h3>
+            <p>Professional Development Services</p>
+            <p>Milton Keynes, UK | {{ business_email }}</p>
+            
+            <div class="footer-links">
+                <a href="https://www.instagram.com/harrysibbengadev">Instagram</a>
+                <a href="https://www.tiktok.com/@harrysibbengadev">TicTok</a>
+                <a href="https://www.linkedin.com/in/harry-m-sibbenga-9b8584119/">LinkedIn</a>
+                <a href="https://harrysibbenga.dev">Portfolio</a>
+            </div>
+            
+            <p style="font-size: 12px; margin-top: 20px;">
+                This email was sent in response to your inquiry. If you have any questions, please reply directly to this email.
+            </p>
     </div>
 </body>
 </html>

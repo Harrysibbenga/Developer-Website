@@ -221,9 +221,10 @@ class BookingService:
         """Estimate project hours and cost"""
         # Base hours by service type
         base_hours = {
-            ServiceType.WEB_DEVELOPMENT: 40,
-            ServiceType.DATA_PROCESSING: 24,
-            ServiceType.REALTIME_SYSTEMS: 60,
+            ServiceType.BUSINESS_WEBSITES: 20,
+            ServiceType.WEB_APPLICATIONS: 40,
+            ServiceType.DATA_AUTOMATION: 24,
+            ServiceType.DIGITAL_TRANSFROMATION: 50,
             ServiceType.CONSULTATION: 8
         }
         
