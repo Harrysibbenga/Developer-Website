@@ -114,6 +114,7 @@ async def general_exception_handler(request, exc):
 async def root():
     """Root endpoint"""
     return {
+        "status": "healthy",
         "message": "Harry Sibbenga Web Development Services API",
         "version": "1.0.0",
         "docs": "/docs" if settings.ENVIRONMENT != "production" else "Contact admin for API documentation",
@@ -122,10 +123,11 @@ async def root():
 
 if __name__ == "__main__":
     import uvicorn
+    port = int(os.environ.get("PORT", 8000))
     uvicorn.run(
         "main:app",
         host="0.0.0.0",
-        port=8000,
+        port=port,
         reload=settings.ENVIRONMENT == "development",
         log_level="info"
     )
