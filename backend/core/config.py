@@ -8,6 +8,15 @@ from pydantic import EmailStr, validator
 from typing import List, Optional
 import os
 from functools import lru_cache
+from pathlib import Path
+
+
+# Load .env file explicitly
+from dotenv import load_dotenv
+backend_dir = Path(__file__).parent.parent.parent
+env_path = backend_dir / ".env"
+
+load_dotenv(dotenv_path=env_path)
 
 class Settings(BaseSettings):
     """Application settings"""
@@ -29,15 +38,13 @@ class Settings(BaseSettings):
     ALLOWED_ORIGINS: List[str] = [
         "http://localhost:3000",
         "http://localhost:4321",
-        "https://harrysibbenga-dev.vercel.app",
+        "https://developer-website-git-staging-harrys-projects-8b402616.vercel.app/",
         "https://harrysibbenga.dev"
     ]
     
     ALLOWED_HOSTS: List[str] = [
         "localhost",
         "127.0.0.1",
-        "harrysibbenga-backend.railway.app",
-        "api.harrysibbenga.dev"
     ]
     
     # Email Configuration

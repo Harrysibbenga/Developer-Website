@@ -3,7 +3,7 @@
 Contact inquiry model for general inquiries
 """
 
-from sqlalchemy import Column, String, Text, Enum
+from sqlalchemy import Column, String, Text, Enum, Float, DateTime
 from sqlalchemy.dialects.postgresql import UUID
 import enum
 

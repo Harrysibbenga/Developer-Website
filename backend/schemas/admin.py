@@ -4,7 +4,7 @@ Pydantic schemas for admin endpoints
 """
 
 from pydantic import BaseModel
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 from datetime import datetime
 
 from models.booking import ServiceType, ProjectStatus
