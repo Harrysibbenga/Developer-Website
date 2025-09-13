@@ -9,14 +9,6 @@
 import NewsletterUnsubscribe from '../../../components/newsletter/NewsletterUnsubscribe.vue'
 import { BUSINESS_INFO } from '../../../utils/constants'
 
-// Enable SSR for this dynamic route
-export const prerender = false
-
-// Required for dynamic routes
-export function getStaticPaths() {
-  return []
-}
-
 const pageTitle = `Unsubscribe from Newsletter - ${BUSINESS_INFO.name}`
 const pageDescription = 'Unsubscribe from our newsletter or manage your subscription preferences.'
 
@@ -27,10 +19,6 @@ const email = emailParam ? decodeURIComponent(emailParam) : ''
 // Check for auto-confirm parameter
 const autoConfirm = Astro.url.searchParams.get('confirm') === 'true'
 
-// Log for debugging (remove in production)
-console.log('Unsubscribe route - Email param:', emailParam)
-console.log('Unsubscribe route - Decoded email:', email)
-console.log('Unsubscribe route - Auto confirm:', autoConfirm)
 ---
 
 <Layout 

@@ -191,11 +191,6 @@
   const errorMessage = ref('')
   
   onMounted(async () => {
-    // Debug logging (remove in production)
-    console.log('Vue Debug - Received props:', props);
-    console.log('Vue Debug - Email prop:', props.email);
-    console.log('Vue Debug - Email type:', typeof props.email);
-    console.log('Vue Debug - Email length:', props.email?.length);
     
     if (!props.email || props.email.trim() === '') {
       state.value = 'error'
