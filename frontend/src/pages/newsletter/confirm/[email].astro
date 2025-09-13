@@ -9,6 +9,14 @@ import Layout from '../../../layouts/Layout.astro'
 import NewsletterConfirm from '../../../components/newsletter/NewsletterConfirm.vue'
 import { BUSINESS_INFO } from '../../../utils/constants'
 
+// Enable SSR for this dynamic route
+export const prerender = false
+
+// Required for dynamic routes
+export function getStaticPaths() {
+  return []
+}
+
 const pageTitle = `Newsletter Confirmation - ${BUSINESS_INFO.name}`
 const pageDescription = 'Confirm your newsletter subscription to receive updates about web development services and technical insights.'
 
