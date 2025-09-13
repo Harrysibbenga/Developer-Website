@@ -5,7 +5,7 @@
  * Extracts email from URL path and passes to Vue component
  */
 
- import Layout from '../../../layouts/Layout.astro'
+import Layout from '../../../layouts/Layout.astro'
 import NewsletterUnsubscribe from '../../../components/newsletter/NewsletterUnsubscribe.vue'
 import { BUSINESS_INFO } from '../../../utils/constants'
 
@@ -26,11 +26,6 @@ const email = emailParam ? decodeURIComponent(emailParam) : ''
 
 // Check for auto-confirm parameter
 const autoConfirm = Astro.url.searchParams.get('confirm') === 'true'
-
-// Log for debugging (remove in production)
-console.log('Unsubscribe route - Email param:', emailParam)
-console.log('Unsubscribe route - Decoded email:', email)
-console.log('Unsubscribe route - Auto confirm:', autoConfirm)
 ---
 
 <Layout 

@@ -5,7 +5,7 @@
  * Extracts email from URL path and passes to Vue component
  */
 
- import Layout from '../../../layouts/Layout.astro'
+import Layout from '../../../layouts/Layout.astro'
 import NewsletterConfirm from '../../../components/newsletter/NewsletterConfirm.vue'
 import { BUSINESS_INFO } from '../../../utils/constants'
 
@@ -23,10 +23,6 @@ const pageDescription = 'Confirm your newsletter subscription to receive updates
 // Extract email from URL parameter
 const { email: emailParam } = Astro.params
 const email = emailParam ? decodeURIComponent(emailParam) : ''
-
-// Log for debugging (remove in production)
-console.log('Confirm route - Email param:', emailParam)
-console.log('Confirm route - Decoded email:', email)
 ---
 
 <Layout 

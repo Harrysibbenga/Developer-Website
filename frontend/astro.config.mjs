@@ -3,12 +3,13 @@ import vue from '@astrojs/vue'
 import tailwind from '@astrojs/tailwind'
 import sitemap from '@astrojs/sitemap'
 import partytown from '@astrojs/partytown'
+import vercel from '@astrojs/vercel/serverless';
 
 export default defineConfig({
   site: 'https://harrysibbenga-dev.vercel.app',
 
-  output: 'static', 
-
+  output: 'server',
+  adapter: vercel(),  
   integrations: [
     vue(),
     tailwind({ applyBaseStyles: false }),
