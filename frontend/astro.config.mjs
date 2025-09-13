@@ -7,6 +7,8 @@ import partytown from '@astrojs/partytown'
 export default defineConfig({
   site: 'https://harrysibbenga-dev.vercel.app',
 
+  output: 'static', 
+
   integrations: [
     vue(),
     tailwind({ applyBaseStyles: false }),

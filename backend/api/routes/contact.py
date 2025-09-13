@@ -116,3 +116,77 @@ async def subscribe_newsletter(
     except Exception as e:
         logger.error(f"Error subscribing to newsletter: {str(e)}")
         raise HTTPException(status_code=500, detail="Failed to subscribe")
+    
+    
+@router.get("/newsletter/subscriber/{email}", response_model=NewsletterResponse)
+async def get_newsletter_subscriber(
+    email: str,
+    db: Session = Depends(get_db)
+):
+    """Get newsletter subscriber info"""
+    try:
+        contact_service = ContactService(db)
+        
+        subscription = contact_service.get_subscription(email)
+        
+        if not subscription:
+            raise HTTPException(status_code=404, detail="Subscriber not found")
+        
+        return NewsletterResponse.from_orm(subscription)
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error getting subscriber info: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to retrieve subscriber info")
+    
+@router.post("/newsletter/confirm", status_code=200, response_model=NewsletterResponse)
+async def confirm_newsletter_subscription(
+    email: str,
+    db: Session = Depends(get_db)
+):
+    """Confirm newsletter subscription"""
+    try:
+        contact_service = ContactService(db)
+        
+        # Capture the return value
+        subscription = contact_service.confirm_subscription(email)
+        
+        if not subscription:
+            raise HTTPException(status_code=404, detail="Subscription not found")
+        
+        logger.info(f"Newsletter subscription confirmed: {email}")
+        
+        return NewsletterResponse.from_orm(subscription)
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error confirming subscription: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to confirm subscription")
+    
+    
+@router.post("/newsletter/unsubscribe", status_code=200, response_model=NewsletterResponse)
+async def unsubscribe_newsletter(
+    email: str,
+    db: Session = Depends(get_db)
+):
+    """Unsubscribe from newsletter"""
+    try:
+        contact_service = ContactService(db)
+        
+        # Capture the return value
+        subscription = contact_service.unsubscribe_newsletter(email)
+        
+        if not subscription:
+            raise HTTPException(status_code=404, detail="Active subscription not found")
+        
+        logger.info(f"Newsletter unsubscription: {email}")
+        
+        return NewsletterResponse.from_orm(subscription)
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error unsubscribing from newsletter: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to unsubscribe")

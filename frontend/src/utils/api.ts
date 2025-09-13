@@ -247,17 +247,22 @@ import type {
     newsletter = {
       // Subscribe to newsletter
       subscribe: async (data: NewsletterSubscribe): Promise<NewsletterResponse> => {
-        return this.http.post<NewsletterResponse>('/api/newsletter/subscribe', data);
+        return this.http.post<NewsletterResponse>('/api/contact/newsletter', data);
       },
   
       // Unsubscribe from newsletter
       unsubscribe: async (email: string): Promise<void> => {
-        return this.http.post<void>('/api/newsletter/unsubscribe', { email });
+        return this.http.post<void>(`/api/contact/newsletter/unsubscribe?email=${encodeURIComponent(email)}`);
+      },
+
+      // confirm subscription
+      confirm: async (email: string): Promise<NewsletterResponse> => {
+        return this.http.post<NewsletterResponse>(`/api/contact/newsletter/confirm?email=${encodeURIComponent(email)}`);
       },
   
       // Get subscriber info
       getSubscriber: async (email: string): Promise<NewsletterResponse> => {
-        return this.http.get<NewsletterResponse>(`/api/newsletter/subscriber/${email}`);
+        return this.http.get<NewsletterResponse>(`/api/contact/newsletter/subscriber/${email}`);
       }
     };
   

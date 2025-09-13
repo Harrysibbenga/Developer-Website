@@ -179,17 +179,16 @@ export enum ServiceType {
   
   export interface NewsletterSubscribe {
     email: string;
-    first_name?: string;
-    interests?: string[];
   }
   
   export interface NewsletterResponse extends BaseModel {
     email: string;
-    first_name?: string;
-    interests: string[];
     is_active: boolean;
     confirmed_at?: string;
     unsubscribed_at?: string;
+    weekly_updates: boolean;
+    project_announcements: boolean;
+    technical_articles: boolean;
   }
   
   // ===== ADMIN INTERFACES =====

@@ -168,11 +168,12 @@ class EmailService:
             template = self.jinja_env.get_template('newsletter_confirmation.html')
             
             # Generate confirmation link (you'd implement this with a token)
-            confirmation_url = f"https://{settings.BUSINESS_EMAIL.split('@')[1]}/newsletter/confirm/{subscription.id}"
+            confirmation_url = f"{settings.SITE_URL}/newsletter/confirm/{subscription.email}"
             
             html_content = template.render(
                 subscription=subscription,
                 confirmation_url=confirmation_url,
+                unsubscribe_url=f"{settings.SITE_URL}/newsletter/unsubscribe/{subscription.email}",
                 business_name=settings.BUSINESS_NAME
             )
             
