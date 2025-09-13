@@ -1,0 +1,38 @@
+---
+// src/pages/newsletter/confirm/[email].astro
+/**
+ * Dynamic route for newsletter confirmation
+ * Extracts email from URL path and passes to Vue component
+ */
+
+ import Layout from '../../../layouts/Layout.astro'
+import NewsletterConfirm from '../../../components/newsletter/NewsletterConfirm.vue'
+import { BUSINESS_INFO } from '../../../utils/constants'
+
+// Enable SSR for this dynamic route
+export const prerender = false
+
+// Required for dynamic routes
+export function getStaticPaths() {
+  return []
+}
+
+const pageTitle = `Newsletter Confirmation - ${BUSINESS_INFO.name}`
+const pageDescription = 'Confirm your newsletter subscription to receive updates about web development services and technical insights.'
+
+// Extract email from URL parameter
+const { email: emailParam } = Astro.params
+const email = emailParam ? decodeURIComponent(emailParam) : ''
+
+// Log for debugging (remove in production)
+console.log('Confirm route - Email param:', emailParam)
+console.log('Confirm route - Decoded email:', email)
+---
+
+<Layout 
+  title={pageTitle}
+  description={pageDescription}
+  canonical="/newsletter/confirm"
+>
+  <NewsletterConfirm client:load email={email} />
+</Layout>

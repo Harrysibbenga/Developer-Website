@@ -92,40 +92,6 @@ class ContactService:
             logger.error(f"Error getting contact inquiries: {str(e)}")
             raise
     
-    def subscribe_newsletter(self, email: str) -> NewsletterSubscription:
-        """Subscribe to newsletter"""
-        try:
-            # Check if already subscribed
-            existing = self.db.query(NewsletterSubscription).filter(
-                NewsletterSubscription.email == email
-            ).first()
-            
-            if existing:
-                if existing.unsubscribed_at:
-                    # Resubscribe
-                    existing.unsubscribed_at = None
-                    existing.subscribed_at = datetime.utcnow()
-                    existing.confirmed = False
-                    self.db.commit()
-                    self.db.refresh(existing)
-                    return existing
-                else:
-                    # Already subscribed
-                    return existing
-            
-            # Create new subscription
-            subscription = NewsletterSubscription(email=email)
-            self.db.add(subscription)
-            self.db.commit()
-            self.db.refresh(subscription)
-            
-            return subscription
-            
-        except Exception as e:
-            self.db.rollback()
-            logger.error(f"Error subscribing to newsletter: {str(e)}")
-            raise
-    
     def _calculate_spam_score(self, contact_data: ContactCreate, ip_address: str = None) -> float:
         """Calculate spam probability score"""
         score = 0.0
@@ -231,4 +197,108 @@ class ContactService:
         except Exception as e:
             logger.error(f"Error getting recent contacts: {str(e)}")
             raise
+    
+    def subscribe_newsletter(self, email: str) -> NewsletterSubscription:
+        """Subscribe to newsletter"""
+        try:
+            # Check if already subscribed
+            existing = self.db.query(NewsletterSubscription).filter(
+                NewsletterSubscription.email == email
+            ).first()
+            
+            if existing:
+                if existing.unsubscribed_at:
+                    # Resubscribe
+                    existing.unsubscribed_at = None
+                    existing.subscribed_at = datetime.utcnow()
+                    existing.confirmed = False
+                    self.db.commit()
+                    self.db.refresh(existing)
+                    return existing
+                else:
+                    # Already subscribed
+                    return existing
+            
+            # Create new subscription
+            subscription = NewsletterSubscription(email=email)
+            self.db.add(subscription)
+            self.db.commit()
+            self.db.refresh(subscription)
+            
+            return subscription
+            
+        except Exception as e:
+            self.db.rollback()
+            logger.error(f"Error subscribing to newsletter: {str(e)}")
+            raise
+    
+    def get_subscription(self, email: str) -> Optional[NewsletterSubscription]:
+        """Get newsletter subscription by email"""
+        try:
+            return self.db.query(NewsletterSubscription).filter(
+                NewsletterSubscription.email == email
+            ).first()
+        except Exception as e:
+            logger.error(f"Error getting subscription for {email}: {str(e)}")
+            raise
 
+    def confirm_subscription(self, email: str) -> Optional[NewsletterSubscription]:
+        """Confirm newsletter subscription"""
+        try:
+            subscription = self.db.query(NewsletterSubscription).filter(
+                NewsletterSubscription.email == email,
+                NewsletterSubscription.unsubscribed_at == None
+            ).first()
+            
+            if subscription and not subscription.confirmed:
+                subscription.confirmed = True
+                subscription.confirmed_at = datetime.utcnow()
+                self.db.commit()
+                return subscription
+            
+            return subscription
+            
+        except Exception as e:
+            self.db.rollback()
+            logger.error(f"Error confirming subscription for {email}: {str(e)}")
+            raise
+
+    def unsubscribe_newsletter(self, email: str) -> Optional[NewsletterSubscription]:
+        """Unsubscribe from newsletter"""
+        try:
+            subscription = self.db.query(NewsletterSubscription).filter(
+                NewsletterSubscription.email == email,
+                NewsletterSubscription.unsubscribed_at == None
+            ).first()
+            
+            if subscription:
+                subscription.unsubscribed_at = datetime.utcnow()
+                self.db.commit()
+                return subscription
+            
+            return subscription
+            
+        except Exception as e:
+            self.db.rollback()
+            logger.error(f"Error unsubscribing {email} from newsletter: {str(e)}")
+            raise
+
+    def submit_newsletter_feedback(self, email: str, feedback: str) -> Optional[NewsletterSubscription]:
+        """Submit feedback for newsletter"""
+        try:
+            subscription = self.db.query(NewsletterSubscription).filter(
+                NewsletterSubscription.email == email
+            ).first()
+            
+            if subscription:
+                subscription.feedback = feedback
+                subscription.feedback_at = datetime.utcnow()
+                self.db.commit()
+                return True
+            
+            return False
+            
+        except Exception as e:
+            self.db.rollback()
+            logger.error(f"Error submitting newsletter feedback for {email}: {str(e)}")
+            return False
