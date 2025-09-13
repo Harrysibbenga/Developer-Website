@@ -1,9 +1,9 @@
 ## TODO List:
 
 - [X] Complete newsletter functionality
-- [ ] Create Response Notification Object
-- [ ] Check API Response object
-- [ ] Add loading indicator to form submission
+- [X] Create Response Notification Object
+- [X] Add loading indicator to form submission
+
 - [ ] Check and implement rate limiting
 - [ ] Change the way number are input in forms
 - [ ] Create Admin Dashboard

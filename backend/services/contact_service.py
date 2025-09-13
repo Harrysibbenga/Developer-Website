@@ -272,6 +272,7 @@ class ContactService:
             ).first()
             
             if subscription:
+                subscription.confirmed = False
                 subscription.unsubscribed_at = datetime.utcnow()
                 self.db.commit()
                 return subscription
