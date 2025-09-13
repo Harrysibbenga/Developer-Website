@@ -9,9 +9,8 @@ export default defineConfig({
   site: 'https://harrysibbenga-dev.vercel.app',
 
   output: 'server',
-
+  adapter: vercel(),  
   integrations: [
-    vercel(),
     vue(),
     tailwind({ applyBaseStyles: false }),
     sitemap(),
