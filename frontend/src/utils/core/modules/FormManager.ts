@@ -37,7 +37,7 @@ export class FormManager extends BaseModule {
 
   private setupForms(): void {
     // Find all forms with data-form attribute
-    const forms = document.querySelectorAll('form[data-form]')
+    const forms = document.querySelectorAll('form[data-form]:not([data-vue-managed])')
     
     forms.forEach(form => {
       const formElement = form as HTMLFormElement

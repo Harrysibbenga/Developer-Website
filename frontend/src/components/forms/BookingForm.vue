@@ -41,415 +41,408 @@
       </div>
     </div>
 
-    <!-- Form Steps -->
-    <form @submit.prevent="handleSubmit" class="space-y-8">
-      
-      <!-- Step 1: Project Type & Basic Info -->
-      <div v-show="currentStep === 1" class="form-step animate-fade-in">
-        <div class="bg-white rounded-2xl shadow-lg p-8 border border-gray-200">
-          <h2 class="text-3xl font-bold text-gray-900 mb-6">
-            Let's Start Your Project
-          </h2>
-          <p class="text-gray-600 mb-8">
-            Tell me about your project requirements and I'll provide a customized quote.
-          </p>
+    <!-- Form Steps Container -->
+    <form @submit.prevent="handleSubmit" class="space-y-8" data-vue-managed>
+      <div class="relative min-h-[600px]">
+        
+        <!-- Step 1: Project Type & Basic Info -->
+        <div v-if="currentStep === 1" class="form-step">
+          <div class="bg-white rounded-2xl shadow-lg p-8 border border-gray-200">
+            <h2 class="text-3xl font-bold text-gray-900 mb-6">
+              Let's Start Your Project
+            </h2>
+            <p class="text-gray-600 mb-8">
+              Tell me about your project requirements and I'll provide a customized quote.
+            </p>
 
-          <!-- Service Selection -->
-          <div class="mb-8">
-            <label class="block text-lg font-semibold text-gray-900 mb-4">
-              What type of project do you need? *
-            </label>
-            <div class="grid md:grid-cols-2 gap-4">
-              <div 
-                v-for="(service, key) in SERVICES" 
-                :key="key"
-                class="service-option relative cursor-pointer"
-                :class="{ 'selected': formData.service_type === key }"
-                @click="updateField('service_type', key)"
-              >
-                <input 
-                  type="radio" 
-                  :value="key" 
-                  :checked="formData.service_type === key"
-                  @change="updateField('service_type', key)"
-                  class="sr-only"
-                  required
-                />
-                <div class="p-6 rounded-xl border-2 transition-all duration-300 hover:shadow-md"
-                     :class="formHandler.hasFieldError('service_type') ? 'border-red-300 bg-red-50' : ''">
-                  <div class="flex items-start space-x-4">
-                    <div class="text-3xl">{{ service.icon }}</div>
-                    <div class="flex-1">
-                      <h3 class="font-semibold text-lg text-gray-900 mb-2">
-                        {{ service.title }}
-                      </h3>
-                      <p class="text-gray-600 text-sm mb-3">
-                        {{ service.description }}
-                      </p>
-                      <div class="text-blue-600 font-semibold">
-                        Starting at {{ service.startingPrice }}
+            <!-- Service Selection -->
+            <div class="mb-8">
+              <label class="block text-lg font-semibold text-gray-900 mb-4">
+                What type of project do you need? *
+              </label>
+              <div class="grid md:grid-cols-2 gap-4">
+                <div 
+                  v-for="(service, key) in SERVICES" 
+                  :key="key"
+                  class="service-option relative cursor-pointer"
+                  :class="{ 'selected': formData.service_type === key }"
+                  @click="updateField('service_type', key)"
+                >
+                  <input 
+                    type="radio" 
+                    :value="key" 
+                    :checked="formData.service_type === key"
+                    @change="updateField('service_type', key)"
+                    class="sr-only"
+                    required
+                  />
+                  <div class="p-6 rounded-xl border-2 transition-all duration-300 hover:shadow-md"
+                       :class="formHandler.hasFieldError('service_type') ? 'border-red-300 bg-red-50' : ''">
+                    <div class="flex items-start space-x-4">
+                      <div class="text-3xl">{{ service.icon }}</div>
+                      <div class="flex-1">
+                        <h3 class="font-semibold text-lg text-gray-900 mb-2">
+                          {{ service.title }}
+                        </h3>
+                        <p class="text-gray-600 text-sm mb-3">
+                          {{ service.description }}
+                        </p>
+                        <div class="text-blue-600 font-semibold">
+                          {{ service.startingPrice }}
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <p v-if="formHandler.hasFieldError('service_type')" class="mt-2 text-sm text-red-600 font-medium">
-              {{ formHandler.getFieldErrors('service_type')[0] }}
-            </p>
-          </div>
-
-          <!-- Basic Project Info -->
-          <div class="grid md:grid-cols-2 gap-6">
-            <div>
-              <label for="projectName" class="block text-sm font-medium text-gray-700 mb-2">
-                Project Name *
-              </label>
-              <input
-                type="text"
-                id="projectName"
-                :value="formData.project_name"
-                @input="updateField('project_name', $event.target.value)"
-                @blur="validateField('project_name')"
-                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-                :class="formHandler.hasFieldError('project_name') ? 'border-red-300 bg-red-50 focus:ring-red-500' : ''"
-                placeholder="e.g., Company Website Redesign"
-                required
-              />
-              <p v-if="formHandler.hasFieldError('project_name')" class="mt-1 text-sm text-red-600 font-medium">
-                {{ formHandler.getFieldErrors('project_name')[0] }}
+              <p v-if="formHandler.hasFieldError('service_type')" class="mt-2 text-sm text-red-600 font-medium">
+                {{ formHandler.getFieldErrors('service_type')[0] }}
               </p>
             </div>
-            
-            <div>
-              <label for="timeline" class="block text-sm font-medium text-gray-700 mb-2">
-                Preferred Timeline *
-              </label>
-              <select
-                id="timeline"
-                :value="formData.timeline"
-                @change="updateField('timeline', $event.target.value)"
-                @blur="validateField('timeline')"
-                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-                :class="formHandler.hasFieldError('timeline') ? 'border-red-300 bg-red-50 focus:ring-red-500' : ''"
-                required
-              >
-                <option value="">Select timeline</option>
-                <option v-for="timeline in CONTACT_CONFIG.timelines" :key="timeline" :value="timeline">
-                  {{ timeline }}
-                </option>
-              </select>
-              <p v-if="formHandler.hasFieldError('timeline')" class="mt-1 text-sm text-red-600 font-medium">
-                {{ formHandler.getFieldErrors('timeline')[0] }}
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
 
-      <!-- Step 2: Technical Requirements -->
-      <div v-show="currentStep === 2" class="form-step animate-fade-in">
-        <div class="bg-white rounded-2xl shadow-lg p-8 border border-gray-200">
-          <h2 class="text-3xl font-bold text-gray-900 mb-6">
-            Technical Requirements
-          </h2>
-          
-          <!-- Technology Preferences -->
-          <div class="mb-8">
-            <label class="block text-lg font-semibold text-gray-900 mb-4">
-              Preferred Technologies (Optional)
-            </label>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-              <div 
-                v-for="tech in availableTechnologies" 
-                :key="tech.name"
-                class="tech-option"
-                :class="{ 'selected': formData.technologies.includes(tech.name) }"
-                @click="toggleTechnology(tech.name)"
-              >
-                <div class="p-3 border-2 rounded-lg text-center cursor-pointer transition-all duration-300 hover:shadow-sm">
-                  <div class="text-2xl mb-2">{{ tech.icon }}</div>
-                  <div class="text-sm font-medium">{{ tech.name }}</div>
-                </div>
+            <!-- Basic Project Info -->
+            <div class="grid md:grid-cols-2 gap-6">
+              <div>
+                <label for="projectName" class="block text-sm font-medium text-gray-700 mb-2">
+                  Project Name *
+                </label>
+                <input
+                  type="text"
+                  id="projectName"
+                  v-model="formData.project_name"
+                  @blur="validateField('project_name')"
+                  class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                  :class="formHandler.hasFieldError('project_name') ? 'border-red-300 bg-red-50 focus:ring-red-500' : ''"
+                  placeholder="e.g., Company Website Redesign"
+                  required
+                />
+                <p v-if="formHandler.hasFieldError('project_name')" class="mt-1 text-sm text-red-600 font-medium">
+                  {{ formHandler.getFieldErrors('project_name')[0] }}
+                </p>
+              </div>
+              
+              <div>
+                <label for="timeline" class="block text-sm font-medium text-gray-700 mb-2">
+                  Preferred Timeline *
+                </label>
+                <select
+                  id="timeline"
+                  v-model="formData.timeline"
+                  @blur="validateField('timeline')"
+                  class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                  :class="formHandler.hasFieldError('timeline') ? 'border-red-300 bg-red-50 focus:ring-red-500' : ''"
+                  required
+                >
+                  <option value="">Select timeline</option>
+                  <option v-for="timeline in CONTACT_CONFIG.timelines" :key="timeline" :value="timeline">
+                    {{ timeline }}
+                  </option>
+                </select>
+                <p v-if="formHandler.hasFieldError('timeline')" class="mt-1 text-sm text-red-600 font-medium">
+                  {{ formHandler.getFieldErrors('timeline')[0] }}
+                </p>
               </div>
             </div>
           </div>
+        </div>
 
-          <!-- Project Features -->
-          <div class="mb-8">
-            <label class="block text-lg font-semibold text-gray-900 mb-4">
-              Required Features
-            </label>
-            <div class="grid md:grid-cols-2 gap-4">
-              <div 
-                v-for="feature in projectFeatures" 
-                :key="feature"
-                class="feature-option"
-                :class="{ 'selected': formData.features.includes(feature) }"
-                @click="toggleFeature(feature)"
-              >
-                <div class="p-4 border-2 rounded-lg cursor-pointer transition-all duration-300 hover:shadow-sm">
-                  <div class="flex items-center space-x-3">
-                    <div class="w-5 h-5 rounded border-2 flex items-center justify-center">
-                      <svg v-if="formData.features.includes(feature)" class="w-3 h-3 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
-                      </svg>
-                    </div>
-                    <span class="font-medium">{{ feature }}</span>
+        <!-- Step 2: Technical Requirements -->
+        <div v-else-if="currentStep === 2" class="form-step">
+          <div class="bg-white rounded-2xl shadow-lg p-8 border border-gray-200">
+            <h2 class="text-3xl font-bold text-gray-900 mb-6">
+              Technical Requirements
+            </h2>
+            
+            <!-- Technology Preferences -->
+            <div class="mb-8">
+              <label class="block text-lg font-semibold text-gray-900 mb-4">
+                Preferred Technologies (Optional)
+              </label>
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <div 
+                  v-for="tech in availableTechnologies" 
+                  :key="tech.name"
+                  class="tech-option"
+                  :class="{ 'selected': formData.technologies.includes(tech.name) }"
+                  @click="toggleTechnology(tech.name)"
+                >
+                  <div class="p-3 border-2 rounded-lg text-center cursor-pointer transition-all duration-300 hover:shadow-sm">
+                    <div class="text-2xl mb-2">{{ tech.icon }}</div>
+                    <div class="text-sm font-medium">{{ tech.name }}</div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          <!-- Project Description -->
-          <div>
-            <label for="projectDescription" class="block text-lg font-semibold text-gray-900 mb-4">
-              Project Description *
-            </label>
-            <textarea
-              id="projectDescription"
-              :value="formData.description"
-              @input="updateField('description', $event.target.value)"
-              @blur="validateField('description')"
-              rows="6"
-              class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-              :class="formHandler.hasFieldError('description') ? 'border-red-300 bg-red-50 focus:ring-red-500' : ''"
-              placeholder="Please describe your project requirements, goals, and any specific functionality you need..."
-              required
-            ></textarea>
-            <p v-if="formHandler.hasFieldError('description')" class="mt-1 text-sm text-red-600 font-medium">
-              {{ formHandler.getFieldErrors('description')[0] }}
-            </p>
-            <div class="mt-1 text-right">
-              <span class="text-sm" :class="characterCountColor">
-                {{ formData.description.length }}/2000
-              </span>
+            <!-- Project Features -->
+            <div class="mb-8">
+              <label class="block text-lg font-semibold text-gray-900 mb-4">
+                Required Features
+              </label>
+              <div class="grid md:grid-cols-2 gap-4">
+                <div 
+                  v-for="feature in projectFeatures" 
+                  :key="feature"
+                  class="feature-option"
+                  :class="{ 'selected': formData.features.includes(feature) }"
+                  @click="toggleFeature(feature)"
+                >
+                  <div class="p-4 border-2 rounded-lg cursor-pointer transition-all duration-300 hover:shadow-sm">
+                    <div class="flex items-center space-x-3">
+                      <div class="w-5 h-5 rounded border-2 flex items-center justify-center">
+                        <svg v-if="formData.features.includes(feature)" class="w-3 h-3 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                        </svg>
+                      </div>
+                      <span class="font-medium">{{ feature }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Project Description -->
+            <div>
+              <label for="projectDescription" class="block text-lg font-semibold text-gray-900 mb-4">
+                Project Description *
+              </label>
+              <textarea
+                id="projectDescription"
+                v-model="formData.description"
+                @blur="validateField('description')"
+                rows="6"
+                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                :class="formHandler.hasFieldError('description') ? 'border-red-300 bg-red-50 focus:ring-red-500' : ''"
+                placeholder="Please describe your project requirements, goals, and any specific functionality you need..."
+                required
+              ></textarea>
+              <p v-if="formHandler.hasFieldError('description')" class="mt-1 text-sm text-red-600 font-medium">
+                {{ formHandler.getFieldErrors('description')[0] }}
+              </p>
+              <div class="mt-1 text-right">
+                <span class="text-sm" :class="characterCountColor">
+                  {{ formData.description.length }}/2000
+                </span>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- Step 3: Budget & Contact -->
-      <div v-show="currentStep === 3" class="form-step animate-fade-in">
-        <div class="grid lg:grid-cols-2 gap-8">
-          
-          <!-- Contact Information -->
-          <div class="bg-white rounded-2xl shadow-lg p-8 border border-gray-200">
-            <h2 class="text-2xl font-bold text-gray-900 mb-6">
-              Contact Information
-            </h2>
+        <!-- Step 3: Budget & Contact -->
+        <div v-else-if="currentStep === 3" class="form-step">
+          <div class="grid lg:grid-cols-2 gap-8">
             
-            <div class="space-y-6">
-              <div class="grid md:grid-cols-2 gap-4">
+            <!-- Contact Information -->
+            <div class="bg-white rounded-2xl shadow-lg p-8 border border-gray-200">
+              <h2 class="text-2xl font-bold text-gray-900 mb-6">
+                Contact Information
+              </h2>
+              
+              <div class="space-y-6">
+                <div class="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <label for="firstName" class="block text-sm font-medium text-gray-700 mb-2">
+                      First Name *
+                    </label>
+                    <input
+                      type="text"
+                      id="firstName"
+                      v-model="formData.first_name"
+                      @blur="validateField('first_name')"
+                      class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                      :class="formHandler.hasFieldError('first_name') ? 'border-red-300 bg-red-50 focus:ring-red-500' : ''"
+                      required
+                    />
+                    <p v-if="formHandler.hasFieldError('first_name')" class="mt-1 text-sm text-red-600 font-medium">
+                      {{ formHandler.getFieldErrors('first_name')[0] }}
+                    </p>
+                  </div>
+                  
+                  <div>
+                    <label for="lastName" class="block text-sm font-medium text-gray-700 mb-2">
+                      Last Name *
+                    </label>
+                    <input
+                      type="text"
+                      id="lastName"
+                      v-model="formData.last_name"
+                      @blur="validateField('last_name')"
+                      class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                      :class="formHandler.hasFieldError('last_name') ? 'border-red-300 bg-red-50 focus:ring-red-500' : ''"
+                      required
+                    />
+                    <p v-if="formHandler.hasFieldError('last_name')" class="mt-1 text-sm text-red-600 font-medium">
+                      {{ formHandler.getFieldErrors('last_name')[0] }}
+                    </p>
+                  </div>
+                </div>
+
                 <div>
-                  <label for="firstName" class="block text-sm font-medium text-gray-700 mb-2">
-                    First Name *
+                  <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
+                    Email Address *
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    v-model="formData.email"
+                    @blur="validateField('email')"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                    :class="formHandler.hasFieldError('email') ? 'border-red-300 bg-red-50 focus:ring-red-500' : ''"
+                    required
+                  />
+                  <p v-if="formHandler.hasFieldError('email')" class="mt-1 text-sm text-red-600 font-medium">
+                    {{ formHandler.getFieldErrors('email')[0] }}
+                  </p>
+                </div>
+
+                <div>
+                  <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">
+                    Phone Number (Optional)
+                  </label>
+                  <input
+                    type="tel"
+                    id="phone"
+                    v-model="formData.phone"
+                    @blur="validateField('phone')"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                    :class="formHandler.hasFieldError('phone') ? 'border-red-300 bg-red-50 focus:ring-red-500' : ''"
+                  />
+                  <p v-if="formHandler.hasFieldError('phone')" class="mt-1 text-sm text-red-600 font-medium">
+                    {{ formHandler.getFieldErrors('phone')[0] }}
+                  </p>
+                </div>
+
+                <div>
+                  <label for="company" class="block text-sm font-medium text-gray-700 mb-2">
+                    Company (Optional)
                   </label>
                   <input
                     type="text"
-                    id="firstName"
-                    :value="formData.first_name"
-                    @input="updateField('first_name', $event.target.value)"
-                    @blur="validateField('first_name')"
+                    id="company"
+                    v-model="formData.company"
                     class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-                    :class="formHandler.hasFieldError('first_name') ? 'border-red-300 bg-red-50 focus:ring-red-500' : ''"
-                    required
                   />
-                  <p v-if="formHandler.hasFieldError('first_name')" class="mt-1 text-sm text-red-600 font-medium">
-                    {{ formHandler.getFieldErrors('first_name')[0] }}
-                  </p>
                 </div>
-                
+
                 <div>
-                  <label for="lastName" class="block text-sm font-medium text-gray-700 mb-2">
-                    Last Name *
+                  <label for="website" class="block text-sm font-medium text-gray-700 mb-2">
+                    Website (Optional)
                   </label>
                   <input
-                    type="text"
-                    id="lastName"
-                    :value="formData.last_name"
-                    @input="updateField('last_name', $event.target.value)"
-                    @blur="validateField('last_name')"
+                    type="url"
+                    id="website"
+                    v-model="formData.website"
+                    @blur="validateField('website')"
                     class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-                    :class="formHandler.hasFieldError('last_name') ? 'border-red-300 bg-red-50 focus:ring-red-500' : ''"
-                    required
+                    :class="formHandler.hasFieldError('website') ? 'border-red-300 bg-red-50 focus:ring-red-500' : ''"
+                    placeholder="https://example.com"
                   />
-                  <p v-if="formHandler.hasFieldError('last_name')" class="mt-1 text-sm text-red-600 font-medium">
-                    {{ formHandler.getFieldErrors('last_name')[0] }}
+                  <p v-if="formHandler.hasFieldError('website')" class="mt-1 text-sm text-red-600 font-medium">
+                    {{ formHandler.getFieldErrors('website')[0] }}
                   </p>
                 </div>
-              </div>
 
-              <div>
-                <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
-                  Email Address *
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  :value="formData.email"
-                  @input="updateField('email', $event.target.value)"
-                  @blur="validateField('email')"
-                  class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-                  :class="formHandler.hasFieldError('email') ? 'border-red-300 bg-red-50 focus:ring-red-500' : ''"
-                  required
-                />
-                <p v-if="formHandler.hasFieldError('email')" class="mt-1 text-sm text-red-600 font-medium">
-                  {{ formHandler.getFieldErrors('email')[0] }}
-                </p>
-              </div>
-
-              <div>
-                <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">
-                  Phone Number (Optional)
-                </label>
-                <input
-                  type="tel"
-                  id="phone"
-                  :value="formData.phone"
-                  @input="updateField('phone', $event.target.value)"
-                  @blur="validateField('phone')"
-                  class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-                  :class="formHandler.hasFieldError('phone') ? 'border-red-300 bg-red-50 focus:ring-red-500' : ''"
-                />
-                <p v-if="formHandler.hasFieldError('phone')" class="mt-1 text-sm text-red-600 font-medium">
-                  {{ formHandler.getFieldErrors('phone')[0] }}
-                </p>
-              </div>
-
-              <div>
-                <label for="company" class="block text-sm font-medium text-gray-700 mb-2">
-                  Company (Optional)
-                </label>
-                <input
-                  type="text"
-                  id="company"
-                  :value="formData.company"
-                  @input="updateField('company', $event.target.value)"
-                  class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-                />
-              </div>
-
-              <div>
-                <label for="website" class="block text-sm font-medium text-gray-700 mb-2">
-                  Website (Optional)
-                </label>
-                <input
-                  type="url"
-                  id="website"
-                  :value="formData.website"
-                  @input="updateField('website', $event.target.value)"
-                  @blur="validateField('website')"
-                  class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-                  :class="formHandler.hasFieldError('website') ? 'border-red-300 bg-red-50 focus:ring-red-500' : ''"
-                  placeholder="https://example.com"
-                />
-                <p v-if="formHandler.hasFieldError('website')" class="mt-1 text-sm text-red-600 font-medium">
-                  {{ formHandler.getFieldErrors('website')[0] }}
-                </p>
-              </div>
-
-              <div>
-                <label for="budget" class="block text-sm font-medium text-gray-700 mb-2">
-                  Budget Range *
-                </label>
-                <select
-                  id="budget"
-                  :value="formData.budget_range"
-                  @change="updateField('budget_range', $event.target.value)"
-                  @blur="validateField('budget_range')"
-                  class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-                  :class="formHandler.hasFieldError('budget_range') ? 'border-red-300 bg-red-50 focus:ring-red-500' : ''"
-                  required
-                >
-                  <option value="">Select budget range</option>
-                  <option v-for="budget in CONTACT_CONFIG.budgetRanges" :key="budget" :value="budget">
-                    {{ budget }}
-                  </option>
-                </select>
-                <p v-if="formHandler.hasFieldError('budget_range')" class="mt-1 text-sm text-red-600 font-medium">
-                  {{ formHandler.getFieldErrors('budget_range')[0] }}
-                </p>
+                <div>
+                  <label for="budget" class="block text-sm font-medium text-gray-700 mb-2">
+                    Budget Range *
+                  </label>
+                  <select
+                    id="budget"
+                    v-model="formData.budget_range"
+                    @blur="validateField('budget_range')"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                    :class="formHandler.hasFieldError('budget_range') ? 'border-red-300 bg-red-50 focus:ring-red-500' : ''"
+                    required
+                  >
+                    <option value="">Select budget range</option>
+                    <option v-for="budget in CONTACT_CONFIG.budgetRanges" :key="budget" :value="budget">
+                      {{ budget }}
+                    </option>
+                  </select>
+                  <p v-if="formHandler.hasFieldError('budget_range')" class="mt-1 text-sm text-red-600 font-medium">
+                    {{ formHandler.getFieldErrors('budget_range')[0] }}
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
 
-          <!-- Quote Estimation -->
-          <div class="bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl shadow-lg p-8 border border-blue-200">
-            <h2 class="text-2xl font-bold text-gray-900 mb-6">
-              Project Estimate
-            </h2>
-            
-            <div class="space-y-6">
-              <!-- Service Type -->
-              <div class="flex justify-between items-center py-3 border-b border-blue-200">
-                <span class="font-medium text-gray-700">Service Type</span>
-                <span class="font-semibold text-gray-900">
-                  {{ formData.service_type ? SERVICES[formData.service_type]?.title : 'Not selected' }}
-                </span>
-              </div>
-
-              <!-- Base Price -->
-              <div class="flex justify-between items-center py-3 border-b border-blue-200">
-                <span class="font-medium text-gray-700">Base Price</span>
-                <span class="font-semibold text-gray-900">
-                  {{ formData.service_type ? SERVICES[formData.service_type]?.startingPrice : '—' }}
-                </span>
-              </div>
-
-              <!-- Features Count -->
-              <div class="flex justify-between items-center py-3 border-b border-blue-200">
-                <span class="font-medium text-gray-700">Selected Features</span>
-                <span class="font-semibold text-gray-900">
-                  {{ formData.features.length }} features
-                </span>
-              </div>
-
-              <!-- Technologies -->
-              <div class="flex justify-between items-center py-3 border-b border-blue-200">
-                <span class="font-medium text-gray-700">Technologies</span>
-                <span class="font-semibold text-gray-900">
-                  {{ formData.technologies.length }} selected
-                </span>
-              </div>
-
-              <!-- Complexity Indicator -->
-              <div class="bg-white rounded-lg p-4 border border-blue-200">
-                <div class="flex justify-between items-center mb-2">
-                  <span class="font-medium text-gray-700">Project Complexity</span>
-                  <span class="font-semibold" :class="complexityColor">
-                    {{ projectComplexity }}
+            <!-- Quote Estimation -->
+            <div class="bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl shadow-lg p-8 border border-blue-200">
+              <h2 class="text-2xl font-bold text-gray-900 mb-6">
+                Project Estimate
+              </h2>
+              
+              <div class="space-y-6">
+                <!-- Service Type -->
+                <div class="flex justify-between items-center py-3 border-b border-blue-200">
+                  <span class="font-medium text-gray-700">Service Type</span>
+                  <span class="font-semibold text-gray-900">
+                    {{ formData.service_type ? SERVICES[formData.service_type]?.title : 'Not selected' }}
                   </span>
                 </div>
-                <div class="w-full bg-gray-200 rounded-full h-2">
-                  <div 
-                    class="h-2 rounded-full transition-all duration-500"
-                    :class="complexityBarColor"
-                    :style="{ width: `${complexityPercentage}%` }"
-                  ></div>
+
+                <!-- Base Price -->
+                <div class="flex justify-between items-center py-3 border-b border-blue-200">
+                  <span class="font-medium text-gray-700">Base Price</span>
+                  <span class="font-semibold text-gray-900">
+                    {{ formData.service_type ? SERVICES[formData.service_type]?.startingPrice : '—' }}
+                  </span>
                 </div>
-              </div>
 
-              <!-- Estimated Timeline -->
-              <div class="bg-white rounded-lg p-4 border border-blue-200">
-                <h4 class="font-semibold text-gray-900 mb-2">Estimated Timeline</h4>
-                <p class="text-gray-600">{{ estimatedTimeline }}</p>
-              </div>
+                <!-- Features Count -->
+                <div class="flex justify-between items-center py-3 border-b border-blue-200">
+                  <span class="font-medium text-gray-700">Selected Features</span>
+                  <span class="font-semibold text-gray-900">
+                    {{ formData.features.length }} features
+                  </span>
+                </div>
 
-              <!-- Next Steps -->
-              <div class="bg-blue-600 text-white rounded-lg p-4">
-                <h4 class="font-semibold mb-2">What Happens Next?</h4>
-                <ul class="text-sm space-y-1 opacity-90">
-                  <li>• I'll review your requirements within 24 hours</li>
-                  <li>• Schedule a free consultation call</li>
-                  <li>• Provide detailed project proposal</li>
-                  <li>• Begin development upon agreement</li>
-                </ul>
+                <!-- Technologies -->
+                <div class="flex justify-between items-center py-3 border-b border-blue-200">
+                  <span class="font-medium text-gray-700">Technologies</span>
+                  <span class="font-semibold text-gray-900">
+                    {{ formData.technologies.length }} selected
+                  </span>
+                </div>
+
+                <!-- Complexity Indicator -->
+                <div class="bg-white rounded-lg p-4 border border-blue-200">
+                  <div class="flex justify-between items-center mb-2">
+                    <span class="font-medium text-gray-700">Project Complexity</span>
+                    <span class="font-semibold" :class="complexityColor">
+                      {{ projectComplexity }}
+                    </span>
+                  </div>
+                  <div class="w-full bg-gray-200 rounded-full h-2">
+                    <div 
+                      class="h-2 rounded-full transition-all duration-500"
+                      :class="complexityBarColor"
+                      :style="{ width: `${complexityPercentage}%` }"
+                    ></div>
+                  </div>
+                </div>
+
+                <!-- Estimated Timeline -->
+                <div class="bg-white rounded-lg p-4 border border-blue-200">
+                  <h4 class="font-semibold text-gray-900 mb-2">Estimated Timeline</h4>
+                  <p class="text-gray-600">{{ estimatedTimeline }}</p>
+                </div>
+
+                <!-- Next Steps -->
+                <div class="bg-blue-600 text-white rounded-lg p-4">
+                  <h4 class="font-semibold mb-2">What Happens Next?</h4>
+                  <ul class="text-sm space-y-1 opacity-90">
+                    <li>• I'll review your requirements within 24 hours</li>
+                    <li>• Schedule a free consultation call</li>
+                    <li>• Provide detailed project proposal</li>
+                    <li>• Begin development upon agreement</li>
+                  </ul>
+                </div>
               </div>
             </div>
           </div>
         </div>
+
       </div>
 
       <!-- Navigation Buttons -->
@@ -461,7 +454,9 @@
           :disabled="formHandler.getState().loading"
           class="inline-flex items-center px-6 py-3 border border-gray-300 text-gray-700 rounded-xl font-medium hover:bg-gray-50 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <ChevronLeft class="w-5 h-5 mr-2" />
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+          </svg>
           Previous
         </button>
         <div v-else></div>
@@ -470,7 +465,7 @@
           v-if="currentStep < totalSteps"
           type="button"
           @click="nextStep"
-          :disabled="!canProceed || formHandler.getState().loading"
+          :disabled="!canProceed || isValidating"
           class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-medium hover:from-blue-700 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
         >
           <span v-if="!isValidating">Next</span>
@@ -481,7 +476,9 @@
             </svg>
             Validating...
           </span>
-          <ChevronRight class="w-5 h-5 ml-2" />
+          <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+          </svg>
         </button>
 
         <button
@@ -529,12 +526,60 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<style scoped>
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.service-option.selected {
+  @apply ring-2 ring-blue-500;
+}
+
+.service-option.selected .border-2 {
+  @apply border-blue-500 bg-blue-50;
+}
+
+.tech-option.selected {
+  @apply ring-2 ring-blue-500;
+}
+
+.tech-option.selected .border-2 {
+  @apply border-blue-500 bg-blue-50;
+}
+
+.feature-option.selected {
+  @apply ring-2 ring-blue-500;
+}
+
+.feature-option.selected .border-2 {
+  @apply border-blue-500 bg-blue-50;
+}
+
+.form-step {
+  min-height: 400px;
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-in {
+    animation: none !important;
+  }
+  
+  * {
+    transition: none !important;
+  }
+}
+</style>
+
+<script setup>
 import { ref, computed, reactive } from 'vue'
-import { ChevronLeft, ChevronRight } from 'lucide-vue-next'
 import { SERVICES, TECHNOLOGIES, CONTACT_CONFIG } from '../../utils/constants'
 import { api, createFormHandler, validators } from '../../utils/api'
-import type { BookingCreate, ServiceType } from '../../types/api'
 
 // Form state
 const currentStep = ref(1)
@@ -543,8 +588,8 @@ const isSubmitted = ref(false)
 const isValidating = ref(false)
 
 // Initial form data matching API types
-const initialFormData: BookingCreate = {
-  service_type: '' as ServiceType,
+const initialFormData = {
+  service_type: '',
   project_name: '',
   description: '',
   timeline: '',
@@ -588,19 +633,19 @@ const projectFeatures = [
 ]
 
 // Update field helper
-const updateField = (field: keyof BookingCreate, value: any) => {
+const updateField = (field, value) => {
   formData[field] = value
   formHandler.setField(field, value)
   
   // Clear field error when user starts typing
-  if (formHandler.hasFieldError(field as string)) {
-    formHandler.clearFieldErrors([field as string])
+  if (formHandler.hasFieldError(field)) {
+    formHandler.clearFieldErrors([field])
   }
 }
 
 // Individual field validation
-const validateField = (field: keyof BookingCreate) => {
-  const errors: Array<{ field: string; message: string }> = []
+const validateField = (field) => {
+  const errors = []
   
   switch (field) {
     case 'service_type':
@@ -692,7 +737,7 @@ const validateField = (field: keyof BookingCreate) => {
   }
   
   // Clear existing errors for this field first
-  formHandler.clearFieldErrors([field as string])
+  formHandler.clearFieldErrors([field])
   
   // Set new errors if any
   if (errors.length > 0) {
@@ -701,14 +746,14 @@ const validateField = (field: keyof BookingCreate) => {
 }
 
 // Client-side validation for step progression
-const validateStep = async (step: number): Promise<boolean> => {
+const validateStep = async (step) => {
   isValidating.value = true
   formHandler.clearErrors()
   
   // Add a small delay to show validation state
   await new Promise(resolve => setTimeout(resolve, 300))
   
-  const errors: Array<{ field: string; message: string }> = []
+  const errors = []
 
   switch (step) {
     case 1:
@@ -745,7 +790,7 @@ const validateStep = async (step: number): Promise<boolean> => {
       ]
       
       requiredFields.forEach(({ field, message }) => {
-        if (!formData[field as keyof BookingCreate] || !String(formData[field as keyof BookingCreate]).trim()) {
+        if (!formData[field] || !String(formData[field]).trim()) {
           errors.push({ field, message })
         }
       })
@@ -862,13 +907,14 @@ const estimatedTimeline = computed(() => {
   if (!serviceType) return 'Select a service to see timeline'
   
   const baseTimelines = {
-    webDevelopment: { Simple: '2-4 weeks', Medium: '4-8 weeks', Complex: '8-16 weeks' },
-    dataProcessing: { Simple: '1-3 weeks', Medium: '3-6 weeks', Complex: '6-12 weeks' },
-    realtimeSystems: { Simple: '3-6 weeks', Medium: '6-10 weeks', Complex: '10-20 weeks' },
-    consultation: { Simple: '1-2 weeks', Medium: '2-4 weeks', Complex: '4-8 weeks' }
+    businessWebsites: { Simple: '2-4 weeks', Medium: '4-8 weeks', Complex: '8-16 weeks' },
+    webApplications: { Simple: '3-6 weeks', Medium: '6-12 weeks', Complex: '12-24 weeks' },
+    dataAutomation: { Simple: '1-3 weeks', Medium: '3-6 weeks', Complex: '6-12 weeks' },
+    digitalTransformation: { Simple: '4-8 weeks', Medium: '8-16 weeks', Complex: '16-32 weeks' },
+    technicalConsulting: { Simple: '1-2 weeks', Medium: '2-4 weeks', Complex: '4-8 weeks' }
   }
   
-  return baseTimelines[serviceType as keyof typeof baseTimelines]?.[complexity] || '2-8 weeks'
+  return baseTimelines[serviceType]?.[complexity] || '2-8 weeks'
 })
 
 // Methods
@@ -885,7 +931,7 @@ const previousStep = () => {
   }
 }
 
-const toggleTechnology = (tech: string) => {
+const toggleTechnology = (tech) => {
   const index = formData.technologies.indexOf(tech)
   if (index > -1) {
     formData.technologies.splice(index, 1)
@@ -895,7 +941,7 @@ const toggleTechnology = (tech: string) => {
   formHandler.setField('technologies', formData.technologies)
 }
 
-const toggleFeature = (feature: string) => {
+const toggleFeature = (feature) => {
   const index = formData.features.indexOf(feature)
   if (index > -1) {
     formData.features.splice(index, 1)
@@ -909,7 +955,7 @@ const handleSubmit = async () => {
   if (!await validateStep(3) || !canProceed.value) return
   
   // Prepare data for API submission
-  const submissionData: BookingCreate = {
+  const submissionData = {
     service_type: formData.service_type,
     project_name: formData.project_name.trim(),
     description: formData.description.trim(),
@@ -966,42 +1012,3 @@ const closeSuccessModal = () => {
   formHandler.reset(initialFormData)
 }
 </script>
-
-<style scoped>
-.animate-fade-in {
-  animation: fadeIn 0.5s ease-in-out;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.service-option.selected {
-  @apply ring-2 ring-blue-500;
-}
-
-.service-option.selected .border-2 {
-  @apply border-blue-500 bg-blue-50;
-}
-
-.tech-option.selected {
-  @apply ring-2 ring-blue-500;
-}
-
-.tech-option.selected .border-2 {
-  @apply border-blue-500 bg-blue-50;
-}
-
-.feature-option.selected {
-  @apply ring-2 ring-blue-500;
-}
-
-.feature-option.selected .border-2 {
-  @apply border-blue-500 bg-blue-50;
-}
-
-.form-step {
-  min-height: 400px;
-}
-</style>

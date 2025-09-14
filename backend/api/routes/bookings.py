@@ -26,9 +26,9 @@ settings = get_settings()
 @router.post("/", response_model=BookingResponse, status_code=201)
 @rate_limit(requests=5, window=3600)  # 5 requests per hour
 async def create_booking(
+    request: Request,  # Move Request to first parameter
     booking_data: BookingCreate,
     background_tasks: BackgroundTasks,
-    request: Request,
     db: Session = Depends(get_db)
 ):
     """Create a new service booking"""
@@ -58,7 +58,9 @@ async def create_booking(
         raise HTTPException(status_code=500, detail="Failed to create booking")
 
 @router.get("/", response_model=BookingList)
+@rate_limit(requests=20, window=3600)  # Add rate limiting to GET endpoint
 async def list_bookings(
+    request: Request,  # Add Request parameter
     status: Optional[ProjectStatus] = None,
     service_type: Optional[ServiceType] = None,
     limit: int = 50,
@@ -87,7 +89,9 @@ async def list_bookings(
         raise HTTPException(status_code=500, detail="Failed to retrieve bookings")
 
 @router.get("/{booking_id}", response_model=BookingResponse)
+@rate_limit(requests=30, window=3600)  # Add rate limiting
 async def get_booking(
+    request: Request,  # Add Request parameter
     booking_id: str,
     db: Session = Depends(get_db)
 ):
@@ -108,7 +112,9 @@ async def get_booking(
         raise HTTPException(status_code=500, detail="Failed to retrieve booking")
 
 @router.put("/{booking_id}", response_model=BookingResponse)
+@rate_limit(requests=10, window=3600)  # Add rate limiting for updates
 async def update_booking(
+    request: Request,  # Add Request parameter
     booking_id: str,
     booking_update: BookingUpdate,
     db: Session = Depends(get_db)
@@ -131,7 +137,9 @@ async def update_booking(
         raise HTTPException(status_code=500, detail="Failed to update booking")
 
 @router.patch("/{booking_id}/status", response_model=BookingResponse)
+@rate_limit(requests=10, window=3600)  # Add rate limiting for status updates
 async def update_booking_status(
+    request: Request,  # Add Request parameter
     booking_id: str,
     status_update: BookingStatusUpdate,
     background_tasks: BackgroundTasks,

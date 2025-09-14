@@ -1,7 +1,7 @@
 <template>
   <div class="bg-white rounded-2xl shadow-xl p-8 relative">
     <!-- Loading Overlay for Contact Form -->
-    <div v-if="formHandler.getState().loading" class="absolute inset-0 bg-white/90 backdrop-blur-sm rounded-2xl z-10 flex items-center justify-center">
+    <div v-if="formHandler.getState().loading" class="absolute inset-0 bg-white/90 backdrop-blur-sm rounded-2xl z-10 flex items-center justify-center" data-vue-managed>
       <div class="text-center">
         <div class="w-12 h-12 mx-auto mb-4">
           <svg class="animate-spin w-12 h-12 text-blue-600" fill="none" viewBox="0 0 24 24">
@@ -293,23 +293,20 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { ref, computed, reactive } from 'vue'
 import { api, createFormHandler, validators } from '../../utils/api'
-import type { ContactCreate } from '../../types/api'
-import { InquiryType } from '../../types/api'
 
-
-const inquiryTypes = Object.values(InquiryType);
+const inquiryTypes = ['general', 'technical', 'partnership', 'collaboration', 'support', 'media']
 
 // Initial form data matching API types
-const initialFormData: ContactCreate = {
+const initialFormData = {
   first_name: '',
   last_name: '',
   email: '',
   phone: '',
   company: '',
-  inquiry_type: '' as InquiryType,
+  inquiry_type: '',
   subject: '',
   message: '',
   preferred_contact_method: ''
@@ -325,22 +322,22 @@ const honeypot = ref('')
 const isValidating = ref(false)
 
 // Update field helper
-const updateField = (field: keyof ContactCreate, value: any) => {
+const updateField = (field, value) => {
   formData[field] = value
   formHandler.setField(field, value)
   
   // Clear field error when user starts typing
-  if (formHandler.hasFieldError(field as string)) {
-    formHandler.clearFieldErrors([field as string])
+  if (formHandler.hasFieldError(field)) {
+    formHandler.clearFieldErrors([field])
   }
 }
 
 // Individual field validation
-const validateField = async (field: keyof ContactCreate) => {
+const validateField = async (field) => {
   if (isValidating.value) return
   
   isValidating.value = true
-  const errors: Array<{ field: string; message: string }> = []
+  const errors = []
   
   // Add small delay to show validation state
   await new Promise(resolve => setTimeout(resolve, 200))
@@ -414,7 +411,7 @@ const validateField = async (field: keyof ContactCreate) => {
   }
   
   // Clear existing errors for this field first
-  formHandler.clearFieldErrors([field as string])
+  formHandler.clearFieldErrors([field])
   
   // Set new errors if any
   if (errors.length > 0) {
@@ -444,14 +441,14 @@ const characterCountColor = computed(() => {
 })
 
 // Client-side validation
-const validateForm = async (): Promise<boolean> => {
+const validateForm = async () => {
   isValidating.value = true
   formHandler.clearErrors()
   
   // Add delay to show validation state
   await new Promise(resolve => setTimeout(resolve, 300))
   
-  const errors: Array<{ field: string; message: string }> = []
+  const errors = []
 
   // Required fields validation
   const requiredFields = [
@@ -464,7 +461,7 @@ const validateForm = async (): Promise<boolean> => {
   ]
   
   requiredFields.forEach(({ field, message }) => {
-    const value = formData[field as keyof ContactCreate]
+    const value = formData[field]
     if (!value || !String(value).trim()) {
       errors.push({ field, message })
     }
@@ -526,6 +523,11 @@ const validateForm = async (): Promise<boolean> => {
 
 // Submit form
 const submitForm = async () => {
+  // Prevent double submission
+  if (formHandler.getState().loading || isValidating.value) {
+    return
+  }
+
   // Reset success state
   showSuccess.value = false
   
@@ -541,7 +543,7 @@ const submitForm = async () => {
   }
 
   // Prepare data for API submission
-  const submissionData: ContactCreate = {
+  const submissionData = {
     first_name: formData.first_name.trim(),
     last_name: formData.last_name.trim(),
     email: formData.email.trim(),

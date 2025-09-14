@@ -24,9 +24,9 @@ logger = logging.getLogger(__name__)
 @router.post("/", response_model=ContactResponse, status_code=201)
 @rate_limit(requests=3, window=3600)  # 3 requests per hour
 async def create_contact(
+    request: Request,  # Move Request to first parameter
     contact_data: ContactCreate,
     background_tasks: BackgroundTasks,
-    request: Request,
     db: Session = Depends(get_db)
 ):
     """Submit a contact inquiry"""
@@ -60,7 +60,9 @@ async def create_contact(
         raise HTTPException(status_code=500, detail="Failed to submit inquiry")
 
 @router.get("/", response_model=ContactList)
+@rate_limit(requests=20, window=3600)  # Add rate limiting
 async def list_contacts(
+    request: Request,  # Add Request parameter
     status: Optional[InquiryStatus] = None,
     inquiry_type: Optional[InquiryType] = None,
     limit: int = 50,
@@ -91,6 +93,7 @@ async def list_contacts(
 @router.post("/newsletter", response_model=NewsletterResponse, status_code=201)
 @rate_limit(requests=5, window=3600)  # 5 subscriptions per hour
 async def subscribe_newsletter(
+    request: Request,  # Add Request parameter
     subscription_data: NewsletterSubscribe,
     background_tasks: BackgroundTasks,
     db: Session = Depends(get_db)
@@ -117,9 +120,10 @@ async def subscribe_newsletter(
         logger.error(f"Error subscribing to newsletter: {str(e)}")
         raise HTTPException(status_code=500, detail="Failed to subscribe")
     
-    
 @router.get("/newsletter/subscriber/{email}", response_model=NewsletterResponse)
+@rate_limit(requests=10, window=3600)  # Add rate limiting
 async def get_newsletter_subscriber(
+    request: Request,  # Add Request parameter
     email: str,
     db: Session = Depends(get_db)
 ):
@@ -141,7 +145,9 @@ async def get_newsletter_subscriber(
         raise HTTPException(status_code=500, detail="Failed to retrieve subscriber info")
     
 @router.post("/newsletter/confirm", status_code=200, response_model=NewsletterResponse)
+@rate_limit(requests=10, window=3600)  # Add rate limiting
 async def confirm_newsletter_subscription(
+    request: Request,  # Add Request parameter
     email: str,
     db: Session = Depends(get_db)
 ):
@@ -165,9 +171,10 @@ async def confirm_newsletter_subscription(
         logger.error(f"Error confirming subscription: {str(e)}")
         raise HTTPException(status_code=500, detail="Failed to confirm subscription")
     
-    
 @router.post("/newsletter/unsubscribe", status_code=200, response_model=NewsletterResponse)
+@rate_limit(requests=10, window=3600)  # Add rate limiting
 async def unsubscribe_newsletter(
+    request: Request,  # Add Request parameter
     email: str,
     db: Session = Depends(get_db)
 ):

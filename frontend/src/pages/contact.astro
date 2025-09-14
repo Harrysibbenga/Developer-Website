@@ -2,12 +2,12 @@
 // src/pages/contact.astro
 /**
  * Contact page with booking form and contact information
- * Updated to work with enhanced components manager
+ * Updated to use Vue components for interactive elements
  */
 
- import Layout from '../layouts/Layout.astro'
-import BookingFormContainer from '../components/forms/BookingForm.vue'
-import ContactForm from '../components/forms/ContactForm.vue'
+import Layout from '../layouts/Layout.astro'
+import ContactTabs from '../components/sections/ContactTabs.vue'
+import FAQAccordion from '../components/sections/FAQAccordion.vue'
 import TechIcon from '../components/decor/TechIcon.astro'
 import { BUSINESS_INFO } from '../utils/constants'
 
@@ -113,62 +113,8 @@ const pageDescription = 'Get in touch for your Software Solution. Free consultat
     </div>
   </section>
 
-  <!-- Contact Forms Section -->
-  <section class="py-20 bg-gray-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <!-- Section Tabs -->
-      <div class="flex justify-center mb-12 animate-on-scroll">
-        <div class="inline-flex bg-white rounded-2xl p-2 shadow-lg">
-          <button 
-            class="tab-button active px-8 py-4 rounded-xl font-semibold transition-all duration-300 bg-blue-600 text-white"
-            data-tab="project"
-          >
-            <svg class="w-5 h-5 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
-            </svg>
-            Project Inquiry
-          </button>
-          <button 
-            class="tab-button px-8 py-4 rounded-xl font-semibold transition-all duration-300 text-gray-600 hover:text-gray-900"
-            data-tab="general"
-          >
-            <svg class="w-5 h-5 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-3.582 8-8 8a8.959 8.959 0 01-2.4-.32l-3.6 1.2 1.2-3.6A8.959 8.959 0 013 12c0-4.418 3.582-8 8-8s8 3.582 8 8z"/>
-            </svg>
-            General Contact
-          </button>
-        </div>
-      </div>
-
-      <!-- Project Inquiry Form -->
-      <div id="project-tab" class="tab-content animate-on-scroll">
-        <div class="text-center mb-12">
-          <h2 class="text-4xl font-bold text-gray-900 mb-4">
-            Start Your Project
-          </h2>
-          <p class="text-xl text-gray-600 max-w-3xl mx-auto">
-            Tell me about your project requirements and get a detailed quote with timeline and technical approach.
-          </p>
-        </div>
-        
-        <BookingFormContainer client:load />
-      </div>
-
-      <!-- General Contact Form -->
-      <div id="general-tab" class="tab-content hidden animate-on-scroll">
-        <div class="text-center mb-12">
-          <h2 class="text-4xl font-bold text-gray-900 mb-4">
-            Get In Touch
-          </h2>
-          <p class="text-xl text-gray-600 max-w-3xl mx-auto">
-            Have a question, want to discuss a partnership, or just say hello? I'd love to hear from you.
-          </p>
-        </div>
-        
-        <ContactForm client:load />
-      </div>
-    </div>
-  </section>
+  <!-- Contact Forms Section - Now Vue Component -->
+  <ContactTabs client:only="vue" />
 
   <!-- Business Information -->
   <section class="py-20 bg-white">
@@ -312,148 +258,8 @@ const pageDescription = 'Get in touch for your Software Solution. Free consultat
     </div>
   </section>
 
-  <!-- FAQ Section with Proper Accordion -->
-  <section class="py-20 bg-gray-50">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center mb-16 animate-on-scroll">
-        <h2 class="text-4xl font-bold text-gray-900 mb-6">
-          Frequently Asked Questions
-        </h2>
-        <p class="text-xl text-gray-600">
-          Common questions about working together and the development process.
-        </p>
-      </div>
-
-      <div class="space-y-6 animate-on-scroll">
-        <!-- FAQ Item 1 -->
-        <div class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
-          <button 
-            class="w-full px-8 py-6 text-left flex justify-between items-center hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset"
-            data-accordion-trigger="faq-1"
-            aria-expanded="false"
-          >
-            <span class="text-lg font-semibold text-gray-900">How long does a typical project take?</span>
-            <svg class="w-5 h-5 text-gray-500 transform transition-transform accordion-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-            </svg>
-          </button>
-          <div class="hidden px-8 py-6" data-accordion-content="faq-1">
-            <p class="text-gray-600 leading-relaxed">
-              Project timelines vary based on complexity and requirements. Simple web applications typically take 2-4 weeks, 
-              while complex systems with multiple integrations may take 8-16 weeks. I provide detailed timeline estimates 
-              during the initial consultation, including milestone breakdowns and delivery schedules.
-            </p>
-          </div>
-        </div>
-
-        <!-- FAQ Item 2 -->
-        <div class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
-          <button 
-            class="w-full px-8 py-6 text-left flex justify-between items-center hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset"
-            data-accordion-trigger="faq-2"
-            aria-expanded="false"
-          >
-            <span class="text-lg font-semibold text-gray-900">What technologies do you specialize in?</span>
-            <svg class="w-5 h-5 text-gray-500 transform transition-transform accordion-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-            </svg>
-          </button>
-          <div class="hidden px-8 py-6" data-accordion-content="faq-2">
-            <p class="text-gray-600 leading-relaxed">
-              I specialize in Python development using Django and Flask frameworks, with Vue.js for frontend work. 
-              I also work with PostgreSQL, MongoDB, Docker, and various cloud platforms (AWS, GCP, Azure). 
-              My expertise includes real-time systems, data processing, API development, and modern web applications.
-            </p>
-          </div>
-        </div>
-
-        <!-- FAQ Item 3 -->
-        <div class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
-          <button 
-            class="w-full px-8 py-6 text-left flex justify-between items-center hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset"
-            data-accordion-trigger="faq-3"
-            aria-expanded="false"
-          >
-            <span class="text-lg font-semibold text-gray-900">Do you provide ongoing support after project completion?</span>
-            <svg class="w-5 h-5 text-gray-500 transform transition-transform accordion-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-            </svg>
-          </button>
-          <div class="hidden px-8 py-6" data-accordion-content="faq-3">
-            <p class="text-gray-600 leading-relaxed">
-              Yes! All projects include a 30-day support period for bug fixes and minor adjustments. I also offer 
-              ongoing maintenance agreements for regular updates, feature additions, and technical support. Support 
-              can be provided on an hourly basis or through monthly retainer agreements tailored to your needs.
-            </p>
-          </div>
-        </div>
-
-        <!-- FAQ Item 4 -->
-        <div class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
-          <button 
-            class="w-full px-8 py-6 text-left flex justify-between items-center hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset"
-            data-accordion-trigger="faq-4"
-            aria-expanded="false"
-          >
-            <span class="text-lg font-semibold text-gray-900">How do you handle project pricing?</span>
-            <svg class="w-5 h-5 text-gray-500 transform transition-transform accordion-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-            </svg>
-          </button>
-          <div class="hidden px-8 py-6" data-accordion-content="faq-4">
-            <p class="text-gray-600 leading-relaxed">
-              I offer both fixed-price projects and hourly consulting. Fixed-price projects include a detailed scope, 
-              timeline, and deliverables. Hourly work is billed at from £65/hour. All quotes include a breakdown of costs 
-              and payment schedules. No hidden fees or surprise charges - everything is transparent from the start.
-            </p>
-          </div>
-        </div>
-
-        <!-- FAQ Item 5 -->
-        <div class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
-          <button 
-            class="w-full px-8 py-6 text-left flex justify-between items-center hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset"
-            data-accordion-trigger="faq-5"
-            aria-expanded="false"
-          >
-            <span class="text-lg font-semibold text-gray-900">What is your development process like?</span>
-            <svg class="w-5 h-5 text-gray-500 transform transition-transform accordion-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-            </svg>
-          </button>
-          <div class="hidden px-8 py-6" data-accordion-content="faq-5">
-            <p class="text-gray-600 leading-relaxed">
-              My development process follows industry best practices: initial consultation and requirements gathering, 
-              technical planning and architecture design, iterative development with regular check-ins, thorough testing, 
-              deployment, and post-launch support. You'll receive regular updates and have opportunities to provide 
-              feedback throughout the entire process.
-            </p>
-          </div>
-        </div>
-
-        <!-- FAQ Item 6 -->
-        <div class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
-          <button 
-            class="w-full px-8 py-6 text-left flex justify-between items-center hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset"
-            data-accordion-trigger="faq-6"
-            aria-expanded="false"
-          >
-            <span class="text-lg font-semibold text-gray-900">Do you work with international clients?</span>
-            <svg class="w-5 h-5 text-gray-500 transform transition-transform accordion-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-            </svg>
-          </button>
-          <div class="hidden px-8 py-6" data-accordion-content="faq-6">
-            <p class="text-gray-600 leading-relaxed">
-              Absolutely! While I'm based in Milton Keynes, UK, I work with clients worldwide. I'm experienced in 
-              managing remote projects and can accommodate different time zones for meetings and communication. 
-              All project management and communication is handled digitally for seamless collaboration.
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+  <!-- FAQ Section - Now Vue Component -->
+  <FAQAccordion client:only="vue" />
 
   <!-- Ready to Start Section -->
   <section class="py-20 bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 text-white">
@@ -470,16 +276,15 @@ const pageDescription = 'Get in touch for your Software Solution. Free consultat
       </p>
       
       <div class="flex flex-col sm:flex-row gap-6 justify-center">
-        <a 
-          href="#project-tab" 
+        <button 
+          id="start-project-btn"
           class="inline-flex items-center px-10 py-5 bg-white text-blue-600 rounded-2xl font-bold text-lg hover:bg-gray-50 transition-all duration-300 transform hover:scale-105 shadow-2xl group"
-          onclick="document.querySelector('[data-tab=project]').click()"
         >
           <svg class="w-6 h-6 mr-3 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
           </svg>
           Start Project Inquiry
-        </a>
+        </button>
         
         <a 
           href="/services" 
@@ -511,31 +316,38 @@ const pageDescription = 'Get in touch for your Software Solution. Free consultat
   </section>
 </Layout>
 
+<script>
+  // Handle CTA button click to switch to project tab
+  document.addEventListener('DOMContentLoaded', () => {
+    const startProjectBtn = document.getElementById('start-project-btn');
+    
+    if (startProjectBtn) {
+      startProjectBtn.addEventListener('click', () => {
+        // Scroll to contact tabs section
+        const contactSection = document.querySelector('[data-component="ContactTabs"]') || 
+                              document.querySelector('.contact-tabs-section');
+        
+        if (contactSection) {
+          contactSection.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'start' 
+          });
+          
+          // Try to trigger the project tab (this will work if the Vue component is loaded)
+          // We'll handle this in the Vue component via events or URL params
+          const url = new URL(window.location);
+          url.searchParams.set('tab', 'project');
+          window.history.replaceState({}, '', url);
+          
+          // Dispatch custom event for Vue component to listen to
+          window.dispatchEvent(new CustomEvent('switchToProjectTab'));
+        }
+      });
+    }
+  });
+</script>
+
 <style>
-  /* Tab Styling */
-  .tab-button.active {
-    background: linear-gradient(135deg, #2563eb, #8b5cf6);
-    color: white;
-  }
-  
-  .tab-button:not(.active) {
-    color: #64748b;
-  }
-  
-  .tab-button:not(.active):hover {
-    background-color: #f1f5f9;
-    color: #334155;
-  }
-  
-  /* Accordion Styling */
-  [data-accordion-trigger][aria-expanded="true"] .accordion-icon {
-    transform: rotate(180deg);
-  }
-  
-  [data-accordion-trigger][aria-expanded="true"] {
-    background-color: #f9fafb;
-  }
-  
   /* Animation Styles */
   .animate-on-scroll {
     opacity: 0;
@@ -546,23 +358,6 @@ const pageDescription = 'Get in touch for your Software Solution. Free consultat
   .animate-on-scroll.animate-in {
     opacity: 1;
     transform: translateY(0);
-  }
-  
-  /* Enhanced accordion transitions */
-  [data-accordion-content] {
-    transition: all 0.3s ease-out;
-    max-height: 0;
-    overflow: hidden;
-  }
-  
-  [data-accordion-content]:not(.hidden) {
-    max-height: 300px;
-  }
-  
-  /* Focus styles for accessibility */
-  [data-accordion-trigger]:focus {
-    outline: 2px solid #2563eb;
-    outline-offset: -2px;
   }
   
   /* Smooth scroll behavior */
@@ -576,31 +371,15 @@ const pageDescription = 'Get in touch for your Software Solution. Free consultat
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
   }
   
-  /* Loading states */
-  .tab-content {
-    min-height: 300px;
-  }
-  
-  /* Mobile optimizations */
-  @media (max-width: 768px) {
-    .tab-button {
-      font-size: 0.875rem;
-      padding: 0.75rem 1rem;
-    }
-    
-    .tab-button svg {
-      width: 1rem;
-      height: 1rem;
-    }
-  }
-  
   /* Reduce motion for accessibility */
   @media (prefers-reduced-motion: reduce) {
-    .animate-on-scroll,
-    .accordion-icon,
-    [data-accordion-content] {
+    .animate-on-scroll {
       animation: none !important;
       transition: none !important;
+    }
+    
+    html {
+      scroll-behavior: auto;
     }
   }
 </style>
