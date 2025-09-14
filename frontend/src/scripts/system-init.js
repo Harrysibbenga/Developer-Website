@@ -1,15 +1,9 @@
-// src/scripts/system-init.js
-// Client-side entry point for the modular system
-
-import SystemManager from '../utils/core/SystemManager.js'
-
-/**
- * Initialize the system with configuration
- */
 export async function initializeSystem(config = {}) {
   try {
     console.log('🔧 Initializing system with config:', config)
     
+    // Dynamic import for production compatibility
+    const { default: SystemManager } = await import('../utils/core/SystemManager.js')
     const systemManager = SystemManager.getInstance(config)
     await systemManager.initialize()
     
@@ -20,9 +14,6 @@ export async function initializeSystem(config = {}) {
   }
 }
 
-/**
- * Initialize system on DOM ready
- */
 export function autoInitialize(config = {}) {
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => initializeSystem(config))
@@ -32,7 +23,9 @@ export function autoInitialize(config = {}) {
 }
 
 // Make available globally for legacy compatibility
-window.systemInit = {
-  initialize: initializeSystem,
-  autoInitialize: autoInitialize
+if (typeof window !== 'undefined') {
+  window.systemInit = {
+    initialize: initializeSystem,
+    autoInitialize: autoInitialize
+  }
 }

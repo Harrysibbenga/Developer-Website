@@ -7,6 +7,7 @@ import Footer from '../components/layout/Footer.astro'
 import "../styles/global.css";
 import CookieProvider from '../components/core/CookieProvider.vue'
 import CookieBanner from '../components/core/CookieBanner.vue'
+import SystemInitializer from '../components/core/SystemInitializer.vue'
 
 
 export interface Props {
@@ -52,6 +53,24 @@ const finalStructuredData = structuredData
 
 // Get Google Analytics ID from environment variables
 const GA_MEASUREMENT_ID = import.meta.env.PUBLIC_GA_MEASUREMENT_ID || ''
+
+
+const initSystemCode = `
+async function initializeSystem(config = {}) {
+  try {
+    console.log('🔧 Initializing system with config:', config)
+    
+    // SystemManager will be available via the passed function
+    const systemManager = window.SystemManagerClass.getInstance(config)
+    await systemManager.initialize()
+    
+    return systemManager
+  } catch (error) {
+    console.error('❌ System initialization failed:', error)
+    throw error
+  }
+}
+`
 ---
 
 <!DOCTYPE html>
@@ -258,39 +277,9 @@ const GA_MEASUREMENT_ID = import.meta.env.PUBLIC_GA_MEASUREMENT_ID || ''
       >
       </div>
       
-      <!-- Initialize System Manager -->
-      <script define:vars={{ GA_MEASUREMENT_ID }}>
-        // Import and initialize the system manager
-        import('/src/scripts/system-init.js').then(({ initializeSystem }) => {
-          initializeSystem({
-            gaId: GA_MEASUREMENT_ID,
-            enableAnalytics: true,
-            debugMode: false
-          }).then(() => {
-            // Remove loading state
-            document.body.classList.remove('system-loading')
-            document.body.classList.add('system-ready')
-            
-            console.log('🎉 Website system fully loaded')
-          }).catch(error => {
-            console.error('❌ System initialization failed:', error)
-            
-            // Remove loading state even on failure
-            document.body.classList.remove('system-loading')
-            
-            // Emergency fallback - basic navigation
-            setTimeout(() => {
-              const btn = document.getElementById('mobile-menu-button')
-              const menu = document.getElementById('mobile-menu')
-              if (btn && menu) {
-                btn.addEventListener('click', () => {
-                  menu.classList.toggle('hidden')
-                })
-              }
-            }, 100)
-          })
-        })
-      </script>
+      <!-- System Initializer -->
+      <SystemInitializer client:only="vue"/>
+
     </CookieProvider>
   </body>
 </html>
