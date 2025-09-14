@@ -4,7 +4,7 @@ import { getFeaturedProjects, type Project } from "../../utils/projects"
 
 const featuredProjects = ref<Project[]>(getFeaturedProjects())
 
-// Show only the most recent 2 featured projects
+// Show only the most recent 4 featured projects (2x2 grid)
 const displayedFeatured = computed(() => featuredProjects.value.slice(0, 4))
 </script>
 
@@ -33,147 +33,107 @@ const displayedFeatured = computed(() => featuredProjects.value.slice(0, 4))
             featuredProjects.length !== 1 ? "s" : ""
           }}
         </div>
-        <div v-if="featuredProjects.length > 2" class="text-xs text-gray-400">
+        <div v-if="featuredProjects.length > 4" class="text-xs text-gray-400">
           Showing most recent 4
         </div>
       </div>
     </div>
 
-    <!-- Featured Projects Grid -->
+    <!-- Featured Projects Grid (2x2) -->
     <div class="featured-grid">
       <article
         v-for="(project, index) in displayedFeatured"
         :key="project.id"
-        class="relative overflow-hidden rounded-2xl shadow-lg group"
+        class="project-card group relative rounded-2xl overflow-hidden border transition-all duration-500 bg-white border-gray-200 hover:border-cyan-300 shadow-sm"
+        :style="`--stagger: ${index * 80}ms`"
       >
-        <!-- Project Image -->
-        <div class="relative aspect-[16/9] sm:aspect-[4/3] lg:aspect-[16/10] overflow-hidden">
+        <!-- Image -->
+        <div class="relative aspect-[16/10] overflow-hidden">
           <img
             :src="project.image"
             :alt="project.title"
-            class="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+            class="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
           />
-          <!-- Overlay gradient -->
           <div
-            class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent opacity-90 group-hover:opacity-95 transition-opacity"
-          />
-          <!-- Top badges -->
-          <div class="absolute top-4 left-4 flex flex-col gap-2">
-            <span
-              v-if="project.status === 'live'"
-              class="px-3 py-1 text-sm font-medium bg-green-600/90 text-white rounded-full shadow"
-              >Live</span
-            >
-            <span
-              v-else-if="project.status === 'consultation'"
-              class="px-3 py-1 text-sm font-medium bg-blue-600/90 text-white rounded-full shadow"
-              >Consultation</span
-            >
-            <span
-              v-else
-              class="px-3 py-1 text-sm font-medium bg-purple-600/90 text-white rounded-full shadow"
-              >Case Study</span
-            >
+            v-if="project.status === 'live'"
+            class="absolute top-4 left-4 px-3 py-1 bg-green-600/90 rounded-full text-sm font-medium text-white"
+          >
+            Live
+          </div>
+          <div
+            v-else-if="project.status === 'consultation'"
+            class="absolute top-4 left-4 px-3 py-1 bg-blue-600/90 rounded-full text-sm font-medium text-white"
+          >
+            Consultation
+          </div>
+          <div
+            v-else
+            class="absolute top-4 left-4 px-3 py-1 bg-purple-600/90 rounded-full text-sm font-medium text-white"
+          >
+            Case Study
+          </div>
+          <div
+            class="absolute top-4 right-4 px-2 py-1 bg-gray-900/80 text-white rounded text-sm font-medium"
+          >
+            {{ project.year }}
           </div>
           <div
             v-if="project.featured"
-            class="absolute top-4 right-4 px-3 py-1 text-xs font-semibold bg-yellow-500/90 text-white rounded-full shadow"
+            class="absolute bottom-4 left-4 px-2 py-1 bg-yellow-600/80 text-white rounded text-xs font-medium"
           >
             ⭐ Featured
           </div>
         </div>
 
-        <!-- Content Overlay -->
-        <div
-          class="absolute bottom-0 inset-x-0 p-6 sm:p-8 lg:p-10 text-white"
-        >
+        <!-- Content -->
+        <div class="p-6">
           <h3
-            class="text-2xl sm:text-3xl font-bold mb-3 group-hover:text-cyan-300 transition-colors"
+            class="text-2xl font-bold mb-3 group-hover:text-cyan-400 text-gray-900"
           >
             {{ project.title }}
           </h3>
-          <p
-            class="text-base sm:text-lg text-gray-200 line-clamp-3 mb-4 max-w-2xl"
-          >
+          <p class="text-lg mb-6 text-gray-600">
             {{ project.description }}
           </p>
 
-          <!-- Technologies -->
-          <div class="flex flex-wrap gap-2 mb-4">
+          <!-- Tech tags -->
+          <div class="flex flex-wrap gap-2 mb-6">
             <span
-              v-for="tech in project.technologies.slice(0, 3)"
+              v-for="tech in project.technologies.slice(0, 4)"
               :key="tech"
-              class="px-3 py-1 bg-white/10 backdrop-blur-sm text-sm rounded-full border border-white/20"
+              class="px-3 py-1 rounded-full text-sm bg-gray-100 text-gray-700 hover:bg-cyan-100 hover:text-cyan-700 transition-all"
             >
               {{ tech }}
             </span>
             <span
-              v-if="project.technologies.length > 3"
-              class="px-3 py-1 bg-white/10 text-sm rounded-full border border-white/20"
+              v-if="project.technologies.length > 4"
+              class="px-3 py-1 rounded-full text-sm bg-gray-200 text-gray-600"
             >
-              +{{ project.technologies.length - 3 }} more
+              +{{ project.technologies.length - 4 }} more
             </span>
           </div>
 
-          <!-- Actions -->
-          <div class="flex gap-3">
+          <!-- Action buttons -->
+          <div class="space-y-3">
             <a
-              v-if="project.liveUrl"
+              v-if="project.status === 'live' && project.liveUrl"
               :href="project.liveUrl"
               target="_blank"
               rel="noopener noreferrer"
-              class="inline-flex items-center px-4 py-2 bg-cyan-600 hover:bg-cyan-500 text-white rounded-lg font-medium transition-colors"
+              class="block w-full text-center px-4 py-3 rounded-lg font-semibold transition-all bg-gradient-to-r from-cyan-600 to-blue-600 text-white hover:from-blue-600 hover:to-cyan-600"
             >
-              View Live
-              <svg
-                class="w-4 h-4 ml-2"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M10 6h4m4 0h-4m0 0v4m0-4l-8 8"
-                />
-              </svg>
+              🚀 Live View
             </a>
             <a
-              v-if="project.githubUrl"
-              :href="project.githubUrl"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="inline-flex items-center px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg font-medium transition-colors"
+              v-else
+              href="/contact"
+              class="block w-full text-center px-4 py-3 rounded-lg font-semibold transition-all bg-gradient-to-r from-cyan-600 to-blue-600 text-white hover:from-blue-600 hover:to-cyan-600"
             >
-              GitHub
+              💬 Discuss the Project
             </a>
           </div>
         </div>
       </article>
-    </div>
-
-    <!-- View All Featured Link -->
-    <div v-if="featuredProjects.length > 2" class="text-center mt-10">
-      <a
-        href="#all-projects"
-        class="inline-flex items-center px-8 py-4 bg-cyan-600 text-white rounded-xl hover:bg-cyan-700 transition-colors font-semibold text-lg"
-      >
-        View All Featured Projects
-        <svg
-          class="w-6 h-6 ml-2"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M17 8l4 4m0 0l-4 4m4-4H3"
-          />
-        </svg>
-      </a>
     </div>
   </section>
 </template>
@@ -188,7 +148,7 @@ const displayedFeatured = computed(() => featuredProjects.value.slice(0, 4))
 
 @media (min-width: 640px) {
   .featured-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, 1fr); /* 2x2 grid */
     gap: 2.5rem;
   }
 }
@@ -197,13 +157,5 @@ const displayedFeatured = computed(() => featuredProjects.value.slice(0, 4))
   .featured-grid {
     gap: 3rem;
   }
-}
-
-/* Line clamp utility */
-.line-clamp-3 {
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
 }
 </style>
