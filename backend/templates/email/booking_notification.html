@@ -6,6 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>New Project Booking - {{ booking.project_name }}</title>
     <style>
+        /* UNIVERSAL EMAIL TEMPLATE STYLES */
+        
+        /* Base styles - consistent across all templates */
         body {
             margin: 0;
             padding: 0;
@@ -16,195 +19,189 @@
         }
         
         .container {
-            max-width: 700px;
+            max-width: 600px;
             margin: 20px auto;
             background-color: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
             overflow: hidden;
         }
         
+        /* Header styles */
         .header {
-            background: linear-gradient(135deg, #dc2626 0%, #ea580c 100%);
-            padding: 30px;
+            padding: 30px 25px;
             text-align: center;
             color: white;
+            background: linear-gradient(135deg, #dc2626 0%, #ea580c 100%);
         }
         
         .header h1 {
             margin: 0;
             font-size: 24px;
             font-weight: bold;
+            line-height: 1.2;
         }
         
-        .urgent-badge {
+        .header-badge {
             background-color: rgba(255, 255, 255, 0.2);
-            padding: 8px 16px;
-            border-radius: 20px;
+            padding: 6px 12px;
+            border-radius: 16px;
             display: inline-block;
-            margin-top: 10px;
-            font-size: 14px;
+            margin-top: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        /* Content area */
+        .content {
+            padding: 30px 25px;
+        }
+        
+        /* Section containers */
+        .section {
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 3px solid #3b82f6;
+        }
+        
+        .section h3 {
+            margin: 0 0 12px 0;
+            color: #1e293b;
+            font-size: 16px;
             font-weight: 600;
         }
         
-        .content {
-            padding: 30px;
+        .section-primary {
+            background-color: #f1f5f9;
+            border-left-color: #3b82f6;
         }
         
-        .section {
-            background-color: #f8fafc;
-            border-radius: 12px;
-            padding: 25px;
-            margin: 20px 0;
-            border-left: 4px solid #3b82f6;
-        }
-        
-        .section.project {
+        .section-warning {
             background-color: #fefce8;
             border-left-color: #eab308;
         }
         
-        .section h3 {
-            margin: 0 0 20px 0;
-            color: #1e293b;
-            font-size: 18px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .section.project h3 {
+        .section-warning h3 {
             color: #a16207;
         }
         
+        .section-success {
+            background-color: #f0fdf4;
+            border-left-color: #16a34a;
+        }
+        
+        .section-success h3 {
+            color: #166534;
+        }
+        
+        /* Information grid */
         .info-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 20px;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 16px;
         }
-
+        
         .info-item {
             display: flex;
             flex-direction: column;
-            gap: 5px;
         }
-
+        
         .info-label {
-            font-size: 12px;
+            font-size: 11px;
             text-transform: uppercase;
             font-weight: 600;
             color: #64748b;
             letter-spacing: 0.5px;
+            margin-bottom: 4px;
         }
-
+        
         .info-value {
-            font-size: 16px;
+            font-size: 14px;
             color: #1e293b;
             font-weight: 500;
             word-wrap: break-word;
-            padding: 8px 0;
         }
         
-        .description-section {
-            margin-top: 25px;
-            padding-top: 20px;
-            border-top: 1px solid #e2e8f0;
-        }
-        
-        .description-box {
+        /* Message content box */
+        .message-content {
             background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            margin: 10px 0;
+            padding: 16px;
+            border-radius: 6px;
+            margin: 12px 0;
             border: 1px solid #e5e7eb;
             font-style: italic;
             color: #374151;
             line-height: 1.6;
+            font-size: 14px;
         }
         
-        .tech-section {
-            margin-top: 25px;
-            padding-top: 20px;
+        /* Technology and feature sections */
+        .tech-section, .features-section {
+            margin-top: 16px;
+            padding-top: 12px;
             border-top: 1px solid #e2e8f0;
         }
-
+        
         .tech-grid {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 10px;
+            gap: 6px;
+            margin-top: 8px;
         }
-
+        
         .tech-chip {
             background-color: #dbeafe;
             color: #1e40af;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
             font-weight: 500;
             white-space: nowrap;
-            border: 1px solid #bfdbfe;
-        }
-        
-        .features-section {
-            margin-top: 25px;
-            padding-top: 20px;
-            border-top: 1px solid #e2e8f0;
         }
         
         .feature-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 8px;
-            margin-top: 10px;
+            margin-top: 8px;
         }
         
         .feature-item {
             background-color: #f0f9ff;
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-size: 14px;
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-size: 12px;
             color: #0369a1;
-            border-left: 3px solid #0ea5e9;
+            border-left: 2px solid #0ea5e9;
         }
         
-        .priority-high {
+        /* Priority/Alert boxes */
+        .alert {
+            border-radius: 6px;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-left: 3px solid;
+        }
+        
+        .alert-danger {
             background-color: #fef2f2;
-            border-left: 4px solid #dc2626;
-            padding: 20px;
-            border-radius: 8px;
-            margin: 20px 0;
-        }
-        
-        .priority-high .priority-label {
+            border-left-color: #dc2626;
             color: #dc2626;
-            font-weight: bold;
-            margin-bottom: 8px;
-            font-size: 16px;
         }
         
-        .estimates {
-            background-color: #f0fdf4;
-            border-radius: 12px;
-            padding: 25px;
-            margin: 20px 0;
-            border-left: 4px solid #16a34a;
-        }
-        
-        .estimates h4 {
-            margin: 0 0 15px 0;
-            color: #166534;
-            font-size: 18px;
-        }
-        
+        /* Estimate rows */
         .estimate-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin: 12px 0;
-            padding: 10px 0;
+            margin: 8px 0;
+            padding: 8px 0;
             border-bottom: 1px solid #dcfce7;
+            font-size: 14px;
         }
         
         .estimate-row:last-child {
@@ -212,31 +209,27 @@
             font-weight: bold;
             color: #166534;
             background-color: #dcfce7;
-            padding: 12px;
-            border-radius: 6px;
-            margin-top: 15px;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 12px;
         }
         
-        .action-buttons {
+        /* Buttons */
+        .button-container {
             text-align: center;
-            margin: 30px 0;
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            flex-wrap: wrap;
+            margin: 24px 0;
         }
         
         .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
+            display: inline-block;
             padding: 12px 24px;
-            border-radius: 8px;
+            border-radius: 6px;
             text-decoration: none;
             font-weight: 600;
             font-size: 14px;
             transition: all 0.3s ease;
             border: 2px solid transparent;
+            margin: 4px 8px;
         }
         
         .btn-primary {
@@ -249,72 +242,88 @@
             transform: translateY(-1px);
         }
         
-        .btn-secondary {
-            background-color: #059669;
+        .btn-success {
+            background-color: #16a34a;
             color: white;
         }
         
-        .btn-secondary:hover {
-            background-color: #047857;
+        .btn-success:hover {
+            background-color: #15803d;
             transform: translateY(-1px);
         }
         
+        /* Footer info */
         .footer-info {
             text-align: center;
-            margin-top: 30px;
-            padding: 20px;
+            margin-top: 24px;
+            padding: 16px;
             background-color: #f8fafc;
-            border-radius: 8px;
+            border-radius: 6px;
             border: 1px solid #e2e8f0;
         }
         
         .footer-info p {
-            margin: 5px 0;
+            margin: 4px 0;
             color: #6b7280;
-            font-size: 14px;
+            font-size: 12px;
         }
         
-        .footer-info .booking-id {
+        .booking-id {
             font-family: 'Courier New', monospace;
             background-color: #e5e7eb;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 12px;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 11px;
         }
         
         /* Mobile responsive styles */
         @media only screen and (max-width: 600px) {
             .container {
                 margin: 10px;
-                border-radius: 8px;
+                border-radius: 6px;
             }
             
-            .content {
-                padding: 20px;
+            .header, .content {
+                padding: 20px 16px !important;
+            }
+            
+            .header h1 {
+                font-size: 20px;
             }
             
             .info-grid {
                 grid-template-columns: 1fr;
-                gap: 15px;
-            }
-            
-            .action-buttons {
-                flex-direction: column;
-                align-items: center;
+                gap: 12px;
             }
             
             .btn {
-                width: 100%;
-                max-width: 250px;
-                justify-content: center;
+                display: block;
+                margin: 8px auto;
+                max-width: 200px;
             }
             
             .tech-grid {
                 justify-content: center;
+                gap: 4px;
+            }
+            
+            .tech-chip {
+                padding: 3px 6px;
+                font-size: 10px;
             }
             
             .feature-grid {
                 grid-template-columns: 1fr;
+            }
+            
+            .section {
+                padding: 16px;
+                margin: 16px 0;
+            }
+            
+            .message-content {
+                padding: 12px;
+                font-size: 13px;
             }
         }
     </style>
@@ -324,7 +333,7 @@
         <!-- Header -->
         <div class="header">
             <h1>🔔 New Project Booking</h1>
-            <div class="urgent-badge">
+            <div class="header-badge">
                 Requires Review
             </div>
         </div>
@@ -332,7 +341,7 @@
         <!-- Content -->
         <div class="content">
             <!-- Client Information -->
-            <div class="section">
+            <div class="section section-primary">
                 <h3>👤 Client Information</h3>
                 <div class="info-grid">
                     <div class="info-item">
@@ -355,7 +364,7 @@
             </div>
             
             <!-- Project Details -->
-            <div class="section project">
+            <div class="section section-warning">
                 <h3>📋 Project Details</h3>
                 <div class="info-grid">
                     <div class="info-item">
@@ -384,9 +393,9 @@
                 </div>
                 
                 {% if booking.description %}
-                <div class="description-section">
+                <div class="tech-section">
                     <span class="info-label">Project Description</span>
-                    <div class="description-box">
+                    <div class="message-content">
                         {{ booking.description }}
                     </div>
                 </div>
@@ -416,16 +425,16 @@
             </div>
             
             {% if booking.priority == 'high' %}
-            <div class="priority-high">
-                <div class="priority-label">⚠️ High Priority Booking</div>
+            <div class="alert alert-danger">
+                <div style="font-weight: bold; margin-bottom: 4px;">⚠️ High Priority Booking</div>
                 <div>This booking has been flagged as high priority due to urgent timeline or high budget range. Consider prioritizing response.</div>
             </div>
             {% endif %}
             
             <!-- Estimates -->
             {% if booking.estimated_cost %}
-            <div class="estimates">
-                <h4>💰 Automatic Estimates</h4>
+            <div class="section section-success">
+                <h3>💰 Automatic Estimates</h3>
                 <div class="estimate-row">
                     <span>Project Complexity</span>
                     <span>{{ booking.complexity|title if booking.complexity else 'Not calculated' }}</span>
@@ -444,13 +453,13 @@
             {% endif %}
             
             <!-- Action Buttons -->
-            <div class="action-buttons">
+            <div class="button-container">
                 {% if admin_url %}
                 <a href="{{ admin_url }}/bookings/{{ booking.booking_id }}" class="btn btn-primary">
                     📊 Review Booking
                 </a>
                 {% endif %}
-                <a href="mailto:{{ booking.email }}?subject=Re: {{ booking.project_name }} - Project Inquiry&body=Hello {{ booking.first_name }},%0D%0A%0D%0AThank you for your project inquiry regarding '{{ booking.project_name }}'. I've received your booking request and I'm excited to discuss your requirements.%0D%0A%0D%0ABest regards,%0D%0AHarry Sibbenga" class="btn btn-secondary">
+                <a href="mailto:{{ booking.email }}?subject=Re: {{ booking.project_name }} - Project Inquiry&body=Hello {{ booking.first_name }},%0D%0A%0D%0AThank you for your project inquiry regarding '{{ booking.project_name }}'. I've received your booking request and I'm excited to discuss your requirements.%0D%0A%0D%0ABest regards,%0D%0AHarry Sibbenga" class="btn btn-success">
                     ✉️ Reply to Client
                 </a>
             </div>
