@@ -3,12 +3,10 @@
 import Layout from '../layouts/Layout.astro'
 import LegalSection from '../components/ui/LegalSection.vue'
 import { BUSINESS_INFO } from '../utils/constants'
+import CookieModal from '../components/core/CookieModal.vue'
 
 const pageTitle = 'Cookie Policy'
 const pageDescription = `Cookie policy for ${BUSINESS_INFO.name}. Learn how we use cookies and similar technologies to improve your browsing experience.`
-
-// Get Google Analytics ID from environment variables
-const GA_MEASUREMENT_ID = import.meta.env.PUBLIC_GA_MEASUREMENT_ID || 'GA_MEASUREMENT_ID'
 ---
 
 <Layout title={pageTitle} description={pageDescription}>
@@ -249,10 +247,9 @@ const GA_MEASUREMENT_ID = import.meta.env.PUBLIC_GA_MEASUREMENT_ID || 'GA_MEASUR
               <p class="text-blue-700 mb-4">
                 Use our cookie preference center to customize your settings:
               </p>
-              <!-- UPDATED: Use global function -->
               <button 
                 class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium"
-                onclick="showGlobalCookieModal()"
+                onclick="window.showGlobalCookieModal?.()"
               >
                 Open Cookie Settings
               </button>
@@ -524,49 +521,6 @@ const GA_MEASUREMENT_ID = import.meta.env.PUBLIC_GA_MEASUREMENT_ID || 'GA_MEASUR
 
   </main>
 
-  <!-- ADD: Optional page-specific cookie banner (if you want one) -->
-  <div id="cookies-page-banner" class="fixed bottom-0 left-0 right-0 bg-blue-600 text-white p-4 z-40 hidden">
-    <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-      <div class="flex-1">
-        <p class="text-sm">
-          📖 You're viewing our detailed cookie policy. Want to adjust your preferences?
-        </p>
-      </div>
-      <div class="flex gap-2">
-        <button 
-          onclick="showGlobalCookieModal()" 
-          class="text-sm bg-white text-blue-600 px-4 py-2 rounded-lg hover:bg-blue-50 transition-colors font-medium"
-        >
-          Cookie Settings
-        </button>
-        <button 
-          onclick="document.getElementById('cookies-page-banner').classList.add('hidden')" 
-          class="text-sm border border-white/20 text-white px-4 py-2 rounded-lg hover:bg-white/10 transition-colors"
-        >
-          Dismiss
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ADD: Optional script to show the page-specific banner -->
-  <script>
-    // Show the cookies page banner if user hasn't interacted with cookies yet
-    document.addEventListener('DOMContentLoaded', () => {
-      const consent = document.cookie.match(/cookie-consent=([^;]+)/);
-      if (!consent) {
-        // Only show after a delay so the global banner doesn't conflict
-        setTimeout(() => {
-          const globalBanner = document.getElementById('cookie-consent-banner');
-          const pagesBanner = document.getElementById('cookies-page-banner');
-          
-          // Only show if global banner isn't visible
-          if (globalBanner && globalBanner.classList.contains('hidden') && pagesBanner) {
-            pagesBanner.classList.remove('hidden');
-          }
-        }, 1000);
-      }
-    });
-  </script>
-
+  <!-- Cookie Modal (hidden until opened) -->
+  <CookieModal id="cookie-policy-modal" client:only="vue" />
 </Layout>

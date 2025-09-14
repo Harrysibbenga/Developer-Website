@@ -6,6 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Update - {{ booking.project_name }}</title>
     <style>
+        /* UNIVERSAL EMAIL TEMPLATE STYLES */
+        
+        /* Base styles - consistent across all templates */
         body {
             margin: 0;
             padding: 0;
@@ -14,246 +17,269 @@
             color: #334155;
             line-height: 1.6;
         }
-
+        
         .container {
             max-width: 600px;
-            margin: 0 auto;
+            margin: 20px auto;
             background-color: #ffffff;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
         }
-
+        
+        /* Header styles */
         .header {
-            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
-            padding: 40px 30px;
+            padding: 30px 25px;
             text-align: center;
             color: white;
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
         }
-
+        
         .header h1 {
             margin: 0;
-            font-size: 28px;
+            font-size: 24px;
             font-weight: bold;
+            line-height: 1.2;
         }
-
-        .status-badge {
+        
+        .header-badge {
             background-color: rgba(255, 255, 255, 0.2);
-            padding: 8px 16px;
-            border-radius: 20px;
+            padding: 6px 12px;
+            border-radius: 16px;
             display: inline-block;
-            margin-top: 10px;
-            font-size: 14px;
+            margin-top: 8px;
+            font-size: 12px;
             font-weight: 600;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
-
+        
+        /* Content area */
         .content {
-            padding: 40px 30px;
+            padding: 30px 25px;
         }
-
+        
         .greeting {
-            font-size: 18px;
-            margin-bottom: 20px;
+            font-size: 16px;
+            margin-bottom: 16px;
             color: #1e293b;
+            font-weight: 500;
         }
-
-        .status-update {
-            background-color: #f0fdf4;
-            border-radius: 12px;
-            padding: 25px;
-            margin: 25px 0;
-            border-left: 4px solid #16a34a;
-            text-align: center;
+        
+        .intro-text {
+            margin-bottom: 20px;
+            color: #374151;
+            line-height: 1.6;
         }
-
-        .status-update h3 {
-            margin: 0 0 15px 0;
-            color: #166534;
-            font-size: 24px;
-        }
-
-        .status-description {
-            background-color: #fafafa;
+        
+        /* Section containers */
+        .section {
             border-radius: 8px;
             padding: 20px;
             margin: 20px 0;
-            border: 1px solid #e5e7eb;
-            text-align: left; /* Left align description text */
+            border-left: 3px solid #16a34a;
         }
-
+        
+        .section h3 {
+            margin: 0 0 12px 0;
+            color: #166534;
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .section-success {
+            background-color: #f0fdf4;
+            border-left-color: #16a34a;
+            text-align: center;
+        }
+        
+        .section-info {
+            background-color: #eff6ff;
+            border-left-color: #0ea5e9;
+        }
+        
+        .section-info h3 {
+            color: #0c4a6e;
+        }
+        
+        /* Project info */
+        .project-info {
+            background-color: #f8fafc;
+            border-radius: 6px;
+            padding: 12px;
+            margin: 16px 0;
+            border: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        
+        .project-info strong {
+            color: #1e293b;
+        }
+        
+        /* Status description */
+        .status-description {
+            background-color: #fafafa;
+            border-radius: 6px;
+            padding: 16px;
+            margin: 16px 0;
+            border: 1px solid #e5e7eb;
+            text-align: left;
+        }
+        
         .status-description p {
             margin: 0;
             color: #374151;
             line-height: 1.6;
-        }
-
-        .next-steps {
-            background-color: #eff6ff;
-            border-radius: 12px;
-            padding: 25px;
-            margin: 25px 0;
-            border-left: 4px solid #3b82f6;
-        }
-
-        .next-steps h4 {
-            margin: 0 0 15px 0;
-            color: #1e40af;
-            font-size: 18px;
-        }
-
-        .next-steps ul {
-            margin: 0;
-            padding-left: 20px;
-            color: #374151;
-        }
-
-        .next-steps li {
-            margin-bottom: 8px;
-            line-height: 1.5;
-        }
-
-        .project-info {
-            background-color: #f8fafc;
-            border-radius: 8px;
-            padding: 15px;
-            margin: 20px 0;
-            border: 1px solid #e2e8f0;
-        }
-
-        .project-info strong {
-            color: #1e293b;
-        }
-
-        .contact-section {
-            background-color: #fef3c7;
-            border-radius: 12px;
-            padding: 20px;
-            margin: 25px 0;
-            text-align: center;
-        }
-
-        .contact-section h4 {
-            margin: 0 0 10px 0;
-            color: #92400e;
-        }
-
-        .footer {
-            background-color: #1e293b;
-            padding: 30px;
-            text-align: center;
-            color: #94a3b8;
-        }
-
-        .footer h3 {
-            margin: 0 0 15px 0;
-            color: #ffffff;
-            font-size: 20px;
-        }
-
-        .footer p {
-            margin: 5px 0;
             font-size: 14px;
         }
-
+        
+        /* Lists */
+        .content ul {
+            margin: 8px 0;
+            padding-left: 16px;
+        }
+        
+        .content li {
+            margin-bottom: 6px;
+            line-height: 1.5;
+            font-size: 14px;
+            color: #374151;
+        }
+        
+        /* Contact info sections */
+        .contact-info {
+            background-color: #fef3c7;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .contact-info h4 {
+            margin: 0 0 8px 0;
+            color: #92400e;
+            font-size: 14px;
+        }
+        
+        .contact-info p {
+            margin: 4px 0;
+            font-size: 13px;
+            color: #a16207;
+        }
+        
+        /* Signature */
+        .signature {
+            margin-top: 24px;
+            padding-top: 16px;
+            border-top: 1px solid #e5e7eb;
+            font-size: 14px;
+        }
+        
         /* Mobile responsive styles */
         @media only screen and (max-width: 600px) {
             .container {
-                width: 100% !important;
-                margin: 0;
+                margin: 10px;
+                border-radius: 6px;
             }
             
-            .header, .content, .footer {
-                padding: 20px !important;
+            .header, .content {
+                padding: 20px 16px !important;
             }
             
             .header h1 {
-                font-size: 24px;
-            }
-            
-            .status-update h3 {
                 font-size: 20px;
             }
             
+            .section {
+                padding: 16px;
+                margin: 16px 0;
+            }
+            
             .status-description {
-                padding: 15px;
-                margin: 15px 0;
-            }
-            
-            .next-steps {
-                padding: 20px;
-                margin: 20px 0;
-            }
-            
-            .next-steps ul {
-                padding-left: 15px;
+                padding: 12px;
+                margin: 12px 0;
             }
         }
     </style>
 </head>
 <body>
-    <div class="content">
-        <div class="greeting">
-            <strong>Hello {{ booking.first_name }},</strong>
-        </div>
-        
-        <p>I wanted to update you on the progress of your project:</p>
-        
-        <div class="project-info">
-            <strong>{{ booking.project_name }}</strong><br>
-            <small>Booking ID: {{ booking.booking_id }}</small>
-        </div>
-        
-        <div class="status-update">
-            <h3>Current Status: {{ new_status|title }}</h3>
-            
-            <div class="status-description">
-                {% if new_status == 'reviewed' %}
-                <p>Your project has been thoroughly reviewed and I'm excited to work with you! I'll be preparing a detailed proposal with timeline and pricing.</p>
-                {% elif new_status == 'quoted' %}
-                <p>I've prepared a comprehensive project proposal with detailed timeline and pricing. Please check your email for the complete quote.</p>
-                {% elif new_status == 'accepted' %}
-                <p>Your project has been approved and we're ready to begin development. I'll set up the project environment and send you access details.</p>
-                {% elif new_status == 'in_progress' %}
-                <p>Development is now underway! I'll keep you updated with regular progress reports and milestone completions.</p>
-                {% elif new_status == 'completed' %}
-                <p>Your project has been completed successfully. Thank you for choosing {{ business_name }} for your development needs.</p>
-                {% else %}
-                <p>Your project status has been updated. I'll be in touch with more details shortly.</p>
-                {% endif %}
+    <div class="container">
+        <div class="header">
+            <h1>Project Update</h1>
+            <div class="header-badge">
+                {{ new_status|title }}
             </div>
         </div>
         
-        {% if new_status == 'in_progress' %}
-        <div class="next-steps">
-            <h4>What's Next:</h4>
-            <ul>
-                <li>Development progress updates every 2-3 days</li>
-                <li>Demo environment setup for testing</li>
-                <li>Regular milestone reviews and feedback sessions</li>
-                <li>Final testing and deployment coordination</li>
-            </ul>
+        <div class="content">
+            <div class="greeting">
+                <strong>Hello {{ booking.first_name }},</strong>
+            </div>
+            
+            <div class="intro-text">
+                <p>I wanted to update you on the progress of your project:</p>
+            </div>
+            
+            <div class="project-info">
+                <strong>{{ booking.project_name }}</strong><br>
+                <small>Booking ID: {{ booking.booking_id }}</small>
+            </div>
+            
+            <div class="section section-success">
+                <h3>Current Status: {{ new_status|title }}</h3>
+                
+                <div class="status-description">
+                    {% if new_status == 'reviewed' %}
+                    <p>Your project has been thoroughly reviewed and I'm excited to work with you! I'll be preparing a detailed proposal with timeline and pricing.</p>
+                    {% elif new_status == 'quoted' %}
+                    <p>I've prepared a comprehensive project proposal with detailed timeline and pricing. Please check your email for the complete quote.</p>
+                    {% elif new_status == 'accepted' %}
+                    <p>Your project has been approved and we're ready to begin development. I'll set up the project environment and send you access details.</p>
+                    {% elif new_status == 'in_progress' %}
+                    <p>Development is now underway! I'll keep you updated with regular progress reports and milestone completions.</p>
+                    {% elif new_status == 'completed' %}
+                    <p>Your project has been completed successfully. Thank you for choosing {{ business_name }} for your development needs.</p>
+                    {% else %}
+                    <p>Your project status has been updated. I'll be in touch with more details shortly.</p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            {% if new_status == 'in_progress' %}
+            <div class="section section-info">
+                <h3>What's Next:</h3>
+                <ul>
+                    <li>Development progress updates every 2-3 days</li>
+                    <li>Demo environment setup for testing</li>
+                    <li>Regular milestone reviews and feedback sessions</li>
+                    <li>Final testing and deployment coordination</li>
+                </ul>
+            </div>
+            {% elif new_status == 'completed' %}
+            <div class="section section-info">
+                <h3>Project Deliverables:</h3>
+                <ul>
+                    <li>Complete source code and documentation</li>
+                    <li>Deployment and setup instructions</li>
+                    <li>30-day support period included</li>
+                    <li>Optional maintenance agreement available</li>
+                </ul>
+            </div>
+            {% endif %}
+            
+            <div class="contact-info">
+                <h4>Questions about this update?</h4>
+                <p>Feel free to reach out anytime - I'm here to ensure your complete satisfaction.</p>
+            </div>
+            
+            <div class="signature">
+                <p>
+                    <strong>Best regards,</strong><br>
+                    Harry Sibbenga<br>
+                    <em>{{ business_name }}</em>
+                </p>
+            </div>
         </div>
-        {% elif new_status == 'completed' %}
-        <div class="next-steps">
-            <h4>Project Deliverables:</h4>
-            <ul>
-                <li>Complete source code and documentation</li>
-                <li>Deployment and setup instructions</li>
-                <li>30-day support period included</li>
-                <li>Optional maintenance agreement available</li>
-            </ul>
-        </div>
-        {% endif %}
-        
-        <div class="contact-section">
-            <h4>Questions about this update?</h4>
-            <p>Feel free to reach out anytime - I'm here to ensure your complete satisfaction.</p>
-        </div>
-        
-        <p>
-            <strong>Best regards,</strong><br>
-            Harry Sibbenga<br>
-            <em>{{ business_name }}</em>
-        </p>
     </div>
 </body>
 </html>

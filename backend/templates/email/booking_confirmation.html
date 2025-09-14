@@ -6,6 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Inquiry Confirmation - {{ business_name }}</title>
     <style>
+        /* UNIVERSAL EMAIL TEMPLATE STYLES */
+        
+        /* Base styles - consistent across all templates */
         body {
             margin: 0;
             padding: 0;
@@ -17,136 +20,164 @@
         
         .container {
             max-width: 600px;
-            margin: 0 auto;
+            margin: 20px auto;
             background-color: #ffffff;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
         }
         
+        /* Header styles */
         .header {
-            background: linear-gradient(135deg, #2563eb 0%, #8b5cf6 100%);
-            padding: 40px 30px;
+            padding: 30px 25px;
             text-align: center;
             color: white;
+            background: linear-gradient(135deg, #2563eb 0%, #8b5cf6 100%);
         }
         
         .header h1 {
             margin: 0;
-            font-size: 28px;
+            font-size: 24px;
             font-weight: bold;
+            line-height: 1.2;
         }
         
         .header p {
-            margin: 10px 0 0 0;
+            margin: 8px 0 0 0;
             opacity: 0.9;
-            font-size: 16px;
+            font-size: 14px;
         }
         
+        /* Content area */
         .content {
-            padding: 40px 30px;
+            padding: 30px 25px;
         }
         
         .greeting {
-            font-size: 18px;
+            font-size: 16px;
+            margin-bottom: 16px;
+            color: #1e293b;
+            font-weight: 500;
+        }
+        
+        .intro-text {
             margin-bottom: 20px;
-            color: #1e293b;
+            color: #374151;
+            line-height: 1.6;
         }
         
-        .project-summary {
+        /* Section containers */
+        .section {
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 3px solid #3b82f6;
+        }
+        
+        .section h3 {
+            margin: 0 0 12px 0;
+            color: #1e293b;
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .section-primary {
             background-color: #f1f5f9;
-            border-radius: 12px;
-            padding: 25px;
-            margin: 25px 0;
-            border-left: 4px solid #3b82f6;
+            border-left-color: #3b82f6;
         }
         
-        .project-summary h3 {
-            margin: 0 0 15px 0;
-            color: #1e293b;
-            font-size: 20px;
+        .section-success {
+            background-color: #f0fdf4;
+            border-left-color: #16a34a;
         }
         
+        .section-success h3 {
+            color: #166534;
+        }
+        
+        /* Detail rows for key-value pairs */
         .detail-row {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-bottom: 10px;
-            padding-bottom: 8px;
+            margin-bottom: 8px;
+            padding-bottom: 6px;
             border-bottom: 1px solid #e2e8f0;
+            min-height: 24px;
         }
-
+        
         .detail-row:last-child {
             border-bottom: none;
             margin-bottom: 0;
         }
-
+        
         .detail-label {
             font-weight: 600;
             color: #475569;
             flex-shrink: 0;
-            min-width: 120px; /* Add consistent label width */
+            min-width: 100px;
+            font-size: 13px;
         }
-
+        
         .detail-value {
             color: #1e293b;
             text-align: right;
-            max-width: 60%;
+            max-width: 65%;
             word-wrap: break-word;
-            flex: 1; /* Add this to take remaining space */
+            flex: 1;
+            font-size: 13px;
         }
-
+        
+        /* Technology tags */
         .tech-tags {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px; /* Increase gap slightly */
-            margin-top: 0; /* Remove top margin */
-            justify-content: flex-end; /* Align tags to the right */
+            gap: 6px;
+            justify-content: flex-end;
+            margin-top: 4px;
         }
-
+        
         .tech-tag {
             background-color: #dbeafe;
             color: #1e40af;
-            padding: 6px 10px; /* Increase padding slightly */
-            border-radius: 6px;
-            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
             font-weight: 500;
-            white-space: nowrap; /* Prevent tags from breaking */
+            white-space: nowrap;
         }
         
-        .next-steps {
-            background-color: #ecfdf5;
-            border-radius: 12px;
-            padding: 25px;
-            margin: 25px 0;
-            border-left: 4px solid #10b981;
+        /* Lists */
+        .content ul {
+            margin: 8px 0;
+            padding-left: 16px;
         }
         
-        .next-steps h3 {
-            margin: 0 0 15px 0;
-            color: #065f46;
-            font-size: 18px;
+        .content li {
+            margin-bottom: 6px;
+            line-height: 1.5;
+            font-size: 14px;
         }
         
-        .next-steps ul {
-            margin: 0;
-            padding-left: 20px;
-            color: #047857;
-        }
-        
-        .next-steps li {
-            margin-bottom: 8px;
-        }
-        
+        /* Contact info sections */
         .contact-info {
             background-color: #fef3c7;
-            border-radius: 12px;
-            padding: 20px;
-            margin: 25px 0;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 20px 0;
             text-align: center;
         }
         
         .contact-info h4 {
-            margin: 0 0 10px 0;
+            margin: 0 0 8px 0;
             color: #92400e;
+            font-size: 14px;
+        }
+        
+        .contact-info p {
+            margin: 4px 0;
+            font-size: 13px;
+            color: #a16207;
         }
         
         .contact-link {
@@ -155,48 +186,73 @@
             font-weight: 600;
         }
         
+        /* Signature */
+        .signature {
+            margin-top: 24px;
+            padding-top: 16px;
+            border-top: 1px solid #e5e7eb;
+            font-size: 14px;
+        }
+        
+        /* Footer */
         .footer {
             background-color: #1e293b;
-            padding: 30px;
+            padding: 24px;
             text-align: center;
             color: #94a3b8;
         }
         
         .footer h3 {
-            margin: 0 0 15px 0;
+            margin: 0 0 12px 0;
             color: #ffffff;
-            font-size: 20px;
+            font-size: 18px;
+        }
+        
+        .footer p {
+            margin: 4px 0;
+            font-size: 12px;
         }
         
         .footer-links {
-            margin: 20px 0;
+            margin: 16px 0;
         }
         
         .footer-links a {
             color: #60a5fa;
             text-decoration: none;
-            margin: 0 15px;
+            margin: 0 12px;
+            font-size: 13px;
         }
         
-        .footer p {
-            margin: 5px 0;
-            font-size: 14px;
+        .footer-disclaimer {
+            font-size: 11px;
+            margin-top: 16px;
+            opacity: 0.8;
         }
         
-        /* Mobile styles */
+        /* Mobile responsive styles */
         @media only screen and (max-width: 600px) {
             .container {
-                width: 100% !important;
+                margin: 10px;
+                border-radius: 6px;
             }
             
             .header, .content, .footer {
-                padding: 20px !important;
+                padding: 20px 16px !important;
+            }
+            
+            .header h1 {
+                font-size: 20px;
+            }
+            
+            .header p {
+                font-size: 13px;
             }
             
             .detail-row {
                 flex-direction: column;
-                align-items: stretch; /* Change to stretch for full width */
-                gap: 8px; /* Add consistent spacing */
+                align-items: stretch;
+                gap: 4px;
             }
             
             .detail-label {
@@ -207,19 +263,26 @@
             .detail-value {
                 text-align: left;
                 max-width: 100%;
-                margin-top: 0;
-                margin-left: 0;
             }
             
             .tech-tags {
-                justify-content: flex-start; /* Left align on mobile */
-                margin-top: 0;
-                gap: 6px; /* Smaller gap on mobile */
+                justify-content: flex-start;
+                gap: 4px;
             }
             
             .tech-tag {
-                padding: 4px 8px; /* Smaller padding on mobile */
-                font-size: 11px;
+                padding: 3px 6px;
+                font-size: 10px;
+            }
+            
+            .footer-links a {
+                display: block;
+                margin: 8px 0;
+            }
+            
+            .section {
+                padding: 16px;
+                margin: 16px 0;
             }
         }
     </style>
@@ -238,10 +301,12 @@
                 <strong>Hello {{ booking.first_name }},</strong>
             </div>
             
-            <p>Thank you for your interest in working with {{ business_name }}! I've received your project inquiry and I'm excited to learn more about your requirements.</p>
+            <div class="intro-text">
+                <p>Thank you for your interest in working with {{ business_name }}! I've received your project inquiry and I'm excited to learn more about your requirements.</p>
+            </div>
             
             <!-- Project Summary -->
-            <div class="project-summary">
+            <div class="section section-primary">
                 <h3>📋 Project Summary</h3>
                 
                 <div class="detail-row">
@@ -291,7 +356,7 @@
             </div>
             
             <!-- Next Steps -->
-            <div class="next-steps">
+            <div class="section section-success">
                 <h3>🚀 What Happens Next?</h3>
                 <ul>
                     <li><strong>Review (24 hours):</strong> I'll carefully analyze your requirements and project scope</li>
@@ -301,7 +366,9 @@
                 </ul>
             </div>
             
-            <p>I pride myself on delivering high-quality Python solutions that exceed expectations. With 5+ years of experience in web development, data processing, and real-time systems, I'm confident we can bring your project to life.</p>
+            <div class="intro-text">
+                <p>I pride myself on delivering high-quality Python solutions that exceed expectations. With 5+ years of experience in web development, data processing, and real-time systems, I'm confident we can bring your project to life.</p>
+            </div>
             
             <!-- Contact Information -->
             <div class="contact-info">
@@ -312,12 +379,17 @@
                 </p>
             </div>
             
-            <p>Looking forward to working together!</p>
-            <p>
-                <strong>Best regards,</strong><br>
-                Harry Sibbenga<br>
-                <em>Full Stack Developer & Technical Consultant</em>
-            </p>
+            <div class="intro-text">
+                <p>Looking forward to working together!</p>
+            </div>
+            
+            <div class="signature">
+                <p>
+                    <strong>Best regards,</strong><br>
+                    Harry Sibbenga<br>
+                    <em>Full Stack Developer & Technical Consultant</em>
+                </p>
+            </div>
         </div>
         
         <!-- Footer -->
@@ -328,23 +400,15 @@
             
             <div class="footer-links">
                 <a href="https://www.instagram.com/harrysibbengadev">Instagram</a>
-                <a href="https://www.tiktok.com/@harrysibbengadev">TicTok</a>
+                <a href="https://www.tiktok.com/@harrysibbengadev">TikTok</a>
                 <a href="https://www.linkedin.com/in/harry-m-sibbenga-9b8584119/">LinkedIn</a>
                 <a href="https://harrysibbenga.dev">Portfolio</a>
             </div>
             
-            <p style="font-size: 12px; margin-top: 20px;">
+            <p class="footer-disclaimer">
                 This email was sent regarding your project inquiry. If you did not submit this request, please contact us immediately.
             </p>
         </div>
     </div>
 </body>
 </html>
-
-
-
-
-
-
-
-

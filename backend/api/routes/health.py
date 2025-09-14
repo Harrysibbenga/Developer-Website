@@ -12,6 +12,7 @@ import os
 
 from core.database import get_db
 from core.config import get_settings
+from utils.rate_limit import get_rate_limit_stats
 
 router = APIRouter()
 settings = get_settings()
@@ -79,3 +80,8 @@ async def readiness_probe(db: Session = Depends(get_db)):
         return {"status": "ready", "timestamp": datetime.utcnow().isoformat()}
     except Exception:
         return {"status": "not ready", "timestamp": datetime.utcnow().isoformat()}
+
+@router.get("/rate-limit-stats")
+async def rate_limit_stats():
+    """Get rate limiting statistics"""
+    return get_rate_limit_stats()

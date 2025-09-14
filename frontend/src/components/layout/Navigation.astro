@@ -1,5 +1,5 @@
 ---
-// src/components/layout/Navigation.astro
+// src/components/layout/Navigation.astro - Optimized Version
 import { BUSINESS_INFO } from '../../utils/constants'
 
 const currentPath = Astro.url.pathname
@@ -19,7 +19,7 @@ const isActive = (href: string) => {
 }
 ---
 
-<header class="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200">
+<header class="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200" data-component="navigation">
   <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" aria-label="Main navigation">
     <div class="flex justify-between items-center h-16">
       
@@ -73,7 +73,7 @@ const isActive = (href: string) => {
         </a>
       </div>
 
-      <!-- Mobile menu button -->
+      <!-- Mobile menu button - Managed by NavigationManager -->
       <div class="md:hidden">
         <button
           type="button"
@@ -83,7 +83,6 @@ const isActive = (href: string) => {
           aria-expanded="false"
         >
           <span class="sr-only">Open main menu</span>
-          <!-- Icon will be managed by Enhanced Components Manager -->
           <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
           </svg>
@@ -91,9 +90,9 @@ const isActive = (href: string) => {
       </div>
     </div>
 
-    <!-- Mobile Navigation Menu -->
+    <!-- Mobile Navigation Menu - Managed by NavigationManager -->
     <div class="md:hidden hidden" id="mobile-menu">
-      <div class="px-2 pt-2 pb-3 space-y-1 bg-white border-t border-gray-200 animate-fade-in">
+      <div class="px-2 pt-2 pb-3 space-y-1 bg-white border-t border-gray-200">
         {navigationLinks.map((link) => (
           <a
             href={link.href}
@@ -147,174 +146,21 @@ const isActive = (href: string) => {
     </div>
   </nav>
 
-  <!-- Progress Bar -->
+  <!-- Progress Bar - Managed by ScrollManager -->
   <div 
     id="scroll-progress" 
     class="h-0.5 bg-gradient-to-r from-blue-600 to-indigo-600 transform origin-left scale-x-0 transition-transform duration-150"
   ></div>
 </header>
 
-<!-- Enhanced Navigation Manager Script -->
-<!-- Replace the entire script section in Navigation.astro with this -->
-
-<script>
-  // Simplified Navigation Script - Just visual effects, no component management
-  console.log('🧭 Navigation: Loading visual effects only...')
-  
-  // Only handle header background effects (not managed by unified manager)
-  function initializeHeaderEffects() {
-    const header = document.querySelector('header')
-    if (!header) return
-    
-    let ticking = false
-    const updateHeaderBackground = () => {
-      if (ticking) return
-      ticking = true
-      requestAnimationFrame(() => {
-        const scrollY = window.scrollY
-        
-        if (scrollY > 10) {
-          header.classList.add('shadow-sm')
-          header.style.backgroundColor = 'rgba(255, 255, 255, 0.98)'
-        } else {
-          header.classList.remove('shadow-sm')
-          header.style.backgroundColor = 'rgba(255, 255, 255, 0.95)'
-        }
-        
-        ticking = false
-      })
-    }
-    
-    window.addEventListener('scroll', updateHeaderBackground, { passive: true })
-    updateHeaderBackground() // Initial call
-  }
-  
-  // Initialize after DOM is ready
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initializeHeaderEffects)
-  } else {
-    initializeHeaderEffects()
-  }
-  
-  // Reinitialize on page transitions
-  document.addEventListener('astro:after-swap', () => {
-    setTimeout(initializeHeaderEffects, 100)
-  })
-  
-  console.log('✅ Navigation: Visual effects ready')
-</script>
-
 <style>
-  /* Mobile menu animation - FIXED VERSION */
-  #mobile-menu {
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    transform-origin: top center;
-    position: relative;
-    z-index: 1000;
-    background: white;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    border-radius: 0 0 12px 12px;
-    border-top: 1px solid #e5e7eb;
-  }
-
-  /* When hidden - completely invisible and non-interactive */
-  #mobile-menu.hidden {
-    opacity: 0;
-    transform: translateY(-10px) scaleY(0.95);
-    pointer-events: none;
-    max-height: 0;
-    overflow: hidden;
-    visibility: hidden;
-  }
-
-  /* When visible - smooth animation in */
-  #mobile-menu:not(.hidden) {
-    opacity: 1;
-    transform: translateY(0) scaleY(1);
-    pointer-events: auto;
-    max-height: 600px;
-    overflow: visible;
-    visibility: visible;
-  }
-
-  /* Enhanced fade-in animation for menu content */
-  .animate-fade-in {
-    animation: fadeInMenu 0.25s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-  }
-
-  @keyframes fadeInMenu {
-    from {
-      opacity: 0;
-      transform: translateY(-8px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  /* Ensure header stays on top during transitions */
-  header {
-    z-index: 9999;
-    position: sticky;
-    top: 0;
-  }
-
-  /* Smooth header background transitions */
+  /* Navigation-specific styles only - removed duplicated mobile menu logic */
+  
+  /* Enhanced visual effects only */
   header {
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-  }
-
-  /* Enhanced scroll progress styling */
-  #scroll-progress {
-    will-change: transform;
-    transition: transform 0.1s ease-out;
-  }
-
-  /* Navigation link hover effects */
-  nav a {
-    position: relative;
-    overflow: hidden;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  /* Desktop navigation link underline effect */
-  .hidden.md\\:block nav a:before {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 0;
-    height: 2px;
-    background: linear-gradient(90deg, #2563eb, #4f46e5);
-    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .hidden.md\\:block nav a:hover:before {
-    width: 100%;
-  }
-
-  /* Active link indicator for desktop */
-  .hidden.md\\:block nav a[aria-current="page"]:before {
-    width: 100%;
-  }
-
-  /* Mobile navigation link styling */
-  #mobile-menu a {
-    transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-    border-radius: 8px;
-    margin: 2px 0;
-  }
-
-  #mobile-menu a:hover {
-    transform: translateX(4px);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  }
-
-  #mobile-menu a:active {
-    transform: translateX(2px) scale(0.98);
   }
 
   /* Logo hover effect */
@@ -354,174 +200,75 @@ const isActive = (href: string) => {
     box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
   }
 
-  .bg-gradient-to-r.from-blue-600:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 6px rgba(37, 99, 235, 0.3);
+  /* Desktop navigation link underline effect */
+  .hidden.md\\:block nav a {
+    position: relative;
+    overflow: hidden;
   }
 
-  /* Mobile menu button animation */
-  #mobile-menu-button {
+  .hidden.md\\:block nav a:before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #2563eb, #4f46e5);
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .hidden.md\\:block nav a:hover:before {
+    width: 100%;
+  }
+
+  .hidden.md\\:block nav a[aria-current="page"]:before {
+    width: 100%;
+  }
+
+  /* Mobile menu styling - visual only, behavior handled by NavigationManager */
+  #mobile-menu {
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-origin: top center;
+    background: white;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    border-radius: 0 0 12px 12px;
   }
 
-  #mobile-menu-button:hover {
-    transform: scale(1.05);
-    background-color: rgba(59, 130, 246, 0.1);
-  }
-
-  #mobile-menu-button:active {
-    transform: scale(0.95);
-  }
-
-  /* Hamburger icon animation */
-  #mobile-menu-button svg {
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  #mobile-menu-button[aria-expanded="true"] svg {
-    transform: rotate(90deg);
-  }
-
-  /* Mobile menu contact links styling */
-  #mobile-menu a[href^="mailto"],
-  #mobile-menu a[href^="tel"] {
-    background: linear-gradient(135deg, #f8fafc, #e2e8f0);
-    border: 1px solid #e2e8f0;
-  }
-
-  #mobile-menu a[href^="mailto"]:hover,
-  #mobile-menu a[href^="tel"]:hover {
-    background: linear-gradient(135deg, #e2e8f0, #cbd5e1);
-    border-color: #cbd5e1;
-  }
-
-  /* Improve mobile touch targets */
-  @media (max-width: 768px) {
-    #mobile-menu a {
-      min-height: 48px;
-      display: flex;
-      align-items: center;
-      padding: 12px 16px;
-    }
-
-    #mobile-menu-button {
-      min-height: 44px;
-      min-width: 44px;
-    }
-  }
-
-  /* Loading states */
-  .loading #mobile-menu-button {
-    opacity: 0.7;
+  #mobile-menu.hidden {
+    opacity: 0;
+    transform: translateY(-10px) scaleY(0.95);
     pointer-events: none;
+    max-height: 0;
+    overflow: hidden;
+    visibility: hidden;
   }
 
-  /* Focus styles for accessibility */
-  #mobile-menu-button:focus-visible {
-    outline: 2px solid #3b82f6;
-    outline-offset: 2px;
+  #mobile-menu:not(.hidden) {
+    opacity: 1;
+    transform: translateY(0) scaleY(1);
+    pointer-events: auto;
+    max-height: 600px;
+    overflow: visible;
+    visibility: visible;
+  }
+
+  #mobile-menu a {
+    transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
     border-radius: 8px;
+    margin: 2px 0;
   }
 
-  #mobile-menu a:focus-visible {
-    outline: 2px solid #3b82f6;
-    outline-offset: 2px;
+  #mobile-menu a:hover {
+    transform: translateX(4px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   }
 
-  /* High contrast mode support */
-  @media (prefers-contrast: high) {
-    #mobile-menu {
-      border: 2px solid #000;
-    }
-    
-    nav a:before {
-      background: #000;
-    }
-  }
-
-  /* Reduce motion for users who prefer it */
+  /* Accessibility and reduced motion */
   @media (prefers-reduced-motion: reduce) {
-    .animate-fade-in,
-    #scroll-progress,
-    header,
-    nav a:before,
-    #mobile-menu,
-    #mobile-menu a,
-    .bg-gradient-to-r.from-blue-600,
-    #mobile-menu-button,
-    #mobile-menu-button svg {
+    * {
       animation: none !important;
       transition: none !important;
       transform: none !important;
-    }
-
-    #mobile-menu.hidden {
-      display: none !important;
-    }
-
-    #mobile-menu:not(.hidden) {
-      display: block !important;
-    }
-  }
-
-  /* Dark mode support (if you want to add it later) */
-  @media (prefers-color-scheme: dark) {
-    #mobile-menu {
-      background: #1f2937;
-      border-color: #374151;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
-    }
-  }
-
-  /* Safari-specific fixes */
-  @supports (-webkit-backdrop-filter: blur(12px)) {
-    header {
-      -webkit-backdrop-filter: blur(12px);
-    }
-  }
-
-  /* Prevent layout shift during animations */
-  #mobile-menu * {
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-  }
-
-  /* Ensure proper stacking context */
-  nav {
-    position: relative;
-    z-index: 10;
-  }
-
-  /* Mobile menu overlay effect */
-  #mobile-menu::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.1);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    z-index: -1;
-  }
-
-  #mobile-menu:not(.hidden)::before {
-    opacity: 1;
-    pointer-events: auto;
-  }
-
-  /* Smooth scrolling for anchor links */
-  html {
-    scroll-behavior: smooth;
-  }
-
-  /* Optimize for mobile performance */
-  @media (max-width: 768px) {
-    * {
-      -webkit-transform: translateZ(0);
-      transform: translateZ(0);
     }
   }
 </style>

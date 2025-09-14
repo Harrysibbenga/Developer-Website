@@ -6,6 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Message Received - {{ business_name }}</title>
     <style>
+        /* UNIVERSAL EMAIL TEMPLATE STYLES */
+        
+        /* Base styles - consistent across all templates */
         body {
             margin: 0;
             padding: 0;
@@ -14,201 +17,240 @@
             color: #334155;
             line-height: 1.6;
         }
-
+        
         .container {
             max-width: 600px;
-            margin: 0 auto;
+            margin: 20px auto;
             background-color: #ffffff;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
         }
-
+        
+        /* Header styles */
         .header {
-            background: linear-gradient(135deg, #16a34a 0%, #059669 100%);
-            padding: 40px 30px;
+            padding: 30px 25px;
             text-align: center;
             color: white;
+            background: linear-gradient(135deg, #16a34a 0%, #059669 100%);
         }
-
+        
         .header h1 {
             margin: 0;
-            font-size: 28px;
+            font-size: 24px;
             font-weight: bold;
+            line-height: 1.2;
         }
-
+        
         .header p {
-            margin: 10px 0 0 0;
+            margin: 8px 0 0 0;
             opacity: 0.9;
-            font-size: 16px;
+            font-size: 14px;
         }
-
+        
+        /* Content area */
         .content {
-            padding: 40px 30px;
+            padding: 30px 25px;
         }
-
+        
         .greeting {
-            font-size: 18px;
-            margin-bottom: 20px;
+            font-size: 16px;
+            margin-bottom: 16px;
             color: #1e293b;
+            font-weight: 500;
         }
-
-        .message-summary {
-            background-color: #f0fdf4;
-            border-radius: 12px;
-            padding: 25px;
-            margin: 25px 0;
-            border-left: 4px solid #16a34a;
+        
+        .intro-text {
+            margin-bottom: 20px;
+            color: #374151;
+            line-height: 1.6;
         }
-
-        .message-summary h3 {
-            margin: 0 0 15px 0;
+        
+        /* Section containers */
+        .section {
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 3px solid #16a34a;
+        }
+        
+        .section h3 {
+            margin: 0 0 12px 0;
             color: #166534;
-            font-size: 18px;
+            font-size: 16px;
+            font-weight: 600;
         }
-
+        
+        .section-success {
+            background-color: #f0fdf4;
+            border-left-color: #16a34a;
+        }
+        
+        .section-info {
+            background-color: #eff6ff;
+            border-left-color: #0ea5e9;
+        }
+        
+        .section-info h3 {
+            color: #0c4a6e;
+        }
+        
+        /* Detail rows for key-value pairs */
         .detail-row {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-bottom: 10px;
-            padding-bottom: 8px;
+            margin-bottom: 8px;
+            padding-bottom: 6px;
             border-bottom: 1px solid #dcfce7;
+            min-height: 24px;
         }
-
+        
         .detail-row:last-child {
             border-bottom: none;
             margin-bottom: 0;
         }
-
+        
         .detail-label {
             font-weight: 600;
             color: #047857;
             flex-shrink: 0;
-            min-width: 120px;
+            min-width: 100px;
+            font-size: 13px;
         }
-
+        
         .detail-value {
             color: #166534;
             text-align: right;
-            max-width: 60%;
+            max-width: 65%;
             word-wrap: break-word;
             flex: 1;
+            font-size: 13px;
         }
-
-        .response-time {
-            background-color: #dbeafe;
-            border-radius: 12px;
-            padding: 20px;
-            margin: 25px 0;
-            text-align: center;
-        }
-
-        .response-time h4 {
-            margin: 0 0 10px 0;
-            color: #1e40af;
-            font-size: 18px;
-        }
-
-        .response-time p {
+        
+        /* Lists */
+        .content ul {
             margin: 8px 0;
-            color: #1e40af;
+            padding-left: 16px;
         }
-
+        
+        .content li {
+            margin-bottom: 6px;
+            line-height: 1.5;
+            font-size: 14px;
+            color: #047857;
+        }
+        
+        /* Contact info sections */
         .contact-info {
             background-color: #fef3c7;
-            border-radius: 12px;
-            padding: 20px;
-            margin: 25px 0;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 20px 0;
+            text-align: center;
         }
-
+        
         .contact-info h4 {
-            margin: 0 0 15px 0;
+            margin: 0 0 8px 0;
             color: #92400e;
+            font-size: 14px;
         }
-
-        .contact-info ul {
-            margin: 0;
-            padding-left: 20px;
+        
+        .contact-info p {
+            margin: 4px 0;
+            font-size: 13px;
             color: #a16207;
         }
-
-        .contact-info li {
-            margin-bottom: 8px;
-        }
-
-        .contact-info a {
+        
+        .contact-link {
             color: #2563eb;
             text-decoration: none;
-            font-weight: 500;
+            font-weight: 600;
         }
-
+        
+        /* Portfolio link */
         .portfolio-link {
             background-color: #f8fafc;
-            border-radius: 8px;
-            padding: 15px;
-            margin: 20px 0;
+            border-radius: 6px;
+            padding: 12px;
+            margin: 16px 0;
             text-align: center;
             border: 1px solid #e2e8f0;
         }
-
+        
         .portfolio-link a {
             color: #2563eb;
             text-decoration: none;
             font-weight: 600;
         }
-
+        
+        /* Signature */
         .signature {
-            margin-top: 30px;
-            padding-top: 20px;
+            margin-top: 24px;
+            padding-top: 16px;
             border-top: 1px solid #e5e7eb;
+            font-size: 14px;
         }
-
+        
+        /* Footer */
         .footer {
             background-color: #1e293b;
-            padding: 30px;
+            padding: 24px;
             text-align: center;
             color: #94a3b8;
         }
-
+        
         .footer h3 {
-            margin: 0 0 15px 0;
+            margin: 0 0 12px 0;
             color: #ffffff;
-            font-size: 20px;
+            font-size: 18px;
         }
-
+        
         .footer p {
-            margin: 5px 0;
-            font-size: 14px;
+            margin: 4px 0;
+            font-size: 12px;
         }
-
+        
         .footer-links {
-            margin: 20px 0;
+            margin: 16px 0;
         }
-
+        
         .footer-links a {
             color: #60a5fa;
             text-decoration: none;
-            margin: 0 15px;
+            margin: 0 12px;
+            font-size: 13px;
         }
-
+        
+        .footer-disclaimer {
+            font-size: 11px;
+            margin-top: 16px;
+            opacity: 0.8;
+        }
+        
         /* Mobile responsive styles */
         @media only screen and (max-width: 600px) {
             .container {
-                width: 100% !important;
-                margin: 0;
+                margin: 10px;
+                border-radius: 6px;
             }
             
             .header, .content, .footer {
-                padding: 20px !important;
+                padding: 20px 16px !important;
             }
             
             .header h1 {
-                font-size: 24px;
+                font-size: 20px;
+            }
+            
+            .header p {
+                font-size: 13px;
             }
             
             .detail-row {
                 flex-direction: column;
                 align-items: stretch;
-                gap: 8px;
+                gap: 4px;
             }
             
             .detail-label {
@@ -219,16 +261,16 @@
             .detail-value {
                 text-align: left;
                 max-width: 100%;
-                margin-top: 0;
-            }
-            
-            .contact-info ul {
-                padding-left: 15px;
             }
             
             .footer-links a {
-                display: inline-block;
-                margin: 5px 10px;
+                display: block;
+                margin: 8px 0;
+            }
+            
+            .section {
+                padding: 16px;
+                margin: 16px 0;
             }
         }
     </style>
@@ -247,10 +289,12 @@
                 <strong>Hello {{ contact.first_name }} {{ contact.last_name }},</strong>
             </div>
             
-            <p>Thank you for contacting {{ business_name }}! Your message has been received and I appreciate you taking the time to reach out.</p>
+            <div class="intro-text">
+                <p>Thank you for contacting {{ business_name }}! Your message has been received and I appreciate you taking the time to reach out.</p>
+            </div>
             
             <!-- Message Summary -->
-            <div class="message-summary">
+            <div class="section section-success">
                 <h3>Your Message Details</h3>
                 
                 <div class="detail-row">
@@ -284,8 +328,8 @@
             </div>
             
             <!-- Response Time -->
-            <div class="response-time">
-                <h4>Expected Response Time</h4>
+            <div class="section section-info">
+                <h3>Expected Response Time</h3>
                 <p>I typically respond to inquiries within <strong>24 hours</strong> during business days (Monday-Friday, 9:00 AM - 6:00 PM GMT).</p>
                 {% if contact.inquiry_type == 'technical' %}
                 <p><strong>Technical inquiry detected</strong> - I'll prioritize your message and aim to respond within 4-6 hours.</p>
@@ -300,10 +344,10 @@
             <!-- Contact Information -->
             <div class="contact-info">
                 <h4>Need to reach me urgently?</h4>
-                <ul>
-                    <li><strong>Email:</strong> <a href="mailto:{{ business_email }}">{{ business_email }}</a></li>
-                    <li><strong>Phone:</strong> <a href="tel:{{ business_phone }}">{{ business_phone }}</a></li>
-                </ul>
+                <p>
+                    <strong>Email:</strong> <a href="mailto:{{ business_email }}" class="contact-link">{{ business_email }}</a><br>
+                    <strong>Phone:</strong> <a href="tel:{{ business_phone }}" class="contact-link">{{ business_phone }}</a>
+                </p>
             </div>
             
             <div class="signature">
@@ -322,14 +366,15 @@
             
             <div class="footer-links">
                 <a href="https://www.instagram.com/harrysibbengadev">Instagram</a>
-                <a href="https://www.tiktok.com/@harrysibbengadev">TicTok</a>
+                <a href="https://www.tiktok.com/@harrysibbengadev">TikTok</a>
                 <a href="https://www.linkedin.com/in/harry-m-sibbenga-9b8584119/">LinkedIn</a>
                 <a href="https://harrysibbenga.dev">Portfolio</a>
             </div>
             
-            <p style="font-size: 12px; margin-top: 20px;">
+            <p class="footer-disclaimer">
                 This email was sent in response to your inquiry. If you have any questions, please reply directly to this email.
             </p>
+        </div>
     </div>
 </body>
 </html>

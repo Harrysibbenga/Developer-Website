@@ -1,12 +1,10 @@
 ---
-// src/pages/index.astro
+// src/pages/index.astro - Optimized Version
 /**
  * Homepage for Harry Sibbenga Web Development Services
- * Features hero section, services, tech stack, portfolio preview, and contact CTA
- * Fixed loading issues and proper component initialization
  */
 
- import Layout from '../layouts/Layout.astro'
+import Layout from '../layouts/Layout.astro'
 import Hero from '../components/sections/Hero.astro'
 import Services from '../components/sections/Services.astro' 
 import TechStack from '../components/sections/TechStack.astro'
@@ -16,7 +14,7 @@ import Stats from '../components/sections/Stats.astro'
 import CTA from '../components/sections/CTA.astro'
 import { BUSINESS_INFO, SEO_CONFIG } from '../utils/constants'
 
-const pageTitle = 'Harry Sibbenga - Full-Stack Business Solutions Developer"'
+const pageTitle = `${BUSINESS_INFO.fullBusinessName}`
 const pageDescription = `Professional Full-Stack developer with 5+ years experience in ${BUSINESS_INFO.contact.address.city}. Specializing in web applications, data processing, and real-time systems using Django, Flask, and modern technologies.`
 
 // Structured data for homepage
@@ -35,7 +33,9 @@ const structuredData = {
     "telephone": BUSINESS_INFO.contact.phone,
     "url": SEO_CONFIG.siteUrl,
     "sameAs": [
-      BUSINESS_INFO.social.github,
+      BUSINESS_INFO.social.ticktock,
+      BUSINESS_INFO.social.instagram,
+      BUSINESS_INFO.social.email,
       BUSINESS_INFO.social.linkedin
     ],
     "address": {
@@ -90,44 +90,44 @@ const structuredData = {
   type="website"
   structuredData={structuredData}
 >
-  <!-- Hero Section -->
-  <section class="animate-on-scroll">
+  <!-- Hero Section with enhanced animations -->
+  <section class="animate-on-scroll" data-animate="hero">
     <Hero />
   </section>
   
-  <!-- Services Overview -->
-  <section class="animate-on-scroll">
+  <!-- Services Overview with staggered cards -->
+  <section class="animate-on-scroll" data-animate="stagger">
     <Services />
   </section>
 
-  <!-- Technology Stack -->
-  <section class="animate-on-scroll">
+  <!-- Technology Stack with skill bars -->
+  <section class="animate-on-scroll" data-animate="skills">
     <TechStack />
   </section>
 
-  <!-- Featured Projects -->
-  <section class="animate-on-scroll">
+  <!-- Featured Projects with image lazy loading -->
+  <section class="animate-on-scroll" data-animate="gallery">
     <ProjectGallery />
   </section>
   
-  <!-- Statistics Section -->
-  <section class="animate-on-scroll">
+  <!-- Statistics Section with counter animations -->
+  <section class="animate-on-scroll" data-animate="counters">
     <Stats />
   </section>
   
-  <!-- Testimonials -->
-  <section class="animate-on-scroll">
+  <!-- Testimonials with card animations -->
+  <section class="animate-on-scroll" data-animate="testimonials">
     <Testimonials />
   </section>
   
-  <!-- Call to Action -->
-  <section class="animate-on-scroll">
+  <!-- Call to Action with floating button -->
+  <section class="animate-on-scroll" data-animate="cta">
     <CTA />
   </section>
 </Layout>
 
 <style>
-  /* Enhanced animations for homepage */
+  /* Homepage-specific animations only */
   @keyframes float {
     0%, 100% { transform: translateY(0px); }
     50% { transform: translateY(-10px); }
@@ -141,52 +141,13 @@ const structuredData = {
       box-shadow: 0 0 30px rgba(59, 130, 246, 0.5);
     }
   }
-  
-  @keyframes slideInUp {
-    from {
-      opacity: 0;
-      transform: translateY(30px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+
+  @keyframes counter-up {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
   }
   
-  @keyframes slideInLeft {
-    from {
-      opacity: 0;
-      transform: translateX(-30px);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
-  }
-  
-  @keyframes slideInRight {
-    from {
-      opacity: 0;
-      transform: translateX(30px);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
-  }
-  
-  @keyframes fadeInScale {
-    from {
-      opacity: 0;
-      transform: scale(0.8);
-    }
-    to {
-      opacity: 1;
-      transform: scale(1);
-    }
-  }
-  
-  /* Animation utility classes */
+  /* Homepage-specific utility classes */
   .animate-float {
     animation: float 3s ease-in-out infinite;
   }
@@ -194,282 +155,121 @@ const structuredData = {
   .animate-pulse-glow {
     animation: pulse-glow 2s ease-in-out infinite;
   }
-  
-  /* Enhanced intersection observer animations */
-  .animate-on-scroll {
-    opacity: 0;
-    transform: translateY(30px);
-    transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+  .animate-counter {
+    animation: counter-up 0.8s ease-out forwards;
   }
   
-  .animate-on-scroll.animate-in {
-    opacity: 1;
-    transform: translateY(0);
+  /* Responsive animations - reduce motion for accessibility */
+  @media (prefers-reduced-motion: reduce) {
+    .animate-float,
+    .animate-pulse-glow {
+      animation: none;
+    }
+    
+    .animate-on-scroll {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
   }
-  
-  /* Staggered animations for child elements */
-  .stagger-animation {
-    opacity: 0;
-    transform: translateY(20px);
-    transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    transition-delay: var(--animation-delay, 0ms);
-  }
-  
-  .stagger-animation.animate-in {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  
-  /* Specific animation variants */
-  .animate-slide-up {
-    animation: slideInUp 0.8s ease-out forwards;
-  }
-  
-  .animate-slide-left {
-    animation: slideInLeft 0.8s ease-out forwards;
-  }
-  
-  .animate-slide-right {
-    animation: slideInRight 0.8s ease-out forwards;
-  }
-  
-  .animate-fade-scale {
-    animation: fadeInScale 0.8s ease-out forwards;
-  }
-  
-  /* Loading state for images */
-  img[data-src] {
-    opacity: 0;
-    transition: opacity 0.3s ease-in-out;
-  }
-  
-  img[data-src].loaded {
-    opacity: 1;
-  }
-  
-  /* Smooth scrolling behavior */
-  html {
-    scroll-behavior: smooth;
-  }
-  
-  /* Focus styles for accessibility */
-  .animate-on-scroll:focus {
-    outline: 2px solid #2563eb;
-    outline-offset: 2px;
+
+  /* High contrast mode support */
+  @media (prefers-contrast: high) {
+    .animate-pulse-glow {
+      animation: none;
+      box-shadow: 0 0 0 2px currentColor;
+    }
   }
 </style>
 
 <script>
-  // Enhanced homepage initialization and animation handling
+  // Minimal homepage-specific initialization
   document.addEventListener('DOMContentLoaded', function() {
-    console.log('Homepage: Initializing animations and interactions...');
+    console.log('Homepage: Initializing page-specific features...')
     
-    // Initialize intersection observer for scroll animations
-    initializeScrollAnimations();
+    // Initialize custom counter animations for stats section
+    initializeCounterAnimations()
     
-    // Initialize image lazy loading
-    initializeImageLazyLoading();
+    // Setup homepage-specific performance monitoring
+    setupHomepagePerformance()
     
-    // Initialize smooth scroll for internal links
-    initializeSmoothScroll();
-    
-    // Initialize performance optimizations
-    initializePerformanceOptimizations();
-    
-    console.log('Homepage: Initialization complete');
-  });
+    console.log('Homepage: Page-specific initialization complete')
+  })
   
-  // Handle page transitions (Astro View Transitions)
-  document.addEventListener('astro:after-swap', function() {
-    console.log('Homepage: Re-initializing after page transition...');
+  function initializeCounterAnimations() {
+    const statsSection = document.querySelector('[data-animate="counters"]')
+    if (!statsSection) return
     
-    // Re-initialize all components after page transition
-    setTimeout(() => {
-      initializeScrollAnimations();
-      initializeImageLazyLoading();
-      initializeSmoothScroll();
-    }, 100);
-  });
-  
-  function initializeScrollAnimations() {
-    // Clean up existing observers to prevent duplicates
-    if (window.homepageScrollObserver) {
-      window.homepageScrollObserver.disconnect();
-    }
+    const counters = statsSection.querySelectorAll('.counter-number')
     
-    const observerOptions = {
-      threshold: 0.1,
-      rootMargin: '0px 0px -50px 0px'
-    };
-    
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
+    // Use intersection observer to trigger counter animations
+    const counterObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
         if (entry.isIntersecting) {
-          const element = entry.target;
+          const counter = entry.target as HTMLElement
+          const finalValue = parseInt(counter.dataset.count || '0')
           
-          // Add main animation class
-          element.classList.add('animate-in');
-          
-          // Handle staggered animations for child elements
-          const staggeredElements = element.querySelectorAll('.stagger-animation');
-          staggeredElements.forEach((el, index) => {
-            setTimeout(() => {
-              el.classList.add('animate-in');
-            }, index * 100);
-          });
-          
-          // Handle specific animation types
-          const slideUpElements = element.querySelectorAll('.animate-slide-up');
-          slideUpElements.forEach((el, index) => {
-            setTimeout(() => {
-              el.style.animationDelay = `${index * 0.1}s`;
-              el.classList.add('animate-slide-up');
-            }, index * 100);
-          });
-          
-          // Unobserve the element after animation to improve performance
-          observer.unobserve(element);
+          animateCounter(counter, finalValue)
+          counterObserver.unobserve(counter)
         }
-      });
-    }, observerOptions);
+      })
+    }, { threshold: 0.5 })
     
-    // Observe all elements with animation classes
-    document.querySelectorAll('.animate-on-scroll').forEach((el) => {
-      // Reset animation state
-      el.classList.remove('animate-in');
-      observer.observe(el);
-    });
-    
-    // Store observer globally for cleanup
-    window.homepageScrollObserver = observer;
+    counters.forEach(counter => {
+      counterObserver.observe(counter)
+    })
   }
   
-  function initializeImageLazyLoading() {
-    if ('IntersectionObserver' in window) {
-      // Clean up existing image observer
-      if (window.homepageImageObserver) {
-        window.homepageImageObserver.disconnect();
+  function animateCounter(element: HTMLElement, target: number) {
+    let current = 0
+    const increment = target / 60 // 60 frames for smooth animation
+    const duration = 2000 // 2 seconds
+    const stepTime = duration / 60
+    
+    const timer = setInterval(() => {
+      current += increment
+      if (current >= target) {
+        current = target
+        clearInterval(timer)
       }
       
-      const imageObserver = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const img = entry.target;
-            
-            if (img.dataset.src) {
-              // Create a new image to preload
-              const newImg = new Image();
-              
-              newImg.onload = () => {
-                img.src = img.dataset.src;
-                img.classList.remove('loading-skeleton');
-                img.classList.add('loaded');
-                imageObserver.unobserve(img);
-              };
-              
-              newImg.onerror = () => {
-                console.error('Failed to load image:', img.dataset.src);
-                img.classList.remove('loading-skeleton');
-                imageObserver.unobserve(img);
-              };
-              
-              newImg.src = img.dataset.src;
-            }
-          }
-        });
-      }, {
-        threshold: 0.1,
-        rootMargin: '50px'
-      });
-      
-      // Observe all images with data-src attribute
-      document.querySelectorAll('img[data-src]').forEach((img) => {
-        img.classList.add('loading-skeleton');
-        imageObserver.observe(img);
-      });
-      
-      window.homepageImageObserver = imageObserver;
-    } else {
-      // Fallback for browsers without IntersectionObserver
-      document.querySelectorAll('img[data-src]').forEach((img) => {
-        img.src = img.dataset.src;
-        img.classList.add('loaded');
-      });
+      element.textContent = Math.floor(current).toLocaleString()
+      element.classList.add('animate-counter')
+    }, stepTime)
+  }
+  
+  function setupHomepagePerformance() {
+    // Mark homepage-specific performance timing
+    if ('performance' in window && 'mark' in performance) {
+      performance.mark('homepage-interactive')
     }
-  }
-  
-  function initializeSmoothScroll() {
-    // Handle smooth scrolling for internal links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        
-        const targetId = this.getAttribute('href').substring(1);
-        const targetElement = document.getElementById(targetId);
-        
-        if (targetElement) {
-          const headerOffset = 80; // Account for fixed header
-          const elementPosition = targetElement.getBoundingClientRect().top;
-          const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-          
-          window.scrollTo({
-            top: offsetPosition,
-            behavior: 'smooth'
-          });
-        }
-      });
-    });
-  }
-  
-  function initializePerformanceOptimizations() {
     
-    // Prefetch important pages
-    const importantPages = ['/services', '/portfolio', '/contact'];
+    // Preload critical hero image if not already loaded
+    const heroImage = document.querySelector('.hero-image img') as HTMLImageElement
+    if (heroImage && !heroImage.complete) {
+      const preloadLink = document.createElement('link')
+      preloadLink.rel = 'preload'
+      preloadLink.href = heroImage.src
+      preloadLink.as = 'image'
+      document.head.appendChild(preloadLink)
+    }
     
-    importantPages.forEach(page => {
-      const link = document.createElement('link');
-      link.rel = 'prefetch';
-      link.href = page;
-      document.head.appendChild(link);
-    });
-    
-    // Performance monitoring
+    // Setup critical resource monitoring
     if ('PerformanceObserver' in window) {
-      const perfObserver = new PerformanceObserver((list) => {
-        for (const entry of list.getEntries()) {
-          if (entry.entryType === 'largest-contentful-paint') {
-            console.log('LCP:', entry.startTime);
+      const resourceObserver = new PerformanceObserver((list) => {
+        list.getEntries().forEach(entry => {
+          if (entry.duration > 1000) {
+            console.warn(`Slow resource detected: ${entry.name} (${entry.duration}ms)`)
           }
-          if (entry.entryType === 'first-input') {
-            console.log('FID:', entry.processingStart - entry.startTime);
-          }
-        }
-      });
+        })
+      })
       
-      perfObserver.observe({ entryTypes: ['largest-contentful-paint', 'first-input'] });
+      try {
+        resourceObserver.observe({ entryTypes: ['resource'] })
+      } catch (e) {
+        // Silent fail for unsupported browsers
+      }
     }
   }
-  
-  // Handle visibility change to pause/resume animations
-  document.addEventListener('visibilitychange', function() {
-    const animatedElements = document.querySelectorAll('.animate-float, .animate-pulse-glow');
-    
-    if (document.hidden) {
-      animatedElements.forEach(el => {
-        el.style.animationPlayState = 'paused';
-      });
-    } else {
-      animatedElements.forEach(el => {
-        el.style.animationPlayState = 'running';
-      });
-    }
-  });
-  
-  // Error handling for failed resource loads
-  window.addEventListener('error', function(e) {
-    if (e.target.tagName === 'IMG') {
-      console.error('Image failed to load:', e.target.src);
-      e.target.style.display = 'none';
-    }
-  }, true);
 </script>

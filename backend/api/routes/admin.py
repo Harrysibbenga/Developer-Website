@@ -3,7 +3,7 @@
 Admin endpoints for managing bookings and contacts
 """
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from sqlalchemy.orm import Session
 from typing import List, Optional
 from datetime import datetime, timedelta
@@ -12,6 +12,7 @@ import logging
 from core.database import get_db
 from services.booking_service import BookingService
 from services.contact_service import ContactService
+from utils.rate_limit import rate_limit
 from schemas.admin import (
     AdminStats, BookingSummary, ContactSummary,
     RevenueStats, ActivityLog
@@ -21,9 +22,13 @@ router = APIRouter()
 logger = logging.getLogger(__name__)
 
 @router.get("/stats", response_model=AdminStats)
+@rate_limit(requests=30, window=3600)  # 30 requests per hour for stats
 async def get_admin_stats(
+    request: Request,  # Add Request parameter
     days: int = Query(30, description="Number of days to include in stats"),
     db: Session = Depends(get_db)
+    # TODO: Add authentication dependency here
+    # current_user: User = Depends(get_current_admin_user)
 ):
     """Get administrative statistics"""
     try:
@@ -56,9 +61,12 @@ async def get_admin_stats(
         raise HTTPException(status_code=500, detail="Failed to retrieve statistics")
 
 @router.get("/bookings/summary", response_model=List[BookingSummary])
+@rate_limit(requests=50, window=3600)  # 50 requests per hour for summaries
 async def get_booking_summary(
+    request: Request,  # Add Request parameter
     limit: int = Query(20, description="Number of recent bookings"),
     db: Session = Depends(get_db)
+    # TODO: Add authentication dependency here
 ):
     """Get recent booking summary"""
     try:
@@ -83,9 +91,12 @@ async def get_booking_summary(
         raise HTTPException(status_code=500, detail="Failed to retrieve booking summary")
 
 @router.get("/contacts/summary", response_model=List[ContactSummary])
+@rate_limit(requests=50, window=3600)  # 50 requests per hour for summaries
 async def get_contact_summary(
+    request: Request,  # Add Request parameter
     limit: int = Query(20, description="Number of recent contacts"),
     db: Session = Depends(get_db)
+    # TODO: Add authentication dependency here
 ):
     """Get recent contact summary"""
     try:

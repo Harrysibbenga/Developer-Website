@@ -15,10 +15,10 @@ import logging
 from typing import Optional
 
 from core.config import get_settings
-from core.database import get_db
-from api.routes import bookings, contact, health, admin
+from api.routes import bookings, contact, health
 from services.email_service import EmailService
 from utils.logger import setup_logging
+from utils.rate_limit import init_rate_limiter
 
 # Initialize logging
 setup_logging()
@@ -58,7 +58,7 @@ app.add_middleware(
 app.include_router(health.router, prefix="/api/health", tags=["Health"])
 app.include_router(bookings.router, prefix="/api/bookings", tags=["Bookings"])
 app.include_router(contact.router, prefix="/api/contact", tags=["Contact"])
-app.include_router(admin.router, prefix="/api/admin", tags=["Admin"])
+# app.include_router(admin.router, prefix="/api/admin", tags=["Admin"])
 
 @app.on_event("startup")
 async def startup_event():
@@ -78,6 +78,25 @@ async def startup_event():
     except Exception as e:
         logger.error(f"Failed to initialize database: {str(e)}")
         raise
+
+    # Initialize Redis rate limiter
+    try:
+        redis_url = getattr(settings, 'REDIS_URL', 'redis://localhost:6379')
+        init_rate_limiter(redis_url)
+        logger.info(f"Redis rate limiter initialized: {redis_url}")
+    except Exception as e:
+        logger.warning(f"Failed to initialize Redis rate limiter: {str(e)}")
+        logger.warning("Rate limiting will be disabled")
+
+    # Initialize email service (if needed)
+    try:
+        email_service = EmailService()
+        # Test email configuration
+        if hasattr(email_service, 'test_connection'):
+            await email_service.test_connection()
+        logger.info("Email service initialized successfully")
+    except Exception as e:
+        logger.warning(f"Email service initialization failed: {str(e)}")
 
 @app.on_event("shutdown")
 async def shutdown_event():
