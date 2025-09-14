@@ -5,7 +5,6 @@
  * All filtering logic handled by PortfolioManager module
  */
 import TechIcon from '../decor/TechIcon.astro'
-import CookieProvider from '../core/CookieProvider.vue'
 import ProjectGalleryVue from '../projects/ProjectGallery.vue'
 ---
 
@@ -32,7 +31,7 @@ import ProjectGalleryVue from '../projects/ProjectGallery.vue'
     </div>
 
     <!-- Vue Component -->
-    <ProjectGalleryVue client:only="vue" />
+    <ProjectGalleryVue client:only="vue" variant='dark'/>
 
     <!-- View All Projects CTA -->
     <div class="text-center animate-on-scroll">
