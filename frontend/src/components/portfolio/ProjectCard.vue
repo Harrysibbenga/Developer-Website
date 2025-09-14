@@ -89,6 +89,32 @@ const props = defineProps<Props>()
           +{{ props.project.technologies.length - 4 }} more
         </span>
       </div>
+
+      <!-- Action buttons -->
+      <div class="mt-6 space-y-3">
+        <a
+          v-if="project.status === 'live' && props.project.liveUrl"
+          :href="props.project.liveUrl"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="block w-full text-center px-4 py-3 rounded-lg font-semibold transition-all"
+          :class="variant === 'dark'
+              ? 'bg-gradient-to-r from-cyan-600 to-blue-600 text-white hover:from-blue-600 hover:to-cyan-600'
+              : 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white hover:from-blue-500 hover:to-cyan-500'"
+          >
+          🚀 Live View
+        </a>
+        <a
+          v-else
+          href="/contact"
+          class="block w-full text-center px-4 py-3 rounded-lg font-semibold transition-all"
+          :class="variant === 'dark'
+              ? 'bg-gradient-to-r from-cyan-600 to-blue-600 text-white hover:from-blue-600 hover:to-cyan-600'
+              : 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white hover:from-blue-500 hover:to-cyan-500'"
+          >
+          💬 Discuss the Project
+        </a>
+      </div>
     </div>
   </article>
 </template>

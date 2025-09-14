@@ -357,6 +357,33 @@ function toggleTechnology(tech: string) {
               +{{ project.technologies.length - 4 }} more
             </span>
           </div>
+
+          <!-- Action buttons -->
+          <div class="mt-6 space-y-3">
+            <a
+              v-if="project.status === 'live' && project.liveUrl"
+              :href="project.liveUrl"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="block w-full text-center px-4 py-3 rounded-lg font-semibold transition-all"
+              :class="props.variant === 'dark'
+                  ? 'bg-gradient-to-r from-cyan-600 to-blue-600 text-white hover:from-blue-600 hover:to-cyan-600'
+                  : 'bg-gradient-to-r from-cyan-600 to-blue-600 text-white hover:from-blue-600 hover:to-cyan-600'"
+              >
+              🚀 Live View
+            </a>
+            <a
+              v-else
+              href="/contact"
+              class="block w-full text-center px-4 py-3 rounded-lg font-semibold transition-all"
+              :class="props.variant === 'dark'
+                ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-purple-600 hover:to-blue-600 '
+                : 'bg-gradient-to-r from-cyan-600 to-blue-600 text-white hover:from-blue-600 hover:to-cyan-600'"
+            >
+              💬 Discuss the Project
+            </a>
+          </div>
+          
         </div>
       </article>
     </TransitionGroup>

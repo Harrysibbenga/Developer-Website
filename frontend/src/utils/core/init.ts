@@ -66,8 +66,6 @@ export const legacyAPI = {
 // Export individual modules for direct import if needed
 export { SystemManager }
 export { BaseModule } from './modules/BaseModule'
-export { CookieManager } from './modules/CookieManager'
-export { AnalyticsManager } from './modules/AnalyticsManager'
 
 // Make system available globally for debugging
 if (typeof window !== 'undefined') {
