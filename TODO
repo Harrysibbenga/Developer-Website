@@ -3,8 +3,9 @@
 - [X] Complete newsletter functionality
 - [X] Create Response Notification Object
 - [X] Add loading indicator to form submission
-
+- [X] Change the way number are input in forms
+- [ ] Fix the contact form into a vue component for dynamic rendering
+- [ ] Look into refactoring and removing redundunt logic in the System Manager
 - [ ] Check and implement rate limiting
-- [ ] Change the way number are input in forms
-- [ ] Create Admin Dashboard
 - [ ] Fix notification HTML email templates
+- [ ] Create Admin Dashboard

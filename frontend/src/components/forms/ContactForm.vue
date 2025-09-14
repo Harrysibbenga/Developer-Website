@@ -1,5 +1,22 @@
 <template>
-  <div class="bg-white rounded-2xl shadow-xl p-8">
+  <div class="bg-white rounded-2xl shadow-xl p-8 relative">
+    <!-- Loading Overlay for Contact Form -->
+    <div v-if="formHandler.getState().loading" class="absolute inset-0 bg-white/90 backdrop-blur-sm rounded-2xl z-10 flex items-center justify-center">
+      <div class="text-center">
+        <div class="w-12 h-12 mx-auto mb-4">
+          <svg class="animate-spin w-12 h-12 text-blue-600" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+        </div>
+        <h3 class="text-lg font-semibold text-gray-900 mb-2">Sending Your Message</h3>
+        <p class="text-gray-600">Please wait while we send your inquiry...</p>
+        <div class="mt-4 bg-gray-200 rounded-full h-1 max-w-xs mx-auto">
+          <div class="bg-blue-600 h-1 rounded-full animate-pulse" style="width: 60%"></div>
+        </div>
+      </div>
+    </div>
+
     <div class="mb-8">
       <h2 class="text-3xl font-bold text-gray-900 mb-4">Send a Message</h2>
       <p class="text-gray-600">
@@ -19,12 +36,13 @@
             id="firstName"
             :value="formData.first_name"
             @input="updateField('first_name', $event.target.value)"
+            @blur="validateField('first_name')"
             required
-            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-            :class="{ 'border-red-500': formHandler.hasFieldError('first_name') }"
+            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+            :class="formHandler.hasFieldError('first_name') ? 'border-red-500 bg-red-50 focus:ring-red-500' : ''"
             placeholder="Your first name"
           />
-          <p v-if="formHandler.hasFieldError('first_name')" class="mt-1 text-sm text-red-600">
+          <p v-if="formHandler.hasFieldError('first_name')" class="mt-1 text-sm text-red-600 font-medium">
             {{ formHandler.getFieldErrors('first_name')[0] }}
           </p>
         </div>
@@ -38,12 +56,13 @@
             id="lastName"
             :value="formData.last_name"
             @input="updateField('last_name', $event.target.value)"
+            @blur="validateField('last_name')"
             required
-            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-            :class="{ 'border-red-500': formHandler.hasFieldError('last_name') }"
+            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+            :class="formHandler.hasFieldError('last_name') ? 'border-red-500 bg-red-50 focus:ring-red-500' : ''"
             placeholder="Your last name"
           />
-          <p v-if="formHandler.hasFieldError('last_name')" class="mt-1 text-sm text-red-600">
+          <p v-if="formHandler.hasFieldError('last_name')" class="mt-1 text-sm text-red-600 font-medium">
             {{ formHandler.getFieldErrors('last_name')[0] }}
           </p>
         </div>
@@ -59,12 +78,13 @@
           id="email"
           :value="formData.email"
           @input="updateField('email', $event.target.value)"
+          @blur="validateField('email')"
           required
-          class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-          :class="{ 'border-red-500': formHandler.hasFieldError('email') }"
+          class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+          :class="formHandler.hasFieldError('email') ? 'border-red-500 bg-red-50 focus:ring-red-500' : ''"
           placeholder="your.email@example.com"
         />
-        <p v-if="formHandler.hasFieldError('email')" class="mt-1 text-sm text-red-600">
+        <p v-if="formHandler.hasFieldError('email')" class="mt-1 text-sm text-red-600 font-medium">
           {{ formHandler.getFieldErrors('email')[0] }}
         </p>
       </div>
@@ -79,11 +99,12 @@
           id="phone"
           :value="formData.phone"
           @input="updateField('phone', $event.target.value)"
-          class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-          :class="{ 'border-red-500': formHandler.hasFieldError('phone') }"
+          @blur="validateField('phone')"
+          class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+          :class="formHandler.hasFieldError('phone') ? 'border-red-500 bg-red-50 focus:ring-red-500' : ''"
           placeholder="+44 7XXX XXX XXX"
         />
-        <p v-if="formHandler.hasFieldError('phone')" class="mt-1 text-sm text-red-600">
+        <p v-if="formHandler.hasFieldError('phone')" class="mt-1 text-sm text-red-600 font-medium">
           {{ formHandler.getFieldErrors('phone')[0] }}
         </p>
       </div>
@@ -112,17 +133,21 @@
           id="inquiryType"
           :value="formData.inquiry_type"
           @change="updateField('inquiry_type', $event.target.value)"
+          @blur="validateField('inquiry_type')"
           required
-          class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-          :class="{ 'border-red-500': formHandler.hasFieldError('inquiry_type') }"
+          class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+          :class="formHandler.hasFieldError('inquiry_type') ? 'border-red-500 bg-red-50 focus:ring-red-500' : ''"
         >
-          <option value="">Select inquiry type</option>
-          <option value="general">General Inquiry</option>
-          <option value="technical">Technical Question</option>
-          <option value="collaboration">Collaboration Opportunity</option>
-          <option value="support">Support Request</option>
+            <option value="">Select inquiry type</option>
+            <option
+            v-for="type in inquiryTypes"
+            :key="type"
+            :value="type"
+            >
+            {{ type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) }}
+            </option>
         </select>
-        <p v-if="formHandler.hasFieldError('inquiry_type')" class="mt-1 text-sm text-red-600">
+        <p v-if="formHandler.hasFieldError('inquiry_type')" class="mt-1 text-sm text-red-600 font-medium">
           {{ formHandler.getFieldErrors('inquiry_type')[0] }}
         </p>
       </div>
@@ -137,12 +162,13 @@
           id="subject"
           :value="formData.subject"
           @input="updateField('subject', $event.target.value)"
+          @blur="validateField('subject')"
           required
-          class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-          :class="{ 'border-red-500': formHandler.hasFieldError('subject') }"
+          class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+          :class="formHandler.hasFieldError('subject') ? 'border-red-500 bg-red-50 focus:ring-red-500' : ''"
           placeholder="Brief description of your inquiry"
         />
-        <p v-if="formHandler.hasFieldError('subject')" class="mt-1 text-sm text-red-600">
+        <p v-if="formHandler.hasFieldError('subject')" class="mt-1 text-sm text-red-600 font-medium">
           {{ formHandler.getFieldErrors('subject')[0] }}
         </p>
       </div>
@@ -174,13 +200,14 @@
           id="message"
           :value="formData.message"
           @input="updateField('message', $event.target.value)"
+          @blur="validateField('message')"
           rows="6"
           required
-          class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors resize-vertical"
-          :class="{ 'border-red-500': formHandler.hasFieldError('message') }"
+          class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 resize-vertical"
+          :class="formHandler.hasFieldError('message') ? 'border-red-500 bg-red-50 focus:ring-red-500' : ''"
           placeholder="Please provide details about your inquiry, questions, or how I can help you..."
         ></textarea>
-        <p v-if="formHandler.hasFieldError('message')" class="mt-1 text-sm text-red-600">
+        <p v-if="formHandler.hasFieldError('message')" class="mt-1 text-sm text-red-600 font-medium">
           {{ formHandler.getFieldErrors('message')[0] }}
         </p>
         
@@ -216,14 +243,21 @@
       <div>
         <button
           type="submit"
-          :disabled="formHandler.getState().loading || !isFormValid"
+          :disabled="formHandler.getState().loading || !isFormValid || isValidating"
           class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold py-4 px-6 rounded-lg hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <span v-if="!formHandler.getState().loading" class="flex items-center justify-center">
+          <span v-if="!formHandler.getState().loading && !isValidating" class="flex items-center justify-center">
             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
             </svg>
             Send Message
+          </span>
+          <span v-else-if="isValidating" class="flex items-center justify-center">
+            <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Validating...
           </span>
           <span v-else class="flex items-center justify-center">
             <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -262,7 +296,11 @@
 <script setup lang="ts">
 import { ref, computed, reactive } from 'vue'
 import { api, createFormHandler, validators } from '../../utils/api'
-import type { ContactCreate, InquiryType } from '../../types/api'
+import type { ContactCreate } from '../../types/api'
+import { InquiryType } from '../../types/api'
+
+
+const inquiryTypes = Object.values(InquiryType);
 
 // Initial form data matching API types
 const initialFormData: ContactCreate = {
@@ -284,54 +322,171 @@ const formData = reactive({ ...initialFormData })
 // Form state
 const showSuccess = ref(false)
 const honeypot = ref('')
+const isValidating = ref(false)
 
 // Update field helper
 const updateField = (field: keyof ContactCreate, value: any) => {
   formData[field] = value
   formHandler.setField(field, value)
+  
+  // Clear field error when user starts typing
+  if (formHandler.hasFieldError(field as string)) {
+    formHandler.clearFieldErrors([field as string])
+  }
+}
+
+// Individual field validation
+const validateField = async (field: keyof ContactCreate) => {
+  if (isValidating.value) return
+  
+  isValidating.value = true
+  const errors: Array<{ field: string; message: string }> = []
+  
+  // Add small delay to show validation state
+  await new Promise(resolve => setTimeout(resolve, 200))
+  
+  switch (field) {
+    case 'first_name':
+      if (!formData.first_name?.trim()) {
+        errors.push({ field: 'first_name', message: 'First name is required' })
+      } else if (formData.first_name.trim().length < 2) {
+        errors.push({ field: 'first_name', message: 'First name must be at least 2 characters' })
+      } else if (formData.first_name.length > 50) {
+        errors.push({ field: 'first_name', message: 'First name must be less than 50 characters' })
+      }
+      break
+      
+    case 'last_name':
+      if (!formData.last_name?.trim()) {
+        errors.push({ field: 'last_name', message: 'Last name is required' })
+      } else if (formData.last_name.trim().length < 2) {
+        errors.push({ field: 'last_name', message: 'Last name must be at least 2 characters' })
+      } else if (formData.last_name.length > 50) {
+        errors.push({ field: 'last_name', message: 'Last name must be less than 50 characters' })
+      }
+      break
+      
+    case 'email':
+      if (!formData.email?.trim()) {
+        errors.push({ field: 'email', message: 'Email address is required' })
+      } else {
+        const emailError = validators.email(formData.email.trim())
+        if (emailError) {
+          errors.push({ field: 'email', message: emailError })
+        }
+      }
+      break
+      
+    case 'phone':
+      if (formData.phone && formData.phone.trim()) {
+        const phoneError = validators.phone(formData.phone.trim())
+        if (phoneError) {
+          errors.push({ field: 'phone', message: phoneError })
+        }
+      }
+      break
+      
+    case 'inquiry_type':
+      if (!formData.inquiry_type) {
+        errors.push({ field: 'inquiry_type', message: 'Please select an inquiry type' })
+      }
+      break
+      
+    case 'subject':
+      if (!formData.subject?.trim()) {
+        errors.push({ field: 'subject', message: 'Subject is required' })
+      } else if (formData.subject.trim().length < 5) {
+        errors.push({ field: 'subject', message: 'Subject must be at least 5 characters' })
+      } else if (formData.subject.length > 200) {
+        errors.push({ field: 'subject', message: 'Subject must be less than 200 characters' })
+      }
+      break
+      
+    case 'message':
+      if (!formData.message?.trim()) {
+        errors.push({ field: 'message', message: 'Message is required' })
+      } else if (formData.message.trim().length < 10) {
+        errors.push({ field: 'message', message: 'Message must be at least 10 characters' })
+      } else if (formData.message.length > 2000) {
+        errors.push({ field: 'message', message: 'Message must be less than 2000 characters' })
+      }
+      break
+  }
+  
+  // Clear existing errors for this field first
+  formHandler.clearFieldErrors([field as string])
+  
+  // Set new errors if any
+  if (errors.length > 0) {
+    formHandler.setErrors([...formHandler.getState().errors.filter(e => e.field !== field), ...errors])
+  }
+  
+  isValidating.value = false
 }
 
 // Computed properties
 const isFormValid = computed(() => {
-  return formData.first_name.trim() &&
-         formData.last_name.trim() &&
-         formData.email.trim() &&
+  return formData.first_name?.trim() &&
+         formData.last_name?.trim() &&
+         formData.email?.trim() &&
          formData.inquiry_type &&
-         formData.subject.trim() &&
-         formData.message.trim().length >= 10
+         formData.subject?.trim() &&
+         formData.message?.trim() && 
+         formData.message.trim().length >= 10 &&
+         !formHandler.hasErrors()
 })
 
 const characterCountColor = computed(() => {
-  const length = formData.message.length
+  const length = formData.message?.length || 0
   if (length > 1800) return 'text-red-600'
   if (length > 1500) return 'text-yellow-600'
   return 'text-gray-500'
 })
 
 // Client-side validation
-const validateForm = (): boolean => {
+const validateForm = async (): Promise<boolean> => {
+  isValidating.value = true
   formHandler.clearErrors()
+  
+  // Add delay to show validation state
+  await new Promise(resolve => setTimeout(resolve, 300))
+  
   const errors: Array<{ field: string; message: string }> = []
 
-  // First name validation
-  if (!formData.first_name.trim()) {
-    errors.push({ field: 'first_name', message: 'First name is required' })
-  } else if (formData.first_name.trim().length < 2) {
+  // Required fields validation
+  const requiredFields = [
+    { field: 'first_name', message: 'First name is required' },
+    { field: 'last_name', message: 'Last name is required' },
+    { field: 'email', message: 'Email address is required' },
+    { field: 'inquiry_type', message: 'Please select an inquiry type' },
+    { field: 'subject', message: 'Subject is required' },
+    { field: 'message', message: 'Message is required' }
+  ]
+  
+  requiredFields.forEach(({ field, message }) => {
+    const value = formData[field as keyof ContactCreate]
+    if (!value || !String(value).trim()) {
+      errors.push({ field, message })
+    }
+  })
+
+  // Length validations
+  if (formData.first_name && formData.first_name.trim().length < 2) {
     errors.push({ field: 'first_name', message: 'First name must be at least 2 characters' })
   }
-
-  // Last name validation
-  if (!formData.last_name.trim()) {
-    errors.push({ field: 'last_name', message: 'Last name is required' })
-  } else if (formData.last_name.trim().length < 2) {
+  if (formData.last_name && formData.last_name.trim().length < 2) {
     errors.push({ field: 'last_name', message: 'Last name must be at least 2 characters' })
+  }
+  if (formData.subject && formData.subject.trim().length < 5) {
+    errors.push({ field: 'subject', message: 'Subject must be at least 5 characters' })
+  }
+  if (formData.message && formData.message.trim().length < 10) {
+    errors.push({ field: 'message', message: 'Message must be at least 10 characters' })
   }
 
   // Email validation
-  if (!formData.email.trim()) {
-    errors.push({ field: 'email', message: 'Email address is required' })
-  } else {
-    const emailError = validators.email(formData.email)
+  if (formData.email) {
+    const emailError = validators.email(formData.email.trim())
     if (emailError) {
       errors.push({ field: 'email', message: emailError })
     }
@@ -339,34 +494,27 @@ const validateForm = (): boolean => {
 
   // Phone validation (if provided)
   if (formData.phone && formData.phone.trim()) {
-    const phoneError = validators.phone(formData.phone)
+    const phoneError = validators.phone(formData.phone.trim())
     if (phoneError) {
       errors.push({ field: 'phone', message: phoneError })
     }
   }
 
-  // Inquiry type validation
-  if (!formData.inquiry_type) {
-    errors.push({ field: 'inquiry_type', message: 'Please select an inquiry type' })
+  // Length limits
+  if (formData.first_name && formData.first_name.length > 50) {
+    errors.push({ field: 'first_name', message: 'First name must be less than 50 characters' })
   }
-
-  // Subject validation
-  if (!formData.subject.trim()) {
-    errors.push({ field: 'subject', message: 'Subject is required' })
-  } else if (formData.subject.trim().length < 5) {
-    errors.push({ field: 'subject', message: 'Subject must be at least 5 characters' })
-  } else if (formData.subject.length > 200) {
+  if (formData.last_name && formData.last_name.length > 50) {
+    errors.push({ field: 'last_name', message: 'Last name must be less than 50 characters' })
+  }
+  if (formData.subject && formData.subject.length > 200) {
     errors.push({ field: 'subject', message: 'Subject must be less than 200 characters' })
   }
-
-  // Message validation
-  if (!formData.message.trim()) {
-    errors.push({ field: 'message', message: 'Message is required' })
-  } else if (formData.message.trim().length < 10) {
-    errors.push({ field: 'message', message: 'Message must be at least 10 characters' })
-  } else if (formData.message.length > 2000) {
+  if (formData.message && formData.message.length > 2000) {
     errors.push({ field: 'message', message: 'Message must be less than 2000 characters' })
   }
+
+  isValidating.value = false
 
   if (errors.length > 0) {
     formHandler.setErrors(errors)
@@ -388,7 +536,7 @@ const submitForm = async () => {
   }
   
   // Validate form
-  if (!validateForm()) {
+  if (!await validateForm()) {
     return
   }
 
@@ -443,6 +591,7 @@ const resetForm = () => {
   Object.assign(formData, initialFormData)
   formHandler.reset(initialFormData)
   honeypot.value = ''
+  isValidating.value = false
 }
 </script>
 

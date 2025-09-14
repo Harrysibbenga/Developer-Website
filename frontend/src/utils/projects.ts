@@ -243,6 +243,10 @@ export const CV_PROJECTS: Project[] = [
 
 // ===== UTILITY FUNCTIONS =====
 
+let cachedCategories: string[] | null = null
+let cachedTechnologies: string[] | null = null
+let cachedYears: number[] | null = null
+
 /**
  * Get all projects combined and sorted
  */
@@ -299,7 +303,9 @@ export const getProjectsByYear = (year: number): Project[] => {
  * Search projects by query
  */
 export const searchProjects = (query: string): Project[] => {
-  const lowercaseQuery = query.toLowerCase()
+  const lowercaseQuery = query.toLowerCase().trim()
+  if (!lowercaseQuery) return getAllProjects()
+  
   return getAllProjects().filter(project =>
     project.title.toLowerCase().includes(lowercaseQuery) ||
     project.description.toLowerCase().includes(lowercaseQuery) ||
@@ -308,7 +314,17 @@ export const searchProjects = (query: string): Project[] => {
       tech.toLowerCase().includes(lowercaseQuery)
     ) ||
     project.category.toLowerCase().includes(lowercaseQuery) ||
-    (project.client && project.client.toLowerCase().includes(lowercaseQuery))
+    (project.client && project.client.toLowerCase().includes(lowercaseQuery)) ||
+    // ENHANCED: Also search features, challenges, results like filterProjects does
+    project.features.some(feature => 
+      feature.toLowerCase().includes(lowercaseQuery)
+    ) ||
+    project.challenges.some(challenge => 
+      challenge.toLowerCase().includes(lowercaseQuery)
+    ) ||
+    project.results.some(result => 
+      result.toLowerCase().includes(lowercaseQuery)
+    )
   )
 }
 
@@ -316,24 +332,32 @@ export const searchProjects = (query: string): Project[] => {
  * Get unique categories from all projects (including 'All')
  */
 export const getUniqueCategories = (): string[] => {
-  const categories = getAllProjects().map(project => project.category)
-  return ['All', ...new Set(categories)].sort()
+  if (cachedCategories === null) {
+    const categories = getAllProjects().map(project => project.category)
+    cachedCategories = ['All', ...new Set(categories)].sort()
+  }
+  return cachedCategories
 }
 
 /**
  * Get unique technologies from all projects
  */
 export const getUniqueTechnologies = (): string[] => {
-  const technologies = getAllProjects().flatMap(project => project.technologies)
-  return [...new Set(technologies)].sort()
+  if (cachedTechnologies === null) {
+    const technologies = getAllProjects().flatMap(project => project.technologies)
+    cachedTechnologies = [...new Set(technologies)].sort()
+  }
+  return cachedTechnologies
 }
-
 /**
  * Get unique years from all projects
  */
 export const getProjectYears = (): number[] => {
-  const years = getAllProjects().map(project => project.year)
-  return [...new Set(years)].sort((a, b) => b - a)
+  if (cachedYears === null) {
+    const years = getAllProjects().map(project => project.year)
+    cachedYears = [...new Set(years)].sort((a, b) => b - a)
+  }
+  return cachedYears
 }
 
 /**
@@ -474,12 +498,12 @@ export const filterProjects = (filters: {
     filteredProjects = filteredProjects.filter(p => p.category === filters.category)
   }
   
-  // Technology filter
+  // Technology filter - FIXED: Better case handling
   if (filters.technologies && filters.technologies.length > 0) {
     filteredProjects = filteredProjects.filter(p =>
-      filters.technologies!.some(tech =>
-        p.technologies.some(pTech => 
-          pTech.toLowerCase().includes(tech.toLowerCase())
+      filters.technologies!.some(filterTech =>
+        p.technologies.some(projectTech => 
+          projectTech.toLowerCase().includes(filterTech.toLowerCase().trim())
         )
       )
     )
@@ -500,9 +524,28 @@ export const filterProjects = (filters: {
     filteredProjects = filteredProjects.filter(p => p.featured === filters.featured)
   }
   
-  // Search filter
-  if (filters.search) {
-    filteredProjects = searchProjects(filters.search)
+  // FIXED: Search filter now works with already filtered results
+  if (filters.search && filters.search.trim()) {
+    const searchQuery = filters.search.toLowerCase().trim()
+    filteredProjects = filteredProjects.filter(project =>
+      project.title.toLowerCase().includes(searchQuery) ||
+      project.description.toLowerCase().includes(searchQuery) ||
+      project.longDescription.toLowerCase().includes(searchQuery) ||
+      project.technologies.some(tech => 
+        tech.toLowerCase().includes(searchQuery)
+      ) ||
+      project.category.toLowerCase().includes(searchQuery) ||
+      (project.client && project.client.toLowerCase().includes(searchQuery)) ||
+      (project.features && project.features.some(feature => 
+        feature.toLowerCase().includes(searchQuery)
+      )) ||
+      (project.challenges && project.challenges.some(challenge => 
+        challenge.toLowerCase().includes(searchQuery)
+      )) ||
+      (project.results && project.results.some(result => 
+        result.toLowerCase().includes(searchQuery)
+      ))
+    )
   }
   
   return filteredProjects
@@ -516,31 +559,283 @@ export const sortProjects = (projects: Project[], sortBy: string): Project[] => 
   
   switch (sortBy) {
     case 'featured':
+    case 'default':
+      return projectsCopy.sort((a, b) => {
+        // Featured projects first
+        if (a.featured && !b.featured) return -1
+        if (!a.featured && b.featured) return 1
+        // Then by year (newest first)
+        return b.year - a.year
+      })
+    
+    case 'newest':
+    case 'year-desc':
+      return projectsCopy.sort((a, b) => b.year - a.year)
+    
+    case 'oldest':
+    case 'year-asc':
+      return projectsCopy.sort((a, b) => a.year - b.year)
+    
+    case 'alphabetical':
+    case 'title-asc':
+      return projectsCopy.sort((a, b) => a.title.localeCompare(b.title))
+    
+    case 'title-desc':
+      return projectsCopy.sort((a, b) => b.title.localeCompare(a.title))
+    
+    case 'live-first':
+      return projectsCopy.sort((a, b) => {
+        // Live projects first
+        if (a.status === 'live' && b.status !== 'live') return -1
+        if (a.status !== 'live' && b.status === 'live') return 1
+        // Then by year (newest first)
+        return b.year - a.year
+      })
+    
+    case 'consultation-first':
+      return projectsCopy.sort((a, b) => {
+        // Consultation projects first
+        if (a.status === 'consultation' && b.status !== 'consultation') return -1
+        if (a.status !== 'consultation' && b.status === 'consultation') return 1
+        // Then by year (newest first)
+        return b.year - a.year
+      })
+    
+    case 'category-asc':
+      return projectsCopy.sort((a, b) => {
+        const categoryCompare = a.category.localeCompare(b.category)
+        // If same category, sort by year (newest first)
+        return categoryCompare !== 0 ? categoryCompare : b.year - a.year
+      })
+    
+    case 'category-desc':
+      return projectsCopy.sort((a, b) => {
+        const categoryCompare = b.category.localeCompare(a.category)
+        // If same category, sort by year (newest first)
+        return categoryCompare !== 0 ? categoryCompare : b.year - a.year
+      })
+    
+    case 'client-asc':
+      return projectsCopy.sort((a, b) => {
+        const aClient = a.client || 'ZZZ' // Put projects without clients at end
+        const bClient = b.client || 'ZZZ'
+        const clientCompare = aClient.localeCompare(bClient)
+        // If same client (or both null), sort by year
+        return clientCompare !== 0 ? clientCompare : b.year - a.year
+      })
+    
+    case 'duration-asc':
+      return projectsCopy.sort((a, b) => {
+        // Extract numeric duration for comparison (rough approximation)
+        const getDurationMonths = (duration: string): number => {
+          const lower = duration.toLowerCase()
+          if (lower.includes('week')) return 0.25
+          if (lower.includes('month')) {
+            const match = lower.match(/(\d+)\s*month/)
+            return match ? parseInt(match[1]) : 1
+          }
+          if (lower.includes('year')) {
+            const match = lower.match(/(\d+(?:\.\d+)?)\s*year/)
+            return match ? parseFloat(match[1]) * 12 : 12
+          }
+          return 1 // Default to 1 month
+        }
+        
+        const aDuration = getDurationMonths(a.duration)
+        const bDuration = getDurationMonths(b.duration)
+        return aDuration - bDuration
+      })
+    
+    default:
+      console.warn(`Unknown sort option: ${sortBy}, using default`)
       return projectsCopy.sort((a, b) => {
         if (a.featured && !b.featured) return -1
         if (!a.featured && b.featured) return 1
         return b.year - a.year
       })
-    
-    case 'newest':
-      return projectsCopy.sort((a, b) => b.year - a.year)
-    
-    case 'oldest':
-      return projectsCopy.sort((a, b) => a.year - b.year)
-    
-    case 'alphabetical':
-      return projectsCopy.sort((a, b) => a.title.localeCompare(b.title))
-    
-    case 'live-first':
-      return projectsCopy.sort((a, b) => {
-        if (a.status === 'live' && b.status !== 'live') return -1
-        if (a.status !== 'live' && b.status === 'live') return 1
-        return b.year - a.year
-      })
-    
-    default:
-      return projectsCopy
   }
+}
+
+/**
+ * ENHANCED: Get available sorting options with labels
+ */
+export const getSortingOptions = (): Array<{ value: string; label: string }> => {
+  return [
+    { value: 'featured', label: 'Featured First' },
+    { value: 'newest', label: 'Newest First' },
+    { value: 'oldest', label: 'Oldest First' },
+    { value: 'alphabetical', label: 'A-Z by Title' },
+    { value: 'title-desc', label: 'Z-A by Title' },
+    { value: 'live-first', label: 'Live Projects First' },
+    { value: 'consultation-first', label: 'Consultation First' },
+    { value: 'category-asc', label: 'Category A-Z' },
+    { value: 'category-desc', label: 'Category Z-A' },
+    { value: 'client-asc', label: 'Client A-Z' },
+    { value: 'duration-asc', label: 'Shortest Duration First' }
+  ]
+}
+
+/**
+ * ENHANCED: Advanced search with field-specific queries
+ */
+export const advancedSearchProjects = (queries: {
+  title?: string
+  description?: string
+  technology?: string
+  client?: string
+  category?: string
+  general?: string
+}): Project[] => {
+  let results = getAllProjects()
+  
+  if (queries.title) {
+    const titleQuery = queries.title.toLowerCase().trim()
+    results = results.filter(p => p.title.toLowerCase().includes(titleQuery))
+  }
+  
+  if (queries.description) {
+    const descQuery = queries.description.toLowerCase().trim()
+    results = results.filter(p => 
+      p.description.toLowerCase().includes(descQuery) ||
+      p.longDescription.toLowerCase().includes(descQuery)
+    )
+  }
+  
+  if (queries.technology) {
+    const techQuery = queries.technology.toLowerCase().trim()
+    results = results.filter(p => 
+      p.technologies.some(tech => tech.toLowerCase().includes(techQuery))
+    )
+  }
+  
+  if (queries.client) {
+    const clientQuery = queries.client.toLowerCase().trim()
+    results = results.filter(p => 
+      p.client && p.client.toLowerCase().includes(clientQuery)
+    )
+  }
+  
+  if (queries.category) {
+    const categoryQuery = queries.category.toLowerCase().trim()
+    results = results.filter(p => p.category.toLowerCase().includes(categoryQuery))
+  }
+  
+  if (queries.general) {
+    // General search across all fields
+    const generalQuery = queries.general.toLowerCase().trim()
+    results = results.filter(project =>
+      project.title.toLowerCase().includes(generalQuery) ||
+      project.description.toLowerCase().includes(generalQuery) ||
+      project.longDescription.toLowerCase().includes(generalQuery) ||
+      project.technologies.some(tech => tech.toLowerCase().includes(generalQuery)) ||
+      project.category.toLowerCase().includes(generalQuery) ||
+      (project.client && project.client.toLowerCase().includes(generalQuery)) ||
+      project.features.some(feature => feature.toLowerCase().includes(generalQuery)) ||
+      project.challenges.some(challenge => challenge.toLowerCase().includes(generalQuery)) ||
+      project.results.some(result => result.toLowerCase().includes(generalQuery))
+    )
+  }
+  
+  return results
+}
+
+/**
+ * NEW: Get filter statistics for UI feedback
+ */
+export const getFilterStats = (filters: {
+  category?: string
+  technologies?: string[]
+  status?: Project['status']
+  year?: number
+  featured?: boolean
+  search?: string
+}) => {
+  const allProjects = getAllProjects()
+  const filteredProjects = filterProjects(filters)
+  
+  return {
+    total: allProjects.length,
+    filtered: filteredProjects.length,
+    percentage: Math.round((filteredProjects.length / allProjects.length) * 100),
+    hidden: allProjects.length - filteredProjects.length
+  }
+}
+
+/**
+ * NEW: Validate filter parameters
+ */
+export const validateFilters = (filters: any): { valid: boolean; errors: string[] } => {
+  const errors: string[] = []
+  
+  if (filters.category && typeof filters.category !== 'string') {
+    errors.push('Category must be a string')
+  }
+  
+  if (filters.technologies && !Array.isArray(filters.technologies)) {
+    errors.push('Technologies must be an array')
+  }
+  
+  if (filters.status && !['live', 'consultation', 'case-study'].includes(filters.status)) {
+    errors.push('Status must be one of: live, consultation, case-study')
+  }
+  
+  if (filters.year && (typeof filters.year !== 'number' || filters.year < 2000 || filters.year > 2030)) {
+    errors.push('Year must be a valid number between 2000 and 2030')
+  }
+  
+  if (filters.featured !== undefined && typeof filters.featured !== 'boolean') {
+    errors.push('Featured must be a boolean')
+  }
+  
+  if (filters.search && typeof filters.search !== 'string') {
+    errors.push('Search must be a string')
+  }
+  
+  return {
+    valid: errors.length === 0,
+    errors
+  }
+}
+
+/**
+ * NEW: Get suggested searches based on project content
+ */
+export const getSuggestedSearches = (): string[] => {
+  const allProjects = getAllProjects()
+  const suggestions = new Set<string>()
+  
+  // Add popular technologies
+  const techStats = getTechnologyStats()
+  techStats.slice(0, 5).forEach(tech => {
+    suggestions.add(tech.technology.toLowerCase())
+  })
+  
+  // Add categories
+  getUniqueCategories().forEach(category => {
+    if (category !== 'All') {
+      suggestions.add(category.toLowerCase())
+    }
+  })
+  
+  // Add clients
+  allProjects.forEach(project => {
+    if (project.client) {
+      suggestions.add(project.client.toLowerCase())
+    }
+  })
+  
+  // Add some common search terms based on features/results
+  const commonTerms = ['real-time', 'responsive', 'api', 'dashboard', 'automation', 'integration']
+  commonTerms.forEach(term => suggestions.add(term))
+  
+  return Array.from(suggestions).sort()
+}
+
+// Function to clear cache if projects are updated
+export const clearProjectCache = (): void => {
+  cachedCategories = null
+  cachedTechnologies = null
+  cachedYears = null
 }
 
 // ===== CASE STUDIES =====
@@ -603,19 +898,19 @@ export const CASE_STUDIES = {
 
 // ===== TECHNOLOGY USAGE =====
 
-export const TECHNOLOGY_USAGE = {
-  "Python": { projects: 7, percentage: 78 },
-  "Django": { projects: 4, percentage: 44 },
-  "Vue.js": { projects: 4, percentage: 44 },
-  "React": { projects: 4, percentage: 44 },
-  "JavaScript": { projects: 6, percentage: 67 },
-  "PostgreSQL": { projects: 3, percentage: 33 },
-  "Docker": { projects: 3, percentage: 33 },
-  "WebSockets": { projects: 3, percentage: 33 },
-  "TypeScript": { projects: 2, percentage: 22 },
-  "Flask": { projects: 2, percentage: 22 },
-  "Node.js": { projects: 2, percentage: 22 }
-} as const
+export const TECHNOLOGY_USAGE = (): Record<string, { projects: number; percentage: number }> => {
+  const techStats = getTechnologyStats()
+  const result: Record<string, { projects: number; percentage: number }> = {}
+  
+  techStats.forEach(tech => {
+    result[tech.technology] = {
+      projects: tech.count,
+      percentage: tech.percentage
+    }
+  })
+  
+  return result
+}
 
 // ===== DEFAULT EXPORT =====
 
@@ -638,8 +933,14 @@ export default {
   getProjectsByYearGrouped,
   getTechnologyStats,
   getProjectStats,
+  getSortingOptions,          
+  advancedSearchProjects,     
+  getFilterStats,            
+  validateFilters,           
+  getSuggestedSearches,      
   filterProjects,
   sortProjects,
+  clearProjectCache,
   CASE_STUDIES,
   TECHNOLOGY_USAGE
 }

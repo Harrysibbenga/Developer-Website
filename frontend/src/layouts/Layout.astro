@@ -1,11 +1,13 @@
 ---
-// src/layouts/Layout.astro
+// src/layouts/Layout.astro (Simplified Version)
 
 import { BUSINESS_INFO, SEO_CONFIG } from '../utils/constants'
 import Navigation from '../components/layout/Navigation.astro'
 import Footer from '../components/layout/Footer.astro'
-import { ViewTransitions } from 'astro:transitions'
 import "../styles/global.css";
+import CookieProvider from '../components/core/CookieProvider.vue'
+import CookieBanner from '../components/core/CookieBanner.vue'
+
 
 export interface Props {
   title?: string
@@ -49,7 +51,7 @@ const finalStructuredData = structuredData
   : defaultStructuredData
 
 // Get Google Analytics ID from environment variables
-const GA_MEASUREMENT_ID = import.meta.env.PUBLIC_GA_MEASUREMENT_ID || 'GA_MEASUREMENT_ID'
+const GA_MEASUREMENT_ID = import.meta.env.PUBLIC_GA_MEASUREMENT_ID || ''
 ---
 
 <!DOCTYPE html>
@@ -122,9 +124,6 @@ const GA_MEASUREMENT_ID = import.meta.env.PUBLIC_GA_MEASUREMENT_ID || 'GA_MEASUR
     
     <!-- Structured Data -->
     <script type="application/ld+json" set:html={JSON.stringify(finalStructuredData)} />
-    
-    <!-- View Transitions -->
-    <ViewTransitions />
     
     <!-- Critical CSS for above-the-fold content -->
     <style>
@@ -208,1040 +207,90 @@ const GA_MEASUREMENT_ID = import.meta.env.PUBLIC_GA_MEASUREMENT_ID || 'GA_MEASUR
       @keyframes fadeIn {
         to { opacity: 1; }
       }
+
+      /* System loading state */
+      .system-loading * {
+        pointer-events: none;
+      }
     </style>
   </head>
   
-  <body class="min-h-screen bg-white font-inter antialiased fade-in">
-    <!-- Skip to content link for accessibility -->
-    <a 
-      href="#main-content" 
-      class="sr-only focus:not-sr-only fixed top-4 left-4 z-50 px-4 py-2 bg-blue-600 text-white rounded-lg font-medium transition-all duration-300"
-    >
-      Skip to main content
-    </a>
-    
-    <!-- Header/Navigation -->
-    <Navigation />
-    
-    <!-- Main Content -->
-    <main id="main-content" class="flex-1">
-      <slot />
-    </main>
-    
-    <!-- Footer -->
-    <Footer />
-    
-    <!-- Cookie Consent Banner -->
-    <div 
-      id="cookie-consent-banner" 
-      class="fixed bottom-0 left-0 right-0 bg-gray-900 text-white p-4 transform translate-y-full transition-transform duration-300 z-50 hidden"
-    >
-      <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div class="flex-1">
-          <p class="text-sm">
-            We use cookies to enhance your browsing experience and analyze our traffic. 
-            <a href="/cookies" class="underline hover:text-blue-300">Learn more</a>
-          </p>
-        </div>
-        <div class="flex gap-3">
-          <button 
-            id="cookie-customize"
-            class="px-4 py-2 text-sm border border-gray-600 rounded-lg hover:bg-gray-800 transition-colors"
-          >
-            Customize
-          </button>
-          <button 
-            id="cookie-accept-all"
-            class="px-4 py-2 text-sm bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            Accept All
-          </button>
-        </div>
+  <body class="min-h-screen bg-white font-inter antialiased fade-in system-loading">
+    <CookieProvider client:load>
+      <!-- Skip to content link for accessibility -->
+      <a 
+        href="#main-content" 
+        class="sr-only focus:not-sr-only fixed top-4 left-4 z-50 px-4 py-2 bg-blue-600 text-white rounded-lg font-medium transition-all duration-300"
+      >
+        Skip to main content
+      </a>
+      
+      <!-- Header/Navigation -->
+      <Navigation />
+      
+      <!-- Main Content -->
+      <main id="main-content" class="flex-1">
+        <slot />
+      </main>
+      
+      <!-- Footer -->
+      <Footer />
+      
+      <!-- ✅ Vue Cookie Banner (includes modal internally) -->
+      <CookieBanner client:only="vue"/>
+      
+      <!-- Back to Top Button -->
+      <button 
+        id="back-to-top"
+        class="fixed bottom-6 right-6 w-12 h-12 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-300 opacity-0 invisible"
+        aria-label="Back to top"
+      >
+        <svg class="w-6 h-6 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/>
+        </svg>
+      </button>
+      
+      <!-- Loading Indicator for Page Transitions -->
+      <div 
+        id="page-loading"
+        class="fixed top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-purple-600 transform -translate-x-full transition-transform duration-300 z-50"
+        style="display: none;"
+      >
       </div>
-    </div>
-
-    <!-- Cookie Settings Modal (Global) -->
-    <div id="global-cookie-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
-      <div class="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        <div class="p-6">
-          <div class="flex justify-between items-center mb-4">
-            <h3 class="text-xl font-bold text-gray-900">Cookie Settings</h3>
-            <button onclick="closeGlobalCookieModal()" class="text-gray-400 hover:text-gray-600">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-              </svg>
-            </button>
-          </div>
-          
-          <p class="text-gray-600 mb-6">
-            Manage your cookie preferences below. Some cookies are essential for the website to function.
-          </p>
-
-          <div class="space-y-4">
-            <!-- Essential Cookies -->
-            <div class="border border-gray-200 rounded-lg p-4">
-              <div class="flex justify-between items-center mb-2">
-                <h4 class="font-semibold text-gray-900">Essential Cookies</h4>
-                <div class="bg-gray-100 px-3 py-1 rounded-full text-sm text-gray-600">
-                  Always Active
-                </div>
-              </div>
-              <p class="text-sm text-gray-600">
-                These cookies are necessary for the website to function and cannot be switched off.
-              </p>
-            </div>
-
-            <!-- Analytics Cookies -->
-            <div class="border border-gray-200 rounded-lg p-4">
-              <div class="flex justify-between items-center mb-2">
-                <h4 class="font-semibold text-gray-900">Analytics Cookies</h4>
-                <label class="relative inline-flex items-center cursor-pointer">
-                  <input type="checkbox" id="global-analytics-toggle" class="sr-only peer">
-                  <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                </label>
-              </div>
-              <p class="text-sm text-gray-600">
-                Help us understand how visitors use our website to improve user experience.
-              </p>
-            </div>
-
-            <!-- Performance Cookies -->
-            <div class="border border-gray-200 rounded-lg p-4">
-              <div class="flex justify-between items-center mb-2">
-                <h4 class="font-semibold text-gray-900">Performance Cookies</h4>
-                <label class="relative inline-flex items-center cursor-pointer">
-                  <input type="checkbox" id="global-performance-toggle" class="sr-only peer">
-                  <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                </label>
-              </div>
-              <p class="text-sm text-gray-600">
-                Used to enhance the performance and functionality of our website.
-              </p>
-            </div>
-          </div>
-
-          <div class="flex flex-col sm:flex-row gap-3 mt-6 pt-6 border-t border-gray-200">
-            <button 
-              onclick="acceptAllGlobalCookies()" 
-              class="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium"
-            >
-              Accept All
-            </button>
-            <button 
-              onclick="saveGlobalPreferences()" 
-              class="flex-1 border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors font-medium"
-            >
-              Save Preferences
-            </button>
-            <button 
-              onclick="rejectAllGlobalCookies()" 
-              class="flex-1 text-gray-600 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors"
-            >
-              Reject All
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-    
-    <!-- Back to Top Button -->
-    <button 
-      id="back-to-top"
-      class="fixed bottom-6 right-6 w-12 h-12 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-300 opacity-0 invisible"
-      aria-label="Back to top"
-    >
-      <svg class="w-6 h-6 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/>
-      </svg>
-    </button>
-    
-    <!-- Loading Indicator for Page Transitions -->
-    <div 
-      id="page-loading"
-      class="fixed top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-purple-600 transform -translate-x-full transition-transform duration-300 z-50"
-      style="display: none;"
-    >
-    </div>
-    
-    <!-- Scripts -->
-    <script define:vars={{ GA_MEASUREMENT_ID }}>
-      // Unified Site Manager - Single Source of Truth
-      class UnifiedSiteManager {
-        constructor() {
-          this.initialized = false
-          this.eventListeners = []
-          this.observers = []
-          
-          // Prevent multiple instances
-          if (window.unifiedManager) {
-            return window.unifiedManager
-          }
-          window.unifiedManager = this
-          
-          this.init()
-        }
-        
-        async init() {
-          if (this.initialized) return
-          
-          console.log('🚀 Unified Manager: Starting...')
-          
-          // Wait for DOM
-          await this.waitForDOM()
-          
-          // Clean slate
-          this.cleanup()
-          
-          // Initialize everything in order
-          this.initializeGoogleAnalytics()
-          this.initializeNavigation()
-          this.initializeScrollFeatures()
-          this.initializeAnimations()
-          this.initializeContactPageTabs()     
-          this.initializeAccordionComponents() 
-          this.initializePortfolioFilters()
-          this.initializeCookieConsent()
-          this.initializePageTransitions()
-          
-          this.initialized = true
-          console.log('✅ Unified Manager: Complete')
-        }
-        
-        waitForDOM() {
-          return new Promise(resolve => {
-            if (document.readyState === 'loading') {
-              document.addEventListener('DOMContentLoaded', resolve)
-            } else {
-              setTimeout(resolve, 50)
-            }
-          })
-        }
-
-        // === Google Analytics ===
-        initializeGoogleAnalytics() {
-          if (!GA_MEASUREMENT_ID) return;
-          
-          // Check cookie consent
-          const consent = this.getCookie('cookie-consent');
-          let consentData = null;
-          
-          if (consent) {
-            try {
-              consentData = JSON.parse(consent);
-            } catch (e) {
-              console.warn('Failed to parse cookie consent');
-              return;
-            }
-          }
-          
-          if (consentData?.analytics) {
-            // Check if already loaded
-            if (window.gtag) {
-              console.log('📊 Google Analytics already initialized');
-              return;
-            }
+      
+      <!-- Initialize System Manager -->
+      <script define:vars={{ GA_MEASUREMENT_ID }}>
+        // Import and initialize the system manager
+        import('/src/scripts/system-init.js').then(({ initializeSystem }) => {
+          initializeSystem({
+            gaId: GA_MEASUREMENT_ID,
+            enableAnalytics: true,
+            debugMode: false
+          }).then(() => {
+            // Remove loading state
+            document.body.classList.remove('system-loading')
+            document.body.classList.add('system-ready')
             
-            // Load gtag
-            const script = document.createElement('script');
-            script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`;
-            script.async = true;
-            document.head.appendChild(script);
+            console.log('🎉 Website system fully loaded')
+          }).catch(error => {
+            console.error('❌ System initialization failed:', error)
             
-            // Initialize gtag
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', GA_MEASUREMENT_ID, {
-              anonymize_ip: true,
-              cookie_flags: 'SameSite=Lax;Secure'
-            });
+            // Remove loading state even on failure
+            document.body.classList.remove('system-loading')
             
-            // Make gtag globally available
-            window.gtag = gtag;
-            
-            console.log('📊 Google Analytics initialized');
-          }
-        }
-        
-        // === NAVIGATION ===
-        initializeNavigation() {
-          const button = document.getElementById('mobile-menu-button')
-          const menu = document.getElementById('mobile-menu')
-          
-          if (!button || !menu) return
-          
-          const toggle = (e) => {
-            e.preventDefault()
-            const expanded = button.getAttribute('aria-expanded') === 'true'
-            
-            button.setAttribute('aria-expanded', !expanded)
-            menu.classList.toggle('hidden', expanded)
-            
-            // Update icon
-            const path = button.querySelector('svg path')
-            if (path) {
-              path.setAttribute('d', expanded 
-                ? 'M4 6h16M4 12h16M4 18h16'  // hamburger
-                : 'M6 18L18 6M6 6l12 12'     // X
-              )
-            }
-          }
-          
-          const closeMenu = () => {
-            menu.classList.add('hidden')
-            button.setAttribute('aria-expanded', 'false')
-            const path = button.querySelector('svg path')
-            if (path) path.setAttribute('d', 'M4 6h16M4 12h16M4 18h16')
-          }
-          
-          const outsideClick = (e) => {
-            if (!button.contains(e.target) && !menu.contains(e.target)) {
-              closeMenu()
-            }
-          }
-          
-          this.addListener(button, 'click', toggle)
-          this.addListener(document, 'click', outsideClick)
-          this.addListener(document, 'keydown', (e) => {
-            if (e.key === 'Escape') closeMenu()
-          })
-          
-          // Close menu on navigation
-          menu.querySelectorAll('a').forEach(link => {
-            this.addListener(link, 'click', closeMenu)
-          })
-          
-          console.log('📱 Navigation ready')
-        }
-        
-        // === SCROLL FEATURES ===
-        initializeScrollFeatures() {
-          // Back to top button
-          const backToTop = document.getElementById('back-to-top')
-          if (backToTop) {
-            let ticking = false
-            const updateButton = () => {
-              if (ticking) return
-              ticking = true
-              requestAnimationFrame(() => {
-                const show = window.pageYOffset > 300
-                backToTop.classList.toggle('opacity-0', !show)
-                backToTop.classList.toggle('invisible', !show)
-                ticking = false
-              })
-            }
-            
-            this.addListener(window, 'scroll', updateButton, { passive: true })
-            this.addListener(backToTop, 'click', () => {
-              window.scrollTo({ top: 0, behavior: 'smooth' })
-            })
-          }
-          
-          // Scroll progress bar
-          const progress = document.getElementById('scroll-progress')
-          if (progress) {
-            let ticking = false
-            const updateProgress = () => {
-              if (ticking) return
-              ticking = true
-              requestAnimationFrame(() => {
-                const scrolled = window.pageYOffset
-                const height = document.documentElement.scrollHeight - window.innerHeight
-                const percent = height > 0 ? (scrolled / height) : 0
-                progress.style.transform = `scaleX(${percent})`
-                ticking = false
-              })
-            }
-            
-            this.addListener(window, 'scroll', updateProgress, { passive: true })
-          }
-          
-          console.log('📜 Scroll features ready')
-        }
-        
-        // === ANIMATIONS ===
-        initializeAnimations() {
-          const elements = document.querySelectorAll('.animate-on-scroll, [data-animate]')
-          if (elements.length === 0) return
-          
-          const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-              if (entry.isIntersecting) {
-                entry.target.classList.add('animate-in')
-                
-                // Staggered animations
-                const staggered = entry.target.querySelectorAll('.stagger-animation')
-                staggered.forEach((el, i) => {
-                  setTimeout(() => el.classList.add('animate-in'), i * 100)
-                })
-                
-                // Skill bars
-                if (entry.target.dataset.animate === 'skills') {
-                  const bars = entry.target.querySelectorAll('.skill-progress')
-                  bars.forEach((bar, i) => {
-                    setTimeout(() => {
-                      const width = bar.getAttribute('data-width')
-                      if (width) {
-                        bar.style.width = `${width}%`
-                        setTimeout(() => bar.classList.add('animated'), 500)
-                      }
-                    }, i * 150)
-                  })
-                }
-                
-                observer.unobserve(entry.target)
-              }
-            })
-          }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' })
-          
-          elements.forEach(el => {
-            el.classList.remove('animate-in')
-            observer.observe(el)
-          })
-          
-          this.observers.push(observer)
-          console.log(`🎭 Animations ready (${elements.length} elements)`)
-        }
-
-        // === CONTACT PAGE TABS ===
-        initializeContactPageTabs() {
-          const tabButtons = document.querySelectorAll('.tab-button')
-          const tabContents = document.querySelectorAll('.tab-content')
-          
-          if (tabButtons.length === 0) return
-          
-          console.log('📋 Initializing contact page tabs...')
-          
-          tabButtons.forEach(button => {
-            this.addListener(button, 'click', (e) => {
-              e.preventDefault()
-              const tabId = button.dataset.tab
-              
-              if (!tabId) return
-              
-              console.log('📋 Tab clicked:', tabId)
-              
-              // Update button states
-              tabButtons.forEach(btn => {
-                btn.classList.remove('active', 'bg-blue-600', 'text-white')
-                btn.classList.add('text-gray-600', 'hover:text-gray-900')
-                
-                // Remove gradient classes if they exist
-                btn.classList.remove('bg-gradient-to-r', 'from-blue-500', 'to-indigo-500')
-              })
-              
-              // Style active button
-              button.classList.add('active', 'bg-blue-600', 'text-white')
-              button.classList.remove('text-gray-600', 'hover:text-gray-900')
-              
-              // Update content visibility
-              tabContents.forEach(content => {
-                content.classList.add('hidden')
-              })
-              
-              // Show target content
-              const targetContent = document.getElementById(`${tabId}-tab`)
-              if (targetContent) {
-                targetContent.classList.remove('hidden')
-                
-                // Trigger animations for elements in the new tab
-                const animatedElements = targetContent.querySelectorAll('.animate-on-scroll')
-                animatedElements.forEach(el => {
-                  el.classList.remove('animate-in')
-                  setTimeout(() => el.classList.add('animate-in'), 50)
-                })
-              }
-              
-              console.log('📋 Successfully switched to tab:', tabId)
-            })
-          })
-          
-          // Set initial active state
-          const activeButton = document.querySelector('.tab-button.active')
-          if (activeButton?.dataset.tab) {
-            const targetContent = document.getElementById(`${activeButton.dataset.tab}-tab`)
-            if (targetContent) {
-              targetContent.classList.remove('hidden')
-            }
-          }
-          
-          console.log('📋 Contact page tabs ready')
-        }
-
-        // === ACCORDION FUNCTIONALITY ===
-        initializeAccordionComponents() {
-          const accordionTriggers = document.querySelectorAll('[data-accordion-trigger]')
-          if (accordionTriggers.length === 0) return
-          
-          console.log('📖 Initializing accordion components...')
-          
-          accordionTriggers.forEach(trigger => {
-            this.addListener(trigger, 'click', (e) => {
-              e.preventDefault()
-              const target = trigger.dataset.accordionTrigger
-              const content = document.querySelector(`[data-accordion-content="${target}"]`)
-              const icon = trigger.querySelector('.accordion-icon')
-              
-              if (content) {
-                const isExpanded = trigger.getAttribute('aria-expanded') === 'true'
-                
-                trigger.setAttribute('aria-expanded', (!isExpanded).toString())
-                
-                if (isExpanded) {
-                  // Collapse
-                  content.classList.add('hidden')
-                  if (icon) icon.style.transform = 'rotate(0deg)'
-                } else {
-                  // Expand
-                  content.classList.remove('hidden')
-                  if (icon) icon.style.transform = 'rotate(180deg)'
-                }
-              }
-            })
-          })
-          
-          console.log('📖 Accordion components ready')
-        }
-        
-        // === PORTFOLIO FILTERS ===
-        initializePortfolioFilters() {
-          const section = document.getElementById('all-projects-section')
-          if (!section) return
-          
-          const searchInput = section.querySelector('#portfolio-search')
-          const categoryFilters = section.querySelectorAll('.portfolio-category-filter')
-          const techFilters = section.querySelectorAll('.portfolio-tech-filter')
-          const clearBtn = section.querySelector('#portfolio-clear-filters')
-          const selectedFiltersBar = section.querySelector('#selected-filters-bar')
-          
-          let filters = {
-            category: 'All',
-            technologies: [],
-            search: ''
-          }
-          
-          const updateSelectedFiltersBar = () => {
-            if (!selectedFiltersBar) return
-            
-            // Clear existing content
-            selectedFiltersBar.innerHTML = ''
-            
-            // Hide if no active technologies
-            if (filters.technologies.length === 0) {
-              selectedFiltersBar.classList.add('hidden')
-              return
-            }
-            
-            // Show and style the bar
-            selectedFiltersBar.classList.remove('hidden')
-            selectedFiltersBar.className = 'mb-8 flex flex-wrap items-center gap-3 bg-gray-100 border border-gray-200 rounded-xl p-4 shadow-sm'
-            
-            // Create pills for each active technology
-            filters.technologies.forEach(tech => {
-              const pill = document.createElement('div')
-              pill.className = 'flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold text-white bg-gradient-to-r from-blue-500 to-indigo-500 shadow-md hover:shadow-lg transition'
-              
-              pill.innerHTML = `
-                <span>${tech}</span>
-                <button class="text-white text-lg leading-none hover:text-gray-200 transition" title="Remove filter">&times;</button>
-              `
-              
-              // Add remove functionality
-              const removeButton = pill.querySelector('button')
-              if (removeButton) {
-                this.addListener(removeButton, 'click', () => {
-                  filters.technologies = filters.technologies.filter(t => t !== tech)
-                  
-                  // Update corresponding tech filter button
-                  const techFilterBtn = section.querySelector(`.portfolio-tech-filter[data-tech="${tech}"]`)
-                  if (techFilterBtn) {
-                    techFilterBtn.classList.remove('active')
-                    this.removeActiveStyles(techFilterBtn)
-                    this.addInactiveStyles(techFilterBtn)
-                  }
-                  
-                  updateSelectedFiltersBar()
-                  applyFilters()
-                })
-              }
-              
-              selectedFiltersBar.appendChild(pill)
-            })
-          }
-          
-          const applyFilters = () => {
-            const cards = section.querySelectorAll('.project-card')
-            let visible = 0
-            
-            cards.forEach(card => {
-              const category = card.dataset.category
-              const techs = card.dataset.technologies?.split(',') || []
-              const title = card.dataset.title?.toLowerCase() || ''
-              const desc = card.querySelector('p')?.textContent?.toLowerCase() || ''
-              
-              let show = true
-              
-              // Category filter
-              if (filters.category !== 'All' && category !== filters.category) {
-                show = false
-              }
-              
-              // Technology filter
-              if (filters.technologies.length > 0) {
-                const hasTech = filters.technologies.some(tech =>
-                  techs.some(cardTech => cardTech.trim().toLowerCase() === tech.toLowerCase())
-                )
-                if (!hasTech) show = false
-              }
-              
-              // Search filter
-              if (filters.search) {
-                const matches = title.includes(filters.search) || 
-                              desc.includes(filters.search) ||
-                              techs.some(tech => tech.toLowerCase().includes(filters.search))
-                if (!matches) show = false
-              }
-              
-              card.classList.toggle('hidden', !show)
-              if (show) visible++
-            })
-            
-            // Update count
-            const count = section.querySelector('#portfolio-results-count')
-            if (count) count.textContent = visible
-            
-            // Show/hide no results message
-            const noResults = section.querySelector('#portfolio-no-results')
-            if (noResults) {
-              noResults.classList.toggle('hidden', visible > 0)
-            }
-            
-            // Update clear button
-            if (clearBtn) {
-              const hasFilters = filters.category !== 'All' || 
-                              filters.technologies.length > 0 || 
-                              filters.search !== ''
-              clearBtn.classList.toggle('hidden', !hasFilters)
-            }
-            
-            // Update selected filters bar
-            updateSelectedFiltersBar()
-          }
-          
-          // Search functionality
-          if (searchInput) {
-            const search = this.debounce((e) => {
-              filters.search = e.target.value.toLowerCase()
-              applyFilters()
-            }, 300)
-            this.addListener(searchInput, 'input', search)
-          }
-          
-          // Category filters
-          categoryFilters.forEach(filter => {
-            this.addListener(filter, 'click', () => {
-              filters.category = filter.dataset.category || 'All'
-              
-              // Update UI for all category filters
-              categoryFilters.forEach(f => {
-                f.classList.remove('active')
-                this.removeActiveStyles(f)
-                this.addInactiveStyles(f)
-              })
-              
-              // Style active filter
-              filter.classList.add('active')
-              this.removeInactiveStyles(filter)
-              this.addActiveStyles(filter)
-              
-              applyFilters()
-            })
-          })
-          
-          // Technology filters
-          techFilters.forEach(filter => {
-            this.addListener(filter, 'click', () => {
-              const tech = filter.dataset.tech || ''
-              const index = filters.technologies.indexOf(tech)
-              
-              if (index > -1) {
-                // Remove technology
-                filters.technologies.splice(index, 1)
-                filter.classList.remove('active')
-                this.removeActiveStyles(filter)
-                this.addInactiveStyles(filter)
-              } else {
-                // Add technology
-                filters.technologies.push(tech)
-                filter.classList.add('active')
-                this.removeInactiveStyles(filter)
-                this.addActiveStyles(filter)
-              }
-              
-              applyFilters()
-            })
-          })
-          
-          // Clear filters
-          if (clearBtn) {
-            this.addListener(clearBtn, 'click', () => {
-              filters = { category: 'All', technologies: [], search: '' }
-              
-              // Reset search input
-              if (searchInput) searchInput.value = ''
-              
-              // Reset category filters
-              categoryFilters.forEach((f, i) => {
-                f.classList.remove('active')
-                this.removeActiveStyles(f)
-                this.addInactiveStyles(f)
-                
-                // Make first filter (All) active
-                if (i === 0) {
-                  f.classList.add('active')
-                  this.removeInactiveStyles(f)
-                  this.addActiveStyles(f)
-                }
-              })
-              
-              // Reset technology filters
-              techFilters.forEach(f => {
-                f.classList.remove('active')
-                this.removeActiveStyles(f)
-                this.addInactiveStyles(f)
-              })
-              
-              applyFilters()
-            })
-          }
-          
-          // Set initial state for category filters
-          categoryFilters.forEach((filter, i) => {
-            if (i === 0) {
-              // First filter (All) should be active by default
-              filter.classList.add('active')
-              this.addActiveStyles(filter)
-            } else {
-              this.addInactiveStyles(filter)
-            }
-          })
-          
-          // Set initial state for technology filters
-          techFilters.forEach(filter => {
-            this.addInactiveStyles(filter)
-          })
-          
-          // Initial application
-          applyFilters()
-          console.log('🎨 Portfolio filters ready')
-        }
-        
-        // === FILTER STYLING HELPERS ===
-        addActiveStyles(element) {
-          element.classList.add('bg-gradient-to-r', 'from-blue-500', 'to-indigo-500', 'text-white', 'shadow-lg', 'border-transparent')
-          element.classList.remove('bg-white', 'text-gray-700', 'border-gray-300', 'hover:border-blue-500', 'hover:text-blue-600')
-        }
-        
-        removeActiveStyles(element) {
-          element.classList.remove('bg-gradient-to-r', 'from-blue-500', 'to-indigo-500', 'text-white', 'shadow-lg', 'border-transparent')
-        }
-        
-        addInactiveStyles(element) {
-          element.classList.add('bg-white', 'text-gray-700', 'border', 'border-gray-300', 'hover:border-blue-500', 'hover:text-blue-600', 'shadow-sm')
-        }
-        
-        removeInactiveStyles(element) {
-          element.classList.remove('bg-white', 'text-gray-700', 'border', 'border-gray-300', 'hover:border-blue-500', 'hover:text-blue-600', 'shadow-sm')
-        }
-        
-        // === COOKIE CONSENT ===
-        initializeCookieConsent() {
-          const banner = document.getElementById('cookie-consent-banner');
-          const acceptBtn = document.getElementById('cookie-accept-all');
-          const settingsBtn = document.getElementById('cookie-settings');
-          
-          if (!banner) return;
-          
-          // Check if user has already made a choice
-          const consent = this.getCookie('cookie-consent');
-          if (!consent) {
-            // Show banner if no previous consent
-            banner.classList.remove('hidden');
-            setTimeout(() => banner.classList.remove('translate-y-full'), 100);
-          }
-          
-          // Accept all button on banner
-          if (acceptBtn) {
-            this.addListener(acceptBtn, 'click', () => {
-              window.acceptAllGlobalCookies();
-              banner.classList.add('translate-y-full');
-              setTimeout(() => banner.classList.add('hidden'), 300);
-            });
-          }
-          
-          // Cookie settings button (if exists)
-          if (settingsBtn) {
-            this.addListener(settingsBtn, 'click', () => {
-              window.showGlobalCookieModal();
-              // Hide banner when opening settings
-              banner.classList.add('translate-y-full');
-              setTimeout(() => banner.classList.add('hidden'), 300);
-            });
-          }
-          
-          console.log('🍪 Cookie consent ready');
-        }
-        
-        // === PAGE TRANSITIONS ===
-        initializePageTransitions() {
-          const loading = document.getElementById('page-loading')
-          
-          this.addListener(document, 'astro:before-preparation', () => {
-            if (loading) {
-              loading.style.display = 'block'
-              loading.classList.remove('-translate-x-full')
-            }
-          })
-          
-          this.addListener(document, 'astro:after-swap', () => {
-            if (loading) {
-              loading.classList.add('-translate-x-full')
-              setTimeout(() => loading.style.display = 'none', 300)
-            }
-            
-            // Reinitialize after page change
+            // Emergency fallback - basic navigation
             setTimeout(() => {
-              this.initialized = false
-              this.init()
-            }, 200)
+              const btn = document.getElementById('mobile-menu-button')
+              const menu = document.getElementById('mobile-menu')
+              if (btn && menu) {
+                btn.addEventListener('click', () => {
+                  menu.classList.toggle('hidden')
+                })
+              }
+            }, 100)
           })
-          
-          console.log('🔄 Page transitions ready')
-        }
-        
-        // === UTILITIES ===
-        addListener(element, event, handler, options = {}) {
-          element.addEventListener(event, handler, options)
-          this.eventListeners.push({ element, event, handler })
-        }
-        
-        debounce(func, wait) {
-          let timeout
-          return (...args) => {
-            clearTimeout(timeout)
-            timeout = setTimeout(() => func.apply(this, args), wait)
-          }
-        }
-        
-        getCookie(name) {
-          const value = `; ${document.cookie}`
-          const parts = value.split(`; ${name}=`)
-          if (parts.length === 2) return parts.pop().split(';').shift()
-          return null
-        }
-        
-        setCookie(name, value, days) {
-          const expires = new Date()
-          expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000))
-          document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/;SameSite=Lax`
-        }
-        
-        cleanup() {
-          // Remove old listeners
-          this.eventListeners.forEach(({ element, event, handler }) => {
-            try {
-              element.removeEventListener(event, handler)
-            } catch (e) {}
-          })
-          this.eventListeners = []
-          
-          // Disconnect observers
-          this.observers.forEach(observer => {
-            try {
-              observer.disconnect()
-            } catch (e) {}
-          })
-          this.observers = []
-        }
-      }
-
-      // === GLOBAL COOKIE MODAL FUNCTIONS ===
-      // These must be global to work with onclick handlers
-
-      // Show the global cookie modal
-      function showGlobalCookieModal() {
-        const modal = document.getElementById('global-cookie-modal');
-        if (modal) {
-          modal.classList.remove('hidden');
-          document.body.style.overflow = 'hidden';
-          
-          // Load current preferences
-          const consent = getCookieValue('cookie-consent');
-          if (consent) {
-            try {
-              const preferences = JSON.parse(consent);
-              const analyticsToggle = document.getElementById('global-analytics-toggle');
-              const performanceToggle = document.getElementById('global-performance-toggle');
-              
-              if (analyticsToggle) analyticsToggle.checked = preferences.analytics || false;
-              if (performanceToggle) performanceToggle.checked = preferences.performance || false;
-            } catch (e) {
-              console.warn('Failed to parse cookie preferences');
-            }
-          }
-        }
-      }
-
-      // Close the global cookie modal
-      function closeGlobalCookieModal() {
-        const modal = document.getElementById('global-cookie-modal');
-        if (modal) {
-          modal.classList.add('hidden');
-          document.body.style.overflow = '';
-        }
-      }
-
-      // Accept all cookies
-      function acceptAllGlobalCookies() {
-        const preferences = {
-          analytics: true,
-          performance: true,
-          timestamp: new Date().toISOString()
-        };
-        
-        setCookieValue('cookie-consent', JSON.stringify(preferences), 365);
-        
-        // Update toggles
-        const analyticsToggle = document.getElementById('global-analytics-toggle');
-        const performanceToggle = document.getElementById('global-performance-toggle');
-        if (analyticsToggle) analyticsToggle.checked = true;
-        if (performanceToggle) performanceToggle.checked = true;
-        
-        // Initialize analytics
-        if (window.unifiedManager) {
-          window.unifiedManager.initializeGoogleAnalytics();
-        }
-        
-        closeGlobalCookieModal();
-        console.log('✅ All cookies accepted');
-      }
-
-      // Save user preferences
-      function saveGlobalPreferences() {
-        const analyticsToggle = document.getElementById('global-analytics-toggle');
-        const performanceToggle = document.getElementById('global-performance-toggle');
-        
-        const preferences = {
-          analytics: analyticsToggle ? analyticsToggle.checked : false,
-          performance: performanceToggle ? performanceToggle.checked : false,
-          timestamp: new Date().toISOString()
-        };
-        
-        setCookieValue('cookie-consent', JSON.stringify(preferences), 365);
-        
-        // Initialize analytics if enabled
-        if (preferences.analytics && window.unifiedManager) {
-          window.unifiedManager.initializeGoogleAnalytics();
-        }
-        
-        closeGlobalCookieModal();
-        console.log('💾 Cookie preferences saved:', preferences);
-      }
-
-      // Reject all non-essential cookies
-      function rejectAllGlobalCookies() {
-        const preferences = {
-          analytics: false,
-          performance: false,
-          timestamp: new Date().toISOString()
-        };
-        
-        setCookieValue('cookie-consent', JSON.stringify(preferences), 365);
-        
-        // Update toggles
-        const analyticsToggle = document.getElementById('global-analytics-toggle');
-        const performanceToggle = document.getElementById('global-performance-toggle');
-        if (analyticsToggle) analyticsToggle.checked = false;
-        if (performanceToggle) performanceToggle.checked = false;
-        
-        // Remove any existing analytics cookies
-        deleteCookie('_ga');
-        deleteCookie('_ga_' + (GA_MEASUREMENT_ID ? GA_MEASUREMENT_ID.replace('G-', '') : ''));
-        deleteCookie('_gid');
-        
-        closeGlobalCookieModal();
-        console.log('❌ All cookies rejected');
-      }
-
-      // Helper functions for cookie management
-      function getCookieValue(name) {
-        const value = `; ${document.cookie}`;
-        const parts = value.split(`; ${name}=`);
-        if (parts.length === 2) return parts.pop().split(';').shift();
-        return null;
-      }
-
-      function setCookieValue(name, value, days) {
-        const expires = new Date();
-        expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
-        document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/;SameSite=Lax`;
-      }
-
-      function deleteCookie(name) {
-        document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
-      }
-
-      // Optional: Add a way to reopen the modal
-      function openCookieSettings() {
-        showGlobalCookieModal();
-      }
-
-      // Make functions globally available
-      window.showGlobalCookieModal = showGlobalCookieModal;
-      window.closeGlobalCookieModal = closeGlobalCookieModal;
-      window.acceptAllGlobalCookies = acceptAllGlobalCookies;
-      window.saveGlobalPreferences = saveGlobalPreferences;
-      window.rejectAllGlobalCookies = rejectAllGlobalCookies;
-      window.openCookieSettings = openCookieSettings;
-      
-      // Close modal when clicking outside
-      document.addEventListener('click', (e) => {
-        const modal = document.getElementById('global-cookie-modal');
-        if (modal && e.target === modal) {
-          closeGlobalCookieModal();
-        }
-      });
-
-      // Close modal with Escape key
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-          closeGlobalCookieModal();
-        }
-      });
-      
-      // Initialize the unified manager
-      try {
-        new UnifiedSiteManager()
-      } catch (error) {
-        console.error('Unified Manager failed:', error)
-        
-        // Emergency navigation fallback
-        setTimeout(() => {
-          const btn = document.getElementById('mobile-menu-button')
-          const menu = document.getElementById('mobile-menu')
-          if (btn && menu) {
-            btn.addEventListener('click', () => menu.classList.toggle('hidden'))
-          }
-        }, 1000)
-      }
-      
-      // Image error handling
-      window.addEventListener('error', (e) => {
-        if (e.target?.tagName === 'IMG') {
-          console.log('Image failed:', e.target.src)
-          e.target.style.display = 'none'
-        }
-      }, true)
-    </script>
+        })
+      </script>
+    </CookieProvider>
   </body>
 </html>

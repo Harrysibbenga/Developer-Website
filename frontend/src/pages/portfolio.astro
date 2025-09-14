@@ -3,8 +3,8 @@
 import Layout from '../layouts/Layout.astro'
 import { BUSINESS_INFO } from '../utils/constants'
 import { getAllProjects, getUniqueCategories, getUniqueTechnologies } from '../utils/projects'
-import FeaturedProjectsContainer from '../components/portfolio/FeaturedProjectsContainer.astro'
-import AllProjectsContainer from '../components/portfolio/AllProjectsContainer.astro'
+import FeaturedProjectsSection from '../components/portfolio/FeaturedProjectsSection.vue'
+import ProjectGalleryVue from '../components/projects/ProjectGallery.vue'
 
 const pageTitle = 'Portfolio - Web Development Projects'
 const pageDescription = `Explore ${BUSINESS_INFO.name}'s complete portfolio of web development projects, featuring modern websites, web applications, and digital solutions built with Python, Vue.js, and more.`
@@ -59,8 +59,19 @@ const technologies = getUniqueTechnologies()
     <!-- Projects Container Section -->
     <section class="py-20">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <FeaturedProjectsContainer />
-        <AllProjectsContainer />
+        <FeaturedProjectsSection client:load="vue" />
+
+        <section id="all-projects" class="py-12">
+          <!-- Section Header -->
+          <div class="text-center mb-12">
+            <h2 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">All Projects</h2>
+            <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+              Explore the complete collection of web development projects, from live applications to enterprise solutions
+            </p>
+          </div>
+      
+          <ProjectGalleryVue client:only="vue" variant="light"/>
+        </section>
       </div>
     </section>
 

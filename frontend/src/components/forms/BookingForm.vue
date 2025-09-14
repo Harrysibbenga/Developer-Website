@@ -24,6 +24,23 @@
       </div>
     </div>
 
+    <!-- Loading Overlay for Form -->
+    <div v-if="formHandler.getState().loading" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center">
+      <div class="bg-white rounded-2xl p-8 max-w-sm mx-4 text-center shadow-2xl">
+        <div class="w-16 h-16 mx-auto mb-4">
+          <svg class="animate-spin w-16 h-16 text-blue-600" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+        </div>
+        <h3 class="text-lg font-semibold text-gray-900 mb-2">Submitting Your Request</h3>
+        <p class="text-gray-600">Please wait while we process your project details...</p>
+        <div class="mt-4 bg-gray-200 rounded-full h-2">
+          <div class="bg-blue-600 h-2 rounded-full animate-pulse" style="width: 75%"></div>
+        </div>
+      </div>
+    </div>
+
     <!-- Form Steps -->
     <form @submit.prevent="handleSubmit" class="space-y-8">
       
@@ -40,7 +57,7 @@
           <!-- Service Selection -->
           <div class="mb-8">
             <label class="block text-lg font-semibold text-gray-900 mb-4">
-              What type of project do you need?
+              What type of project do you need? *
             </label>
             <div class="grid md:grid-cols-2 gap-4">
               <div 
@@ -59,7 +76,7 @@
                   required
                 />
                 <div class="p-6 rounded-xl border-2 transition-all duration-300 hover:shadow-md"
-                     :class="formHandler.hasFieldError('service_type') ? 'border-red-300' : ''">
+                     :class="formHandler.hasFieldError('service_type') ? 'border-red-300 bg-red-50' : ''">
                   <div class="flex items-start space-x-4">
                     <div class="text-3xl">{{ service.icon }}</div>
                     <div class="flex-1">
@@ -77,7 +94,7 @@
                 </div>
               </div>
             </div>
-            <p v-if="formHandler.hasFieldError('service_type')" class="mt-2 text-sm text-red-600">
+            <p v-if="formHandler.hasFieldError('service_type')" class="mt-2 text-sm text-red-600 font-medium">
               {{ formHandler.getFieldErrors('service_type')[0] }}
             </p>
           </div>
@@ -93,12 +110,13 @@
                 id="projectName"
                 :value="formData.project_name"
                 @input="updateField('project_name', $event.target.value)"
-                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                :class="formHandler.hasFieldError('project_name') ? 'border-red-300' : ''"
+                @blur="validateField('project_name')"
+                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                :class="formHandler.hasFieldError('project_name') ? 'border-red-300 bg-red-50 focus:ring-red-500' : ''"
                 placeholder="e.g., Company Website Redesign"
                 required
               />
-              <p v-if="formHandler.hasFieldError('project_name')" class="mt-1 text-sm text-red-600">
+              <p v-if="formHandler.hasFieldError('project_name')" class="mt-1 text-sm text-red-600 font-medium">
                 {{ formHandler.getFieldErrors('project_name')[0] }}
               </p>
             </div>
@@ -111,8 +129,9 @@
                 id="timeline"
                 :value="formData.timeline"
                 @change="updateField('timeline', $event.target.value)"
-                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                :class="formHandler.hasFieldError('timeline') ? 'border-red-300' : ''"
+                @blur="validateField('timeline')"
+                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                :class="formHandler.hasFieldError('timeline') ? 'border-red-300 bg-red-50 focus:ring-red-500' : ''"
                 required
               >
                 <option value="">Select timeline</option>
@@ -120,7 +139,7 @@
                   {{ timeline }}
                 </option>
               </select>
-              <p v-if="formHandler.hasFieldError('timeline')" class="mt-1 text-sm text-red-600">
+              <p v-if="formHandler.hasFieldError('timeline')" class="mt-1 text-sm text-red-600 font-medium">
                 {{ formHandler.getFieldErrors('timeline')[0] }}
               </p>
             </div>
@@ -192,17 +211,20 @@
               id="projectDescription"
               :value="formData.description"
               @input="updateField('description', $event.target.value)"
+              @blur="validateField('description')"
               rows="6"
-              class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              :class="formHandler.hasFieldError('description') ? 'border-red-300' : ''"
+              class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+              :class="formHandler.hasFieldError('description') ? 'border-red-300 bg-red-50 focus:ring-red-500' : ''"
               placeholder="Please describe your project requirements, goals, and any specific functionality you need..."
               required
             ></textarea>
-            <p v-if="formHandler.hasFieldError('description')" class="mt-1 text-sm text-red-600">
+            <p v-if="formHandler.hasFieldError('description')" class="mt-1 text-sm text-red-600 font-medium">
               {{ formHandler.getFieldErrors('description')[0] }}
             </p>
             <div class="mt-1 text-right">
-              <span class="text-sm text-gray-500">{{ formData.description.length }}/2000</span>
+              <span class="text-sm" :class="characterCountColor">
+                {{ formData.description.length }}/2000
+              </span>
             </div>
           </div>
         </div>
@@ -229,11 +251,12 @@
                     id="firstName"
                     :value="formData.first_name"
                     @input="updateField('first_name', $event.target.value)"
-                    class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    :class="formHandler.hasFieldError('first_name') ? 'border-red-300' : ''"
+                    @blur="validateField('first_name')"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                    :class="formHandler.hasFieldError('first_name') ? 'border-red-300 bg-red-50 focus:ring-red-500' : ''"
                     required
                   />
-                  <p v-if="formHandler.hasFieldError('first_name')" class="mt-1 text-sm text-red-600">
+                  <p v-if="formHandler.hasFieldError('first_name')" class="mt-1 text-sm text-red-600 font-medium">
                     {{ formHandler.getFieldErrors('first_name')[0] }}
                   </p>
                 </div>
@@ -247,11 +270,12 @@
                     id="lastName"
                     :value="formData.last_name"
                     @input="updateField('last_name', $event.target.value)"
-                    class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    :class="formHandler.hasFieldError('last_name') ? 'border-red-300' : ''"
+                    @blur="validateField('last_name')"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                    :class="formHandler.hasFieldError('last_name') ? 'border-red-300 bg-red-50 focus:ring-red-500' : ''"
                     required
                   />
-                  <p v-if="formHandler.hasFieldError('last_name')" class="mt-1 text-sm text-red-600">
+                  <p v-if="formHandler.hasFieldError('last_name')" class="mt-1 text-sm text-red-600 font-medium">
                     {{ formHandler.getFieldErrors('last_name')[0] }}
                   </p>
                 </div>
@@ -266,11 +290,12 @@
                   id="email"
                   :value="formData.email"
                   @input="updateField('email', $event.target.value)"
-                  class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  :class="formHandler.hasFieldError('email') ? 'border-red-300' : ''"
+                  @blur="validateField('email')"
+                  class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                  :class="formHandler.hasFieldError('email') ? 'border-red-300 bg-red-50 focus:ring-red-500' : ''"
                   required
                 />
-                <p v-if="formHandler.hasFieldError('email')" class="mt-1 text-sm text-red-600">
+                <p v-if="formHandler.hasFieldError('email')" class="mt-1 text-sm text-red-600 font-medium">
                   {{ formHandler.getFieldErrors('email')[0] }}
                 </p>
               </div>
@@ -284,10 +309,11 @@
                   id="phone"
                   :value="formData.phone"
                   @input="updateField('phone', $event.target.value)"
-                  class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  :class="formHandler.hasFieldError('phone') ? 'border-red-300' : ''"
+                  @blur="validateField('phone')"
+                  class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                  :class="formHandler.hasFieldError('phone') ? 'border-red-300 bg-red-50 focus:ring-red-500' : ''"
                 />
-                <p v-if="formHandler.hasFieldError('phone')" class="mt-1 text-sm text-red-600">
+                <p v-if="formHandler.hasFieldError('phone')" class="mt-1 text-sm text-red-600 font-medium">
                   {{ formHandler.getFieldErrors('phone')[0] }}
                 </p>
               </div>
@@ -301,7 +327,7 @@
                   id="company"
                   :value="formData.company"
                   @input="updateField('company', $event.target.value)"
-                  class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                 />
               </div>
 
@@ -314,11 +340,12 @@
                   id="website"
                   :value="formData.website"
                   @input="updateField('website', $event.target.value)"
-                  class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  :class="formHandler.hasFieldError('website') ? 'border-red-300' : ''"
+                  @blur="validateField('website')"
+                  class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                  :class="formHandler.hasFieldError('website') ? 'border-red-300 bg-red-50 focus:ring-red-500' : ''"
                   placeholder="https://example.com"
                 />
-                <p v-if="formHandler.hasFieldError('website')" class="mt-1 text-sm text-red-600">
+                <p v-if="formHandler.hasFieldError('website')" class="mt-1 text-sm text-red-600 font-medium">
                   {{ formHandler.getFieldErrors('website')[0] }}
                 </p>
               </div>
@@ -331,8 +358,9 @@
                   id="budget"
                   :value="formData.budget_range"
                   @change="updateField('budget_range', $event.target.value)"
-                  class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  :class="formHandler.hasFieldError('budget_range') ? 'border-red-300' : ''"
+                  @blur="validateField('budget_range')"
+                  class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                  :class="formHandler.hasFieldError('budget_range') ? 'border-red-300 bg-red-50 focus:ring-red-500' : ''"
                   required
                 >
                   <option value="">Select budget range</option>
@@ -340,7 +368,7 @@
                     {{ budget }}
                   </option>
                 </select>
-                <p v-if="formHandler.hasFieldError('budget_range')" class="mt-1 text-sm text-red-600">
+                <p v-if="formHandler.hasFieldError('budget_range')" class="mt-1 text-sm text-red-600 font-medium">
                   {{ formHandler.getFieldErrors('budget_range')[0] }}
                 </p>
               </div>
@@ -431,7 +459,7 @@
           type="button"
           @click="previousStep"
           :disabled="formHandler.getState().loading"
-          class="inline-flex items-center px-6 py-3 border border-gray-300 text-gray-700 rounded-xl font-medium hover:bg-gray-50 transition-all duration-300 disabled:opacity-50"
+          class="inline-flex items-center px-6 py-3 border border-gray-300 text-gray-700 rounded-xl font-medium hover:bg-gray-50 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <ChevronLeft class="w-5 h-5 mr-2" />
           Previous
@@ -445,14 +473,21 @@
           :disabled="!canProceed || formHandler.getState().loading"
           class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-medium hover:from-blue-700 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
         >
-          Next
+          <span v-if="!isValidating">Next</span>
+          <span v-else class="flex items-center">
+            <svg class="animate-spin w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Validating...
+          </span>
           <ChevronRight class="w-5 h-5 ml-2" />
         </button>
 
         <button
           v-else
           type="submit"
-          :disabled="formHandler.getState().loading || !canProceed"
+          :disabled="formHandler.getState().loading || !canProceed || isValidating"
           class="inline-flex items-center px-8 py-3 bg-gradient-to-r from-green-600 to-blue-600 text-white rounded-xl font-medium hover:from-green-700 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
         >
           <span v-if="!formHandler.getState().loading">Submit Project Request</span>
@@ -473,7 +508,7 @@
       class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50"
       @click="closeSuccessModal"
     >
-      <div class="bg-white rounded-2xl p-8 max-w-md mx-4 text-center">
+      <div class="bg-white rounded-2xl p-8 max-w-md mx-4 text-center shadow-2xl">
         <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
           <svg class="w-8 h-8 text-green-600" fill="currentColor" viewBox="0 0 20 20">
             <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
@@ -505,6 +540,7 @@ import type { BookingCreate, ServiceType } from '../../types/api'
 const currentStep = ref(1)
 const totalSteps = ref(3)
 const isSubmitted = ref(false)
+const isValidating = ref(false)
 
 // Initial form data matching API types
 const initialFormData: BookingCreate = {
@@ -555,11 +591,123 @@ const projectFeatures = [
 const updateField = (field: keyof BookingCreate, value: any) => {
   formData[field] = value
   formHandler.setField(field, value)
+  
+  // Clear field error when user starts typing
+  if (formHandler.hasFieldError(field as string)) {
+    formHandler.clearFieldErrors([field as string])
+  }
 }
 
-// Client-side validation
-const validateStep = (step: number): boolean => {
+// Individual field validation
+const validateField = (field: keyof BookingCreate) => {
+  const errors: Array<{ field: string; message: string }> = []
+  
+  switch (field) {
+    case 'service_type':
+      if (!formData.service_type) {
+        errors.push({ field: 'service_type', message: 'Please select a service type' })
+      }
+      break
+      
+    case 'project_name':
+      if (!formData.project_name?.trim()) {
+        errors.push({ field: 'project_name', message: 'Project name is required' })
+      } else if (formData.project_name.trim().length < 3) {
+        errors.push({ field: 'project_name', message: 'Project name must be at least 3 characters' })
+      } else if (formData.project_name.length > 100) {
+        errors.push({ field: 'project_name', message: 'Project name must be less than 100 characters' })
+      }
+      break
+      
+    case 'timeline':
+      if (!formData.timeline) {
+        errors.push({ field: 'timeline', message: 'Please select a timeline' })
+      }
+      break
+      
+    case 'description':
+      if (!formData.description?.trim()) {
+        errors.push({ field: 'description', message: 'Project description is required' })
+      } else if (formData.description.trim().length < 20) {
+        errors.push({ field: 'description', message: 'Please provide a more detailed description (at least 20 characters)' })
+      } else if (formData.description.length > 2000) {
+        errors.push({ field: 'description', message: 'Description must be less than 2000 characters' })
+      }
+      break
+      
+    case 'first_name':
+      if (!formData.first_name?.trim()) {
+        errors.push({ field: 'first_name', message: 'First name is required' })
+      } else if (formData.first_name.trim().length < 2) {
+        errors.push({ field: 'first_name', message: 'First name must be at least 2 characters' })
+      } else if (formData.first_name.length > 50) {
+        errors.push({ field: 'first_name', message: 'First name must be less than 50 characters' })
+      }
+      break
+      
+    case 'last_name':
+      if (!formData.last_name?.trim()) {
+        errors.push({ field: 'last_name', message: 'Last name is required' })
+      } else if (formData.last_name.trim().length < 2) {
+        errors.push({ field: 'last_name', message: 'Last name must be at least 2 characters' })
+      } else if (formData.last_name.length > 50) {
+        errors.push({ field: 'last_name', message: 'Last name must be less than 50 characters' })
+      }
+      break
+      
+    case 'email':
+      if (!formData.email?.trim()) {
+        errors.push({ field: 'email', message: 'Email address is required' })
+      } else {
+        const emailError = validators.email(formData.email.trim())
+        if (emailError) {
+          errors.push({ field: 'email', message: emailError })
+        }
+      }
+      break
+      
+    case 'phone':
+      if (formData.phone && formData.phone.trim()) {
+        const phoneError = validators.phone(formData.phone.trim())
+        if (phoneError) {
+          errors.push({ field: 'phone', message: phoneError })
+        }
+      }
+      break
+      
+    case 'website':
+      if (formData.website && formData.website.trim()) {
+        const urlError = validators.url(formData.website.trim())
+        if (urlError) {
+          errors.push({ field: 'website', message: urlError })
+        }
+      }
+      break
+      
+    case 'budget_range':
+      if (!formData.budget_range) {
+        errors.push({ field: 'budget_range', message: 'Please select a budget range' })
+      }
+      break
+  }
+  
+  // Clear existing errors for this field first
+  formHandler.clearFieldErrors([field as string])
+  
+  // Set new errors if any
+  if (errors.length > 0) {
+    formHandler.setErrors([...formHandler.getState().errors.filter(e => e.field !== field), ...errors])
+  }
+}
+
+// Client-side validation for step progression
+const validateStep = async (step: number): Promise<boolean> => {
+  isValidating.value = true
   formHandler.clearErrors()
+  
+  // Add a small delay to show validation state
+  await new Promise(resolve => setTimeout(resolve, 300))
+  
   const errors: Array<{ field: string; message: string }> = []
 
   switch (step) {
@@ -567,9 +715,9 @@ const validateStep = (step: number): boolean => {
       if (!formData.service_type) {
         errors.push({ field: 'service_type', message: 'Please select a service type' })
       }
-      if (!formData.project_name.trim()) {
+      if (!formData.project_name?.trim()) {
         errors.push({ field: 'project_name', message: 'Project name is required' })
-      } else if (formData.project_name.length < 3) {
+      } else if (formData.project_name.trim().length < 3) {
         errors.push({ field: 'project_name', message: 'Project name must be at least 3 characters' })
       }
       if (!formData.timeline) {
@@ -578,9 +726,9 @@ const validateStep = (step: number): boolean => {
       break
 
     case 2:
-      if (!formData.description.trim()) {
+      if (!formData.description?.trim()) {
         errors.push({ field: 'description', message: 'Project description is required' })
-      } else if (formData.description.length < 20) {
+      } else if (formData.description.trim().length < 20) {
         errors.push({ field: 'description', message: 'Please provide a more detailed description (at least 20 characters)' })
       } else if (formData.description.length > 2000) {
         errors.push({ field: 'description', message: 'Description must be less than 2000 characters' })
@@ -588,39 +736,55 @@ const validateStep = (step: number): boolean => {
       break
 
     case 3:
-      if (!formData.first_name.trim()) {
-        errors.push({ field: 'first_name', message: 'First name is required' })
+      // Required fields validation
+      const requiredFields = [
+        { field: 'first_name', message: 'First name is required' },
+        { field: 'last_name', message: 'Last name is required' },
+        { field: 'email', message: 'Email address is required' },
+        { field: 'budget_range', message: 'Please select a budget range' }
+      ]
+      
+      requiredFields.forEach(({ field, message }) => {
+        if (!formData[field as keyof BookingCreate] || !String(formData[field as keyof BookingCreate]).trim()) {
+          errors.push({ field, message })
+        }
+      })
+      
+      // Additional validations
+      if (formData.first_name && formData.first_name.trim().length < 2) {
+        errors.push({ field: 'first_name', message: 'First name must be at least 2 characters' })
       }
-      if (!formData.last_name.trim()) {
-        errors.push({ field: 'last_name', message: 'Last name is required' })
+      if (formData.last_name && formData.last_name.trim().length < 2) {
+        errors.push({ field: 'last_name', message: 'Last name must be at least 2 characters' })
       }
       
-      const emailError = validators.email(formData.email)
-      if (!formData.email.trim()) {
-        errors.push({ field: 'email', message: 'Email address is required' })
-      } else if (emailError) {
-        errors.push({ field: 'email', message: emailError })
+      // Email validation
+      if (formData.email) {
+        const emailError = validators.email(formData.email.trim())
+        if (emailError) {
+          errors.push({ field: 'email', message: emailError })
+        }
       }
 
+      // Phone validation (if provided)
       if (formData.phone && formData.phone.trim()) {
-        const phoneError = validators.phone(formData.phone)
+        const phoneError = validators.phone(formData.phone.trim())
         if (phoneError) {
           errors.push({ field: 'phone', message: phoneError })
         }
       }
 
+      // Website validation (if provided)
       if (formData.website && formData.website.trim()) {
-        const urlError = validators.url(formData.website)
+        const urlError = validators.url(formData.website.trim())
         if (urlError) {
           errors.push({ field: 'website', message: urlError })
         }
       }
-
-      if (!formData.budget_range) {
-        errors.push({ field: 'budget_range', message: 'Please select a budget range' })
-      }
       break
   }
+
+  isValidating.value = false
 
   if (errors.length > 0) {
     formHandler.setErrors(errors)
@@ -634,20 +798,31 @@ const validateStep = (step: number): boolean => {
 const canProceed = computed(() => {
   switch (currentStep.value) {
     case 1:
-      return formData.service_type && formData.project_name && formData.timeline
+      return formData.service_type && formData.project_name?.trim() && formData.timeline
     case 2:
-      return formData.description.length > 20
+      return formData.description?.trim() && formData.description.length >= 20
     case 3:
-      return formData.first_name && formData.last_name && formData.email && formData.budget_range
+      return formData.first_name?.trim() && 
+             formData.last_name?.trim() && 
+             formData.email?.trim() && 
+             formData.budget_range &&
+             !formHandler.hasErrors()
     default:
       return false
   }
 })
 
+const characterCountColor = computed(() => {
+  const length = formData.description?.length || 0
+  if (length > 1800) return 'text-red-600'
+  if (length > 1500) return 'text-yellow-600'
+  return 'text-gray-500'
+})
+
 const projectComplexity = computed(() => {
-  const featureCount = formData.features.length
-  const techCount = formData.technologies.length
-  const descriptionLength = formData.description.length
+  const featureCount = formData.features?.length || 0
+  const techCount = formData.technologies?.length || 0
+  const descriptionLength = formData.description?.length || 0
   
   const score = featureCount * 10 + techCount * 5 + Math.min(descriptionLength / 10, 20)
   
@@ -657,8 +832,8 @@ const projectComplexity = computed(() => {
 })
 
 const complexityPercentage = computed(() => {
-  const featureCount = formData.features.length
-  const techCount = formData.technologies.length
+  const featureCount = formData.features?.length || 0
+  const techCount = formData.technologies?.length || 0
   return Math.min(((featureCount + techCount) / 16) * 100, 100)
 })
 
@@ -697,8 +872,8 @@ const estimatedTimeline = computed(() => {
 })
 
 // Methods
-const nextStep = () => {
-  if (validateStep(currentStep.value) && canProceed.value && currentStep.value < totalSteps.value) {
+const nextStep = async () => {
+  if (await validateStep(currentStep.value) && canProceed.value && currentStep.value < totalSteps.value) {
     currentStep.value++
   }
 }
@@ -731,24 +906,24 @@ const toggleFeature = (feature: string) => {
 }
 
 const handleSubmit = async () => {
-  if (!validateStep(3) || !canProceed.value) return
+  if (!await validateStep(3) || !canProceed.value) return
   
   // Prepare data for API submission
   const submissionData: BookingCreate = {
     service_type: formData.service_type,
-    project_name: formData.project_name,
-    description: formData.description,
+    project_name: formData.project_name.trim(),
+    description: formData.description.trim(),
     timeline: formData.timeline,
     budget_range: formData.budget_range,
     technologies: formData.technologies,
     features: formData.features,
     additional_info: '', // Can be populated from additional fields if needed
-    first_name: formData.first_name,
-    last_name: formData.last_name,
-    email: formData.email,
-    phone: formData.phone || undefined,
-    company: formData.company || undefined,
-    website: formData.website || undefined
+    first_name: formData.first_name.trim(),
+    last_name: formData.last_name.trim(),
+    email: formData.email.trim(),
+    phone: formData.phone?.trim() || undefined,
+    company: formData.company?.trim() || undefined,
+    website: formData.website?.trim() || undefined
   }
 
   try {

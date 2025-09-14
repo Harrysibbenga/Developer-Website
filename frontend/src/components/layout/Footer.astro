@@ -1,8 +1,8 @@
 ---
-// src/components/layout/Footer.astro
+// src/components/layout/Footer.astro - Optimized Version
 /**
- * Footer component with business information, links, and social media
- * Professional design with contact information and service areas
+ * Footer component - optimized to use FormManager
+ * Removed duplicate form logic, simplified to focus on presentation
  */
 
  import { BUSINESS_INFO, SERVICES } from '../../utils/constants'
@@ -30,10 +30,10 @@ const legalLinks = [
   { name: 'Cookie Policy', href: '/cookies' }
 ]
 
-const serviceAreas = BUSINESS_INFO.serviceAreas.slice(0, 6) // Show first 6 areas
+const serviceAreas = BUSINESS_INFO.serviceAreas.slice(0, 6)
 ---
 
-<footer class="bg-gray-900 text-white relative overflow-hidden">
+<footer class="bg-gray-900 text-white relative overflow-hidden" data-component="footer">
   <!-- Background Pattern -->
   <div class="absolute inset-0 opacity-5">
     <div class="grid grid-cols-12 gap-2 h-full">
@@ -200,20 +200,20 @@ const serviceAreas = BUSINESS_INFO.serviceAreas.slice(0, 6) // Show first 6 area
           </h3>
           <div class="flex space-x-4">
             <a
-            href={BUSINESS_INFO.social.ticktock}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center text-gray-400 hover:text-black hover:bg-white transition-all duration-300 group"
-            aria-label="TikTok Profile"
+              href={BUSINESS_INFO.social.ticktock}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center text-gray-400 hover:text-black hover:bg-white transition-all duration-300 group"
+              aria-label="TikTok Profile"
             >
-            <svg
-              class="w-5 h-5 group-hover:scale-110 transition-transform"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 640 640"
-              fill="currentColor"
-            >
-              <path d="M544.5 273.9C500.5 274 457.5 260.3 421.7 234.7L421.7 413.4C421.7 446.5 411.6 478.8 392.7 506C373.8 533.2 347.1 554 316.1 565.6C285.1 577.2 251.3 579.1 219.2 570.9C187.1 562.7 158.3 545 136.5 520.1C114.7 495.2 101.2 464.1 97.5 431.2C93.8 398.3 100.4 365.1 116.1 336C131.8 306.9 156.1 283.3 185.7 268.3C215.3 253.3 248.6 247.8 281.4 252.3L281.4 342.2C266.4 337.5 250.3 337.6 235.4 342.6C220.5 347.6 207.5 357.2 198.4 369.9C189.3 382.6 184.4 398 184.5 413.8C184.6 429.6 189.7 444.8 199 457.5C208.3 470.2 221.4 479.6 236.4 484.4C251.4 489.2 267.5 489.2 282.4 484.3C297.3 479.4 310.4 469.9 319.6 457.2C328.8 444.5 333.8 429.1 333.8 413.4L333.8 64L421.8 64C421.7 71.4 422.4 78.9 423.7 86.2C426.8 102.5 433.1 118.1 442.4 131.9C451.7 145.7 463.7 157.5 477.6 166.5C497.5 179.6 520.8 186.6 544.6 186.6L544.6 274z"/>
-            </svg>
+              <svg
+                class="w-5 h-5 group-hover:scale-110 transition-transform"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 640 640"
+                fill="currentColor"
+              >
+                <path d="M544.5 273.9C500.5 274 457.5 260.3 421.7 234.7L421.7 413.4C421.7 446.5 411.6 478.8 392.7 506C373.8 533.2 347.1 554 316.1 565.6C285.1 577.2 251.3 579.1 219.2 570.9C187.1 562.7 158.3 545 136.5 520.1C114.7 495.2 101.2 464.1 97.5 431.2C93.8 398.3 100.4 365.1 116.1 336C131.8 306.9 156.1 283.3 185.7 268.3C215.3 253.3 248.6 247.8 281.4 252.3L281.4 342.2C266.4 337.5 250.3 337.6 235.4 342.6C220.5 347.6 207.5 357.2 198.4 369.9C189.3 382.6 184.4 398 184.5 413.8C184.6 429.6 189.7 444.8 199 457.5C208.3 470.2 221.4 479.6 236.4 484.4C251.4 489.2 267.5 489.2 282.4 484.3C297.3 479.4 310.4 469.9 319.6 457.2C328.8 444.5 333.8 429.1 333.8 413.4L333.8 64L421.8 64C421.7 71.4 422.4 78.9 423.7 86.2C426.8 102.5 433.1 118.1 442.4 131.9C451.7 145.7 463.7 157.5 477.6 166.5C497.5 179.6 520.8 186.6 544.6 186.6L544.6 274z"/>
+              </svg>
             </a>
 
             <a
@@ -246,7 +246,7 @@ const serviceAreas = BUSINESS_INFO.serviceAreas.slice(0, 6) // Show first 6 area
           </div>
         </div>
 
-        <!-- Newsletter Signup -->
+        <!-- Newsletter Signup - Now managed by FormManager -->
         <div>
           <h3 class="text-lg font-semibold text-white mb-4">
             Stay Updated
@@ -254,19 +254,19 @@ const serviceAreas = BUSINESS_INFO.serviceAreas.slice(0, 6) // Show first 6 area
           <p class="text-gray-300 text-sm mb-4">
             Get notified about new projects, technical articles, and development insights.
           </p>
-          <form id="newsletter-form" class="flex flex-col sm:flex-row gap-3">
+          
+          <!-- Form managed by FormManager -->
+          <form data-form="newsletter" data-endpoint="/api/newsletter/subscribe" class="flex flex-col sm:flex-row gap-3">
             <div class="flex-1">
               <input
-                id="newsletter-email"
+                name="email"
                 type="email"
                 placeholder="Enter your email"
                 class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 required
               />
-              <div id="email-error" class="text-red-400 text-xs mt-1 hidden"></div>
             </div>
             <button
-              id="newsletter-submit"
               type="submit"
               class="px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-medium hover:from-blue-700 hover:to-purple-700 transition-all duration-300 whitespace-nowrap"
             >
@@ -274,10 +274,8 @@ const serviceAreas = BUSINESS_INFO.serviceAreas.slice(0, 6) // Show first 6 area
             </button>
           </form>
           
-          <!-- Error Message -->
-          <div id="newsletter-error" class="hidden mt-3 p-3 bg-red-500/20 border border-red-500/50 rounded-lg">
-            <p class="text-red-200 text-sm" id="newsletter-error-text"></p>
-          </div>
+          <!-- Form message area - managed by FormManager -->
+          <div class="form-message hidden mt-3"></div>
         </div>
       </div>
     </div>
@@ -374,7 +372,7 @@ const serviceAreas = BUSINESS_INFO.serviceAreas.slice(0, 6) // Show first 6 area
   </div>
 </footer>
 
-<!-- Newsletter Confirmation Modal -->
+<!-- Newsletter Confirmation Modal - Managed by FormManager -->
 <div id="newsletter-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
   <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 transform transition-all duration-300 scale-95 opacity-0" id="modal-content">
     <div class="p-6 text-center">
@@ -431,188 +429,61 @@ const serviceAreas = BUSINESS_INFO.serviceAreas.slice(0, 6) // Show first 6 area
 </div>
 
 <style>
-  /* Smooth hover transitions */
+  /* Footer-specific styles only - form logic handled by FormManager */
+  
   footer a {
     transition: all 0.3s ease;
   }
   
-  /* Form focus styles */
-  footer input:focus {
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-  }
-  
-  /* Newsletter form animations */
-  footer form button:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  }
-  
-  /* Social media hover effects */
   footer .group:hover {
     transform: translateY(-2px);
   }
   
-  /* Modal animations */
-  #newsletter-modal.show #modal-content {
-    transform: scale(1);
-    opacity: 1;
+  /* Modal animations - behavior handled by FormManager */
+  #newsletter-modal #modal-content {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
   
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+  #newsletter-modal #modal-content.scale-100 {
+    transform: scale(1);
+  }
+  
+  #newsletter-modal #modal-content.opacity-100 {
+    opacity: 1;
+  }
+
+  /* Improved form styling */
+  form[data-form="newsletter"] input:focus {
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  }
+  
+  form[data-form="newsletter"] button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+  
+  /* Form message styling */
+  .form-message {
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+    font-size: 0.875rem;
+    margin-top: 0.75rem;
+  }
+  
+  /* Accessibility improvements */
+  @media (prefers-reduced-motion: reduce) {
+    footer .group:hover,
+    form[data-form="newsletter"] button:hover,
+    #newsletter-modal #modal-content {
+      transform: none !important;
+      transition: none !important;
+    }
+  }
+
+  /* High contrast mode support */
+  @media (prefers-contrast: high) {
+    .form-message {
+      border: 2px solid currentColor;
+    }
   }
 </style>
-
-<script>
-  document.addEventListener('DOMContentLoaded', async () => {
-    // Import the API client
-    const { api, validators } = await import('../../utils/api');
-    
-    const form = document.getElementById('newsletter-form');
-    const emailInput = document.getElementById('newsletter-email');
-    const submitButton = document.getElementById('newsletter-submit');
-    const emailError = document.getElementById('email-error');
-    const errorMessage = document.getElementById('newsletter-error');
-    const errorText = document.getElementById('newsletter-error-text');
-    const modal = document.getElementById('newsletter-modal');
-    const modalContent = document.getElementById('modal-content');
-    const confirmedEmail = document.getElementById('confirmed-email');
-    const okButton = document.getElementById('modal-ok-button');
-
-    if (!form) return;
-
-    function showEmailError(message) {
-      emailError.textContent = message;
-      emailError.classList.remove('hidden');
-      emailInput.classList.add('border-red-500');
-    }
-
-    function clearEmailError() {
-      emailError.classList.add('hidden');
-      emailInput.classList.remove('border-red-500');
-    }
-
-    function showError(message) {
-      errorText.textContent = message;
-      errorMessage.classList.remove('hidden');
-    }
-
-    function clearError() {
-      errorMessage.classList.add('hidden');
-    }
-
-    function setLoading(loading) {
-      if (loading) {
-        submitButton.disabled = true;
-        submitButton.textContent = 'Subscribing...';
-        submitButton.classList.add('opacity-50', 'cursor-not-allowed');
-      } else {
-        submitButton.disabled = false;
-        submitButton.textContent = 'Subscribe';
-        submitButton.classList.remove('opacity-50', 'cursor-not-allowed');
-      }
-    }
-
-    function showModal(email) {
-      confirmedEmail.textContent = email;
-      modal.classList.remove('hidden');
-      setTimeout(() => {
-        modal.classList.add('show');
-      }, 10);
-    }
-
-    function closeModal() {
-      modal.classList.remove('show');
-      setTimeout(() => {
-        modal.classList.add('hidden');
-        window.location.reload();
-      }, 300);
-    }
-
-    // Event listeners
-    emailInput.addEventListener('input', () => {
-      clearEmailError();
-      clearError();
-    });
-
-    emailInput.addEventListener('blur', () => {
-      const email = emailInput.value.trim();
-      if (email) {
-        const error = validators.email(email);
-        if (error) {
-          showEmailError(error);
-        }
-      }
-    });
-
-    okButton.addEventListener('click', closeModal);
-
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) {
-        closeModal();
-      }
-    });
-
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
-        closeModal();
-      }
-    });
-
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-
-      const email = emailInput.value.trim();
-
-      // Validation
-      if (!email) {
-        showEmailError('Email is required');
-        return;
-      }
-
-      const emailValidationError = validators.email(email);
-      if (emailValidationError) {
-        showEmailError(emailValidationError);
-        return;
-      }
-
-      setLoading(true);
-      clearError();
-
-      try {
-        // Use your API client to subscribe
-        await api.newsletter.subscribe({ email });
-
-        // Success - show modal
-        showModal(email);
-        emailInput.value = '';
-
-        // Track subscription event (if analytics available)
-        if (typeof gtag !== 'undefined') {
-          gtag('event', 'newsletter_subscribe', {
-            event_category: 'engagement',
-            event_label: 'footer_form'
-          });
-        }
-
-      } catch (error) {
-        console.error('Newsletter subscription error:', error);
-        
-        let errorMessage = 'Something went wrong. Please try again.';
-        
-        if (error.status === 409) {
-          errorMessage = 'This email is already subscribed.';
-        } else if (error.status === 422) {
-          errorMessage = 'Please enter a valid email address.';
-        } else if (error.message) {
-          errorMessage = error.message;
-        }
-        
-        showError(errorMessage);
-      } finally {
-        setLoading(false);
-      }
-    });
-  });
-</script>
