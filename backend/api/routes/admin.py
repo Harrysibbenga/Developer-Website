@@ -4,31 +4,82 @@ Admin endpoints for managing bookings and contacts
 """
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
-from typing import List, Optional
-from datetime import datetime, timedelta
+from typing import List
+import os
 import logging
-
+from jose import JWTError, jwt
+from passlib.context import CryptContext
+from datetime import datetime, timedelta
 from core.database import get_db
 from services.booking_service import BookingService
 from services.contact_service import ContactService
 from utils.rate_limit import rate_limit
 from schemas.admin import (
     AdminStats, BookingSummary, ContactSummary,
-    RevenueStats, ActivityLog
+    RevenueStats, ActivityLog, AuthResponse, AdminLogin
 )
+
+security = HTTPBearer()
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
+
+ADMIN_USERS = {
+    "admin@example.com": {
+        "email": "admin@example.com",
+        "hashed_password": pwd_context.hash("admin123"),  # Hash the password
+        "role": "admin"
+    }
+}
+
+def create_access_token(email: str) -> str:
+    """Create JWT access token"""
+    expire = datetime.utcnow() + timedelta(hours=24)
+    to_encode = {"sub": email, "exp": expire, "role": "admin"}
+    secret_key = os.getenv("SECRET_KEY", "your-secret-key-change-in-production")
+    return jwt.encode(to_encode, secret_key, algorithm="HS256")
+
+def verify_admin_token(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    """Verify admin JWT token"""
+    try:
+        secret_key = os.getenv("SECRET_KEY", "your-secret-key-change-in-production")
+        payload = jwt.decode(credentials.credentials, secret_key, algorithms=["HS256"])
+        email: str = payload.get("sub")
+        role: str = payload.get("role")
+        
+        if email is None or role != "admin" or email not in ADMIN_USERS:
+            raise HTTPException(status_code=401, detail="Invalid authentication")
+            
+        return {"email": email, "role": role}
+    except JWTError:
+        raise HTTPException(status_code=401, detail="Invalid authentication token")
+    
+
+@router.post("/auth/login", response_model=AuthResponse)
+async def admin_login(credentials: AdminLogin):
+    """Admin login endpoint"""
+    user = ADMIN_USERS.get(credentials.email)
+    
+    if not user or not pwd_context.verify(credentials.password, user["hashed_password"]):
+        raise HTTPException(status_code=401, detail="Invalid email or password")
+    
+    access_token = create_access_token(credentials.email)
+    return AuthResponse(
+        access_token=access_token,
+        token_type="bearer",
+        user={"email": user["email"], "role": user["role"]}
+    )
 
 @router.get("/stats", response_model=AdminStats)
 @rate_limit(requests=30, window=3600)  # 30 requests per hour for stats
 async def get_admin_stats(
     request: Request,  # Add Request parameter
     days: int = Query(30, description="Number of days to include in stats"),
-    db: Session = Depends(get_db)
-    # TODO: Add authentication dependency here
-    # current_user: User = Depends(get_current_admin_user)
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(verify_admin_token)
 ):
     """Get administrative statistics"""
     try:
@@ -65,8 +116,8 @@ async def get_admin_stats(
 async def get_booking_summary(
     request: Request,  # Add Request parameter
     limit: int = Query(20, description="Number of recent bookings"),
-    db: Session = Depends(get_db)
-    # TODO: Add authentication dependency here
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(verify_admin_token)
 ):
     """Get recent booking summary"""
     try:
@@ -95,8 +146,8 @@ async def get_booking_summary(
 async def get_contact_summary(
     request: Request,  # Add Request parameter
     limit: int = Query(20, description="Number of recent contacts"),
-    db: Session = Depends(get_db)
-    # TODO: Add authentication dependency here
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(verify_admin_token)
 ):
     """Get recent contact summary"""
     try:

@@ -15,7 +15,7 @@ import logging
 from typing import Optional
 
 from core.config import get_settings
-from api.routes import bookings, contact, health
+from api.routes import bookings, contact, health, admin
 from services.email_service import EmailService
 from utils.logger import setup_logging
 from utils.rate_limit import init_rate_limiter
@@ -45,7 +45,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.ALLOWED_ORIGINS,
     allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_methods=["GET", "POST", "PUT", "DELETE","PATCH", "OPTIONS"],
     allow_headers=["*"],
 )
 
@@ -58,7 +58,7 @@ app.add_middleware(
 app.include_router(health.router, prefix="/api/health", tags=["Health"])
 app.include_router(bookings.router, prefix="/api/bookings", tags=["Bookings"])
 app.include_router(contact.router, prefix="/api/contact", tags=["Contact"])
-# app.include_router(admin.router, prefix="/api/admin", tags=["Admin"])
+app.include_router(admin.router, prefix="/api/admin", tags=["Admin"])
 
 @app.on_event("startup")
 async def startup_event():

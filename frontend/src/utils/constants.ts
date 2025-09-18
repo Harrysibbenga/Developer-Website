@@ -4,6 +4,11 @@
  * Updated positioning: Business solutions first, technical expertise second
  */
 
+export const ANALYTICS_CONFIG = {
+  GA_MEASUREMENT_ID: import.meta.env.PUBLIC_GA_MEASUREMENT_ID,
+  DEBUG: import.meta.env.DEV,
+}
+
 export const BUSINESS_INFO = {
   // Business-focused branding
   name: "Harry Sibbenga",
@@ -18,8 +23,8 @@ export const BUSINESS_INFO = {
     companyNumber: "16703742",
     registeredOffice: {
       street: "86-90, Paul Street",
-      area: "Shoreditch", 
-      city: "London",
+      area: "London", 
+      city: "England",
       postcode: "EC2A 4NE",
       country: "United Kingdom"
     }

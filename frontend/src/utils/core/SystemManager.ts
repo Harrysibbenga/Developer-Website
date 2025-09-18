@@ -8,6 +8,7 @@ import { AnimationManager } from './modules/AnimationManager'
 import { PageTransitionManager } from './modules/PageTransitionManager'
 import { PerformanceManager } from './modules/PerformanceManager'
 import { FormManager } from './modules/FormManager'
+import { AnalyticsManager } from './modules/AnalyticsManager'
 
 interface SystemConfig {
   gaId?: string
@@ -65,6 +66,8 @@ export class SystemManager {
         { name: 'animations', class: AnimationManager, deps: [] },
         { name: 'transitions', class: PageTransitionManager, deps: [] },
         { name: 'forms', class: FormManager, deps: [] },
+        // Add Analytics Manager
+        { name: 'analytics', class: AnalyticsManager, deps: [] },
     ]
 
     for (const config of moduleConfigs) {
@@ -112,6 +115,17 @@ export class SystemManager {
 
   public isInitialized(): boolean {
     return this.initialized
+  }
+
+  // Analytics convenience methods
+  public trackEvent(action: string, category: string, label?: string, value?: number): void {
+    const analytics = this.getModule<AnalyticsManager>('analytics')
+    analytics?.trackEvent(action, category, label, value)
+  }
+
+  public trackPageView(path?: string, title?: string): void {
+    const analytics = this.getModule<AnalyticsManager>('analytics')
+    analytics?.trackPageView(path, title)
   }
 }
 
