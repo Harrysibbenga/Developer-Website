@@ -9,6 +9,10 @@ from datetime import datetime
 
 from models.contact import InquiryType, InquiryStatus
 
+class ContactResponseData(BaseModel):
+    message: str
+    mark_as_replied: bool = True
+
 class ContactCreate(BaseModel):
     """Schema for creating a contact inquiry"""
     first_name: str

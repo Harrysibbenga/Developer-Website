@@ -26,10 +26,29 @@ function saveConsent(newConsent: Consent) {
     JSON.stringify(newConsent)
   )};expires=${expires.toUTCString()};path=/;SameSite=Lax;Secure`
 
+  // Update analytics consent immediately
+  updateAnalyticsConsent(newConsent.analytics)
+
   // Dispatch global event
   document.dispatchEvent(
     new CustomEvent('cookie-consent-updated', { detail: { consent: newConsent } })
   )
+}
+
+function updateAnalyticsConsent(hasConsent: boolean) {
+  // Update gtag consent
+  if (window.gtag) {
+    window.gtag('consent', 'update', {
+      'analytics_storage': hasConsent ? 'granted' : 'denied'
+    })
+  }
+
+  // Update analytics manager if available
+  if (window.analyticsManager) {
+    window.analyticsManager.updateConsent(hasConsent)
+  }
+
+  console.log('📊 Analytics consent updated:', hasConsent)
 }
 
 function acceptAll() {
@@ -54,7 +73,13 @@ function rejectAll() {
 
 onMounted(() => {
   loadConsent()
-  console.log('Cookie consent loaded:', cookieConsent.value)
+  
+  // If consent exists, update analytics immediately
+  if (cookieConsent.value) {
+    updateAnalyticsConsent(cookieConsent.value.analytics)
+  }
+  
+  console.log('🍪 Cookie consent loaded:', cookieConsent.value)
 })
 </script>
 

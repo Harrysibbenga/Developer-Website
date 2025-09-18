@@ -303,3 +303,24 @@ class ContactService:
             self.db.rollback()
             logger.error(f"Error submitting newsletter feedback for {email}: {str(e)}")
             return False
+        
+    def get_inquiry_by_id(self, contact_id: int) -> Optional[ContactInquiry]:
+        """Get a single contact inquiry by ID"""
+        return self.db.query(ContactInquiry).filter(
+            ContactInquiry.id == contact_id,
+            ContactInquiry.is_active == True
+        ).first()
+    
+    def update_inquiry_status(self, contact_id: int, new_status: str) -> Optional[ContactInquiry]:
+        """Update contact inquiry status"""
+        contact = self.get_inquiry_by_id(contact_id)
+        if not contact:
+            return None
+        
+        contact.status = new_status
+        contact.updated_at = datetime.utcnow()
+        
+        self.db.commit()
+        self.db.refresh(contact)
+        
+        return contact

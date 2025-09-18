@@ -2,13 +2,33 @@
 import { onMounted, onUnmounted } from 'vue'
 
 export function useAnalyticsTracker() {
-  function trackPageView() {
+  let navigationHandler: (() => void) | null = null
+
+  function trackPageView(path?: string, title?: string) {
+    // Try analytics manager first
     if (window.analyticsManager?.isEnabled()) {
-      window.analyticsManager.trackPageView(
-        location.pathname,
-        document.title
-      )
-      console.log('📊 Page view tracked:', location.pathname)
+      window.analyticsManager.trackPageView(path, title)
+      return
+    }
+
+    // Fallback to system manager
+    if (window.systemManager?.isInitialized()) {
+      window.systemManager.trackPageView(path, title)
+      return
+    }
+
+    // Queue for later if neither is ready
+    const page_path = path || location.pathname
+    const page_title = title || document.title
+    
+    console.log('📊 Analytics not ready, queuing page view:', { page_path, page_title })
+  }
+
+  function trackEvent(action: string, category: string, label?: string, value?: number) {
+    if (window.analyticsManager?.isEnabled()) {
+      window.analyticsManager.trackEvent(action, category, label, value)
+    } else if (window.systemManager?.isInitialized()) {
+      window.systemManager.trackEvent(action, category, label, value)
     }
   }
 
@@ -17,12 +37,48 @@ export function useAnalyticsTracker() {
     trackPageView()
 
     // Track Astro view transitions (soft navigation)
-    const handler = () => trackPageView()
-    document.addEventListener('astro:after-swap', handler)
+    navigationHandler = () => {
+      // Small delay to ensure page title and content have updated
+      setTimeout(() => {
+        trackPageView()
+      }, 100)
+    }
 
-    // Clean up
+    document.addEventListener('astro:after-swap', navigationHandler)
+
+    // Also listen for system ready events
+    const systemReadyHandler = () => {
+      trackPageView()
+    }
+    document.addEventListener('system:ready', systemReadyHandler, { once: true })
+
+    // Cleanup
     onUnmounted(() => {
-      document.removeEventListener('astro:after-swap', handler)
+      if (navigationHandler) {
+        document.removeEventListener('astro:after-swap', navigationHandler)
+      }
+      document.removeEventListener('system:ready', systemReadyHandler)
     })
   })
+
+  return {
+    trackPageView,
+    trackEvent,
+    // Convenience methods
+    trackClick: (element: string, location?: string) => {
+      if (window.analyticsManager?.isEnabled()) {
+        window.analyticsManager.trackClick(element, location)
+      }
+    },
+    trackDownload: (filename: string, filetype?: string) => {
+      if (window.analyticsManager?.isEnabled()) {
+        window.analyticsManager.trackDownload(filename, filetype)
+      }
+    },
+    trackScroll: (percentage: number) => {
+      if (window.analyticsManager?.isEnabled()) {
+        window.analyticsManager.trackScroll(percentage)
+      }
+    }
+  }
 }

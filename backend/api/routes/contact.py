@@ -60,7 +60,7 @@ async def create_contact(
         raise HTTPException(status_code=500, detail="Failed to submit inquiry")
 
 @router.get("/", response_model=ContactList)
-@rate_limit(requests=20, window=3600)  # Add rate limiting
+# @rate_limit(requests=20, window=3600)  # Add rate limiting
 async def list_contacts(
     request: Request,  # Add Request parameter
     status: Optional[InquiryStatus] = None,
@@ -89,6 +89,58 @@ async def list_contacts(
     except Exception as e:
         logger.error(f"Error listing contacts: {str(e)}")
         raise HTTPException(status_code=500, detail="Failed to retrieve contacts")
+    
+@router.get("/{contact_id}", response_model=ContactResponse)
+# @rate_limit(requests=10, window=3600)  # Add rate limiting
+async def get_contact(
+    request: Request,  # Add Request parameter
+    contact_id: int,
+    db: Session = Depends(get_db)
+):
+    """Get contact inquiry by ID"""
+    try:
+        contact_service = ContactService(db)
+        
+        contact = contact_service.get_inquiry_by_id(contact_id)
+        
+        if not contact:
+            raise HTTPException(status_code=404, detail="Contact not found")
+        
+        return ContactResponse.from_orm(contact)
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error getting contact inquiry: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to retrieve contact")
+    
+
+@router.patch("/{contact_id}/status", response_model=ContactResponse)
+# @rate_limit(requests=10, window=3600)
+async def update_contact_status(
+    request: Request,
+    contact_id: int,
+    status_data: dict,  # {"status": "new|responded|resolved"}
+    db: Session = Depends(get_db)
+):
+    """Update contact inquiry status"""
+    try:
+        contact_service = ContactService(db)
+        
+        contact = contact_service.update_inquiry_status(contact_id, status_data.get("status"))
+        
+        if not contact:
+            raise HTTPException(status_code=404, detail="Contact not found")
+        
+        logger.info(f"Contact status updated: {contact_id} -> {status_data.get('status')}")
+        return ContactResponse.from_orm(contact)
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error updating contact status: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to update contact status")
+    
 
 @router.post("/newsletter", response_model=NewsletterResponse, status_code=201)
 @rate_limit(requests=5, window=3600)  # 5 subscriptions per hour

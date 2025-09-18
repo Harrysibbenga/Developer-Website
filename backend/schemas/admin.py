@@ -10,6 +10,15 @@ from datetime import datetime
 from models.booking import ServiceType, ProjectStatus
 from models.contact import InquiryType, InquiryStatus
 
+class AdminLogin(BaseModel):
+    email: str
+    password: str
+
+class AuthResponse(BaseModel):
+    access_token: str
+    token_type: str
+    user: dict
+
 class BookingStats(BaseModel):
     """Booking statistics"""
     total_bookings: int
